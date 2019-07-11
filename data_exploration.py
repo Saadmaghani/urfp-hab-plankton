@@ -22,7 +22,9 @@ for year in years:
 
 	if os.path.isdir(data_path):
 		non_hab_causing = [0]
-		for class_name in os.listdir(data_path) and class_name not in ignored_classes:
+		for class_name in os.listdir(data_path):
+			if class_name in ignored_classes:
+				continue
 			c_path = data_path + "/"+class_name
 
 
