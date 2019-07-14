@@ -1,5 +1,6 @@
 import os
 from PIL import Image
+import matplotlib.pyplot as plt
 
 data_folder = "data"
 years = [str(i) for i in range(2006, 2014)]
@@ -52,6 +53,11 @@ for year in years:
 		class_stats["non-HAB-causing"][year] = non_hab_causing
 
 print(class_stats)
-
 print("#############################")
 print(classB_stats)
+print("#############################")
+xc = [x[0] for x in image_stats]
+yc = [y[0] for y in image_stats]
+plt.scatter(xc, yc, s=list(image_stats.values()))
+plt.show()
+
