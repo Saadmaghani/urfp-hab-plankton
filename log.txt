@@ -85,7 +85,17 @@
 
 
 11/7 - thursday
-1.	read more? 
+1.	worked on data exploration
+
+13/7 - saturday
+1. 	started learning pytorch
+2.	will make a simple CNN classifier by the end of today (Insha Allah)
+3.	new google document - implementation
+
+14/7 - Sunday
+1.	regarding 2 of 13/7, made a simple CNN from tutorial. now will work on using it for our dataset
+2.	added 'dimensions' to list of stats which we need. modifying data_exploration.py to get dimensions
+
 
 
 

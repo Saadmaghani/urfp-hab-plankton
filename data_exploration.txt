@@ -6,11 +6,15 @@ data_exploration.py:
 1. 	start of the pipeline? in its own anaconda environment
 2. 	class_stats - contains all info about all the classes in all years. so its like this:
 		{
-			"Akashiwo": {2006:[<count>, <other info>], 2007:[<count>, <other info>], ...},
-			"Amphidinium sp": [2006:[<count>, <other info>], 2007:[<count>, <other info>], ...],
-			"Karenia": [2006:[<count>, <other info>], 2007:[<count>, <other info>], ...],
-			"non-HAB-causing": [2006:[<count>, <other info>], 2007:[<count>, <other info>], ...],
+			"Akashiwo": {2006:[<count>, ...], 2007:[<count>, ...], ...},
+			"Amphidinium sp": [2006:[<count>, ...], 2007:[<count>, ...], ...],
+			"Karenia": [2006:[<count>, ...], 2007:[<count>, ...], ...],
+			"non-HAB-causing": [2006:[<count>, ...], 2007:[<count>, ...], ...],
 		}
 	so basically a dict with a list each element of list a dict pointing to another list
 	dict -> dict -> list #NICE 
-3.	statistics: count per year, dimensions?, 
+3.	statistics: 
+	per class:
+		count per year, 
+	per image:
+		dimensions
