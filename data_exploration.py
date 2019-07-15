@@ -23,7 +23,7 @@ image_stats = {}
 
 for year in years:
 	data_path = data_folder+"/"+year
-
+	
 	if os.path.isdir(data_path):
 		non_hab_causing = [0]
 		for class_name in os.listdir(data_path):
