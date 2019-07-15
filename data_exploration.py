@@ -3,7 +3,7 @@ from PIL import Image
 import matplotlib.pyplot as plt
 
 data_folder = "data"
-years = [str(i) for i in range(2006, 2014)]
+years = [str(i) for i in range(2014, 2015)]
 class_names = ["Akashiwo", "Amphidinium sp", "Chrysochromulina", "Cochlodinium", 
 	"Dinophysis", "Gonyaulax", "Guinardia_delicatula", "Guinardia_striata", "Gyrodinium", 
 	"Heterocapsa_triquetra", "Karenia", "Phaeocystis", "Prorocentrum", "Pseudochattonella_farcimen", 
@@ -35,13 +35,13 @@ for year in years:
 			if os.path.isdir(c_path):
 				image_files = [x for x in os.listdir(c_path) if ".png" in x]
 
-				if class_name in class_names:
-					class_stats[class_name][year][0] = len(image_files) 
-				else:
-					non_hab_causing[0] += len(image_files) 
+				#if class_name in class_names:
+				#	class_stats[class_name][year][0] = len(image_files) 
+				#else:
+				#	non_hab_causing[0] += len(image_files) 
 
-				if class_name in all_classes:
-					classB_stats[class_name][year][0] = len(image_files) 
+				#if class_name in all_classes:
+				#	classB_stats[class_name][year][0] = len(image_files) 
 
 				for img in image_files:
 					im = Image.open(c_path + "/" + img)
@@ -50,7 +50,7 @@ for year in years:
 						image_stats[(width, height)] = 0
 					image_stats[(width, height)] += 1
 
-		class_stats["non-HAB-causing"][year] = non_hab_causing
+		#class_stats["non-HAB-causing"][year] = non_hab_causing
 
 print(class_stats)
 print("#############################")
