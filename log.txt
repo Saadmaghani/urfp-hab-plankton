@@ -96,7 +96,11 @@
 1.	regarding 2 of 13/7, made a simple CNN from tutorial. now will work on using it for my dataset
 2.	added 'dimensions' to list of stats which we need. modifying data_exploration.py to get dimensions
 
+15/7 - monday
+1.	hopefully will finish up first CNN today. shifted jupyter notebook on gpu-cluster
 
+17/7 - wednesday
+1.	regarding 1. of 15/7, havent finished CNN. problems faced is structuring the dataset
 
-
-
+18/7 - thursday
+1.	NEED TO GET THE MDOEL RUNNING MY GOD
