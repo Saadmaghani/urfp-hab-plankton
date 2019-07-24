@@ -7,6 +7,7 @@ from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
+from PIL import Image, ImageFile
 
 
 class PlanktonDataset(Dataset):
@@ -130,6 +131,7 @@ class Preprocessor:
 		self.fnames, self.labels = self._get_lbls_fnames()
 		self.encoded_labels = self._oneHotEncoding().tolist()
 		self.transformations = transformations
+		ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 
 	def _oneHotEncoding(self):
