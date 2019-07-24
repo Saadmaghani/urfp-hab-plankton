@@ -78,7 +78,7 @@
 1. 	continued to work on literature review
 	a)	will look into Hintons capsules as possible new architecture - get zhiming advice
 	b) 	will look into papers which use WHOI dataset
-2.	unziping datasets and updating numbers on google sheets
+2.	unziping datasets and upd`ating numbers on google sheets
 3.	meeting with zheming:
 	a)	VGG, Googlenet and resnet to extract features
 	b)	JUST DO IT
@@ -104,3 +104,16 @@
 
 18/7 - thursday
 1.	NEED TO GET THE MDOEL RUNNING MY GOD
+
+19/7 - thursday
+1.	AAAHHH
+2.	started working on making the entire structure so that it is modular. new files mentioned in implementation doc
+
+21/7 - sunday
+1.	finished with preprocessing.py
+
+22/7 - monday
+1.	finished training.py and main.ipynb
+2. 	will push all work to github and then pull from gpu cluster and start training
+
+24/7 - wednesday
