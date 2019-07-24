@@ -15,7 +15,7 @@ class firstCNN(nn.Module):
 		self.conv2 = nn.Conv2d(6, 16, 5)
 		self.fc1 = nn.Linear(16 * 27 * 60, 120) # 27 * 60 from image dimension, see implementation doc for details
 		self.fc2 = nn.Linear(120, 84)
-		self.fc3 = nn.Linear(84, 88) # 87 because some classes have no images
+		self.fc3 = nn.Linear(84, 87) # 87 because ignored_classes = ['mix']
 
 	def forward(self, x):
 		x = self.pool(F.relu(self.conv1(x)))
