@@ -127,12 +127,25 @@ class Preprocessor:
 	def __init__(self, years, transformations = None, include_classes = None, train_eg_per_class = None):
 		self.years = years
 		self.include_classes = include_classes
-		self.train_eg_per_class = train_eg_per_class
 		self.fnames, self.labels = self._get_lbls_fnames()
+		if train_eg_per_class is not None:
+			self.fnames, self.labels = self._normalize_classes(train_eg_per_class)
+
 		self.encoded_labels = self._oneHotEncoding().tolist()
 		self.transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) if transformations is None else transformations
 		ImageFile.LOAD_TRUNCATED_IMAGES = True
 
+	def _normalize_classes(self, data_per_class):
+		new_labels = []
+		new_fnames = []
+		if self.include_classes is not None:
+			for class_name in self.include_classes:
+				class_idx = np.where(np.array(self.labels) == class_name)
+				random_idx = np.random.choice(class_idx, size = data_per_class, replace=False)
+				image_files = list(np.array(self.fnames)[random_idx])
+				new_fnames.extend(image_files)
+				new_labels.extend([class_name]*data_per_class)
+		return new_fnames, new_labels
 
 	def _oneHotEncoding(self):
 		label_encoder = LabelEncoder()
@@ -158,7 +171,7 @@ class Preprocessor:
 		encoded = {'train': eyTrain, 'validation': eyVal, 'test': eyTest}
 		return (partition, labels, encoded)
 
-	def create_datasets(self, splits):
+	def create_datasets(self, splits, eg_per_class):
 		partition, labels, onehot_labels = self._split(splits)
 		self.train_dataset = PlanktonDataset(partition['train'], labels['train'], onehot_labels['train'],
 			Preprocessor.DATA_FOLDER, transform=self.transformations)
@@ -168,6 +181,8 @@ class Preprocessor:
 
 		self.test_dataset = PlanktonDataset(partition['test'], labels['test'], onehot_labels['test'],
 			Preprocessor.DATA_FOLDER, transform=self.transformations)
+
+
 
 	def get_loaders(self, lType, batch_size):
 		loader = None
@@ -195,8 +210,6 @@ class Preprocessor:
 
 					if os.path.isdir(c_path):
 						image_files = [x for x in os.listdir(c_path) if ".png" in x]
-						if self.train_eg_per_class is not None:
-							image_files = numpy.random.choice(image_files, size=self.train_eg_per_class, replace=False)
 						fnames.extend(image_files)
 						labels.extend([class_name]*len(image_files))
 
