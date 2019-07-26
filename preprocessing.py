@@ -125,7 +125,7 @@ class Preprocessor:
 	DATA_FOLDER = "./data"
 
 	def __init__(self, years, transformations = None, ignored_classes=[]):
-		transformations = transforms.Compose([Rescale((120, 255)), ToTensor()])
+		transformations = transforms.Compose([Rescale((64, 128)), ToTensor()])
 		self.years = years
 		self.ignored_classes = ignored_classes
 		self.fnames, self.labels = self._get_lbls_fnames()

@@ -1,24 +1,44 @@
 import torch
+import time
 
 class Trainer:
-	def __init__(self, epochs, loss_fn, optimizer, lr = 0.01, momentum=0.9):
+	def __init__(self, epochs, loss_fn, optimizer, lr = 0.01, momentum=0.9, useCuda = False):
 		self.epochs = epochs
 		self.criterion = loss_fn()
 		self.optimizer = optimizer
 		self.lr = lr
 		self.momentum = momentum
-
-	def train(self, model, trainloader):
+		self.device = torch.device("cpu")
+		if useCuda:
+			self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+		else:
+			self.device = torch.device("cpu")
+        
+        
+	def train(self, model, trainLoader, validLoader, partialModelFile = None):
+		self.timeStart = time.time()
+		all_train_acc = []
+		all_valid_acc = []
+		
+		
 		model = model.float()
+		model.to(self.device)
 		optimizer = self.optimizer(model.parameters(), lr=self.lr, momentum=self.momentum)
+		epoch = 0
+        
+		if partialModelFile is not None:
+			model, optimizer, epoch = self.load_partial_model(model, optimizer, partialModelFile)
+            
+		model.to(self.device)
 		loss = None
-		for epoch in range(self.epochs):
+		while epoch < self.epochs:
 			running_loss = 0.0
-
-			for i, data in enumerate(trainloader, 0):
+            
+			for i, data in enumerate(trainLoader, 0):
 				#get the unputs; data is a list of [inputs, labels]
-				inputs, labels = data['image'], data['encoded_label'].float()
-				
+				inputs, labels = data['image'].to(self.device), data['encoded_label'].to(self.device).float()
+
+                
 				#zero the param gradients
 				optimizer.zero_grad()
 				
@@ -31,13 +51,38 @@ class Trainer:
 				
 				#print statistics - have to get more of these
 				running_loss += loss.item()
-				if i % 2000 == 1999:  # print every 2000 mini-batches
-					print('model: ', model,' - [%d, %5d] loss: %.3f' % (epoch + 1, i+1, running_loss/2000))
-					running_loss = 0.0
+				
+				
+				#every batch print - loss, training acc, validation acc
+				train_pred, train_target = self.test(model, trainLoader)
+				valid_pred, valid_target = self.test(model, validLoader)
+				train_acc = accuracy_score(train_target.cpu(), train_pred.cpu())
+				valid_acc = accuracy_score(valid_target.cpu(), valid_pred.cpu())
+				
+				print('Training Loss:', running_loss)
+				print('Training Accuracy:', train_acc)
+				print('Valid Accuracy:', valid_acc)
+				print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+				running_loss = 0.0
+				
+				all_train_acc.append(train_acc)
+				all_valid_acc.append(valid_acc)
+		
+			epoch += 1
+			
+			
 			self._save_partial_model(model, epoch, loss, optimizer)
 		self._save_full_model(model)
 		print('Finished Training')
+		self.timeEnd = time.time()
+		return all_train_acc, all_valid_acc
+	
+        
+	def getTime(self):
+		return self.timeEnd - self.timeStart
 
+        
+        
 	def _save_partial_model(self, model, epoch, loss, optimizer):
 		model_name = type(model).__name__
 		version = type(model).Version
@@ -45,46 +90,46 @@ class Trainer:
 		torch.save({
 			'epoch': epoch,
 			'model_state_dict': model.state_dict(),
-			'optimizer_state_dict': optimizer.state_dict(),
-			'loss': loss
+			'optimizer_state_dict': optimizer.state_dict()
 			}, path_to_statedict)
 
-	def load_partial_model(self, path_to_statedict):
-		model = TheModelClass(*args, **kwargs)
-		optimizer = TheOptimizerClass(*args, **kwargs)
-
-		checkpoint = torch.load(PATH)
+	def load_partial_model(self, model, optimizer, path_to_statedict):
+		checkpoint = torch.load(path_to_statedict)
+        
 		model.load_state_dict(checkpoint['model_state_dict'])
 		optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
 		epoch = checkpoint['epoch']
-		loss = checkpoint['loss']
-
-		model.eval()
+        
+		# model.eval()
 		# - or -
 		model.train()
+        
+		return model, optimizer, epoch
 
 	def _save_full_model(self, model):
 		# saving model
 		model_name = type(model).__name__
 		version = type(model).Version
 		path_to_statedict = './models/'+model_name+'-'+str(version)+'.pth' 
-		torch.save(net.state_dict(), path_to_statedict)
+		torch.save(model.state_dict(), path_to_statedict)
 
-	def load_full_model(self, path_to_statedict):
-		model = Net()
+	def load_full_model(self, model, path_to_statedict):
 		model.load_state_dict(torch.load(path_to_statedict))
-		model.eval()
+		#model.eval()
+		return model
 
 	def test(self, model, testloader): #stats finder
-		all_preds = torch.LongTensor()
-		all_targets = torch.LongTensor()		
+		all_preds = torch.LongTensor().to(self.device)
+		all_targets = torch.LongTensor().to(self.device)
+		model.to(self.device)
+		
 		with torch.no_grad():
 
 			for data in testloader:
-				inputs, labels = data['image'], data['encoded_label'].float()
+				inputs, labels = data['image'].to(self.device), data['encoded_label'].to(self.device).float()
 				_, labels = torch.max(labels, 1)
 
-				outputs = data['encoded_label'].float() #model(inputs.float())
+				outputs = model(inputs.float())
 				_, predicted = torch.max(outputs.data, 1)
 				#print("labels:", labels)
 				#print("predicted:", predicted)
@@ -102,9 +147,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 class Metrics:
+	
     def __init__(self, y_true, y_pred):
-        self.target = y_true
-        self.pred = y_pred
+        self.target = y_true.cpu()
+        self.pred = y_pred.cpu()
+
 
     def accuracy(self):
         x = accuracy_score(self.target, self.pred)
