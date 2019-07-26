@@ -141,7 +141,7 @@ class Preprocessor:
 		if self.include_classes is not None:
 			for class_name in self.include_classes:
 				class_idx = np.where(np.array(self.labels) == class_name)
-				random_idx = np.random.choice(class_idx, size = data_per_class, replace=False)
+				random_idx = np.random.choice(class_idx[0], size = data_per_class, replace=False)
 				image_files = list(np.array(self.fnames)[random_idx])
 				new_fnames.extend(image_files)
 				new_labels.extend([class_name]*data_per_class)
@@ -171,7 +171,7 @@ class Preprocessor:
 		encoded = {'train': eyTrain, 'validation': eyVal, 'test': eyTest}
 		return (partition, labels, encoded)
 
-	def create_datasets(self, splits, eg_per_class):
+	def create_datasets(self, splits):
 		partition, labels, onehot_labels = self._split(splits)
 		self.train_dataset = PlanktonDataset(partition['train'], labels['train'], onehot_labels['train'],
 			Preprocessor.DATA_FOLDER, transform=self.transformations)

@@ -124,15 +124,28 @@ class ToTensor(object):
 class Preprocessor:
 	DATA_FOLDER = "./data"
 
-	def __init__(self, years, transformations = None, ignored_classes=[]):
-		transformations = transforms.Compose([Rescale((64, 128)), ToTensor()])
+	def __init__(self, years, transformations = None, include_classes = None, train_eg_per_class = None):
 		self.years = years
-		self.ignored_classes = ignored_classes
+		self.include_classes = include_classes
 		self.fnames, self.labels = self._get_lbls_fnames()
+		if train_eg_per_class is not None:
+			self.fnames, self.labels = self._normalize_classes(train_eg_per_class)
+
 		self.encoded_labels = self._oneHotEncoding().tolist()
-		self.transformations = transformations
+		self.transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) if transformations is None else transformations
 		ImageFile.LOAD_TRUNCATED_IMAGES = True
 
+	def _normalize_classes(self, data_per_class):
+		new_labels = []
+		new_fnames = []
+		if self.include_classes is not None:
+			for class_name in self.include_classes:
+				class_idx = np.where(np.array(self.labels) == class_name)
+				random_idx = np.random.choice(class_idx[0], size = data_per_class, replace=False)
+				image_files = list(np.array(self.fnames)[random_idx])
+				new_fnames.extend(image_files)
+				new_labels.extend([class_name]*data_per_class)
+		return new_fnames, new_labels
 
 	def _oneHotEncoding(self):
 		label_encoder = LabelEncoder()
@@ -169,6 +182,8 @@ class Preprocessor:
 		self.test_dataset = PlanktonDataset(partition['test'], labels['test'], onehot_labels['test'],
 			Preprocessor.DATA_FOLDER, transform=self.transformations)
 
+
+
 	def get_loaders(self, lType, batch_size):
 		loader = None
 		if lType == "train":
@@ -189,7 +204,7 @@ class Preprocessor:
 			year_path = Preprocessor.DATA_FOLDER+"/"+year
 			if os.path.isdir(year_path):
 				for class_name in os.listdir(year_path):
-					if class_name in self.ignored_classes:
+					if self.include_classes is not None and class_name not in self.include_classes:
 						continue
 					c_path = year_path + "/"+class_name
 
@@ -197,4 +212,5 @@ class Preprocessor:
 						image_files = [x for x in os.listdir(c_path) if ".png" in x]
 						fnames.extend(image_files)
 						labels.extend([class_name]*len(image_files))
+
 		return fnames, labels

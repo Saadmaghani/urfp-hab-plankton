@@ -3,18 +3,21 @@
 # https://jamesmccaffrey.wordpress.com/2019/01/23/pytorch-train-vs-eval-mode/
 
 #version 1.1 = all data except mix
-
+#version 2.0 = only 20 and 500 data images
 import torch.nn as nn
 import torch.nn.functional as F
 
 class firstCNN(nn.Module):
-	Version = 1.2 
+	Version = 2.0
 
 	def __init__(self):
 		super(firstCNN, self).__init__()
+		self.pool = nn.MaxPool2d(2, 2)
+		
 		self.conv1 = nn.Conv2d(1, 32, 3, padding = 1)
 		self.conv2 = nn.Conv2d(32, 32, 3, padding = 1)
-		self.pool = nn.MaxPool2d(2, 2)
+		
+		
 		self.conv3 = nn.Conv2d(32, 64, 3, padding = 1)
 		self.conv4 = nn.Conv2d(64, 64, 3, padding = 1)
 		
@@ -25,7 +28,7 @@ class firstCNN(nn.Module):
 		self.conv8 = nn.Conv2d(256, 256, 3, padding = 1)
 		
 		self.fc1 = nn.Linear(32*256, 128) # 27 * 60 from image dimension, see implementation doc for details
-		self.fc2 = nn.Linear(128, 86)
+		self.fc2 = nn.Linear(128, 20)
 		self.softmax = nn.Softmax() 
 		#self.fc3 = nn.Linear(84, 86) # 102 because ignored_classes = ['mix'] and using all data
 
