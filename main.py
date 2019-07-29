@@ -9,7 +9,7 @@ years = [str(y) for y in range(2006, 2015)]
 classes = ["detritus", "Leptocylindrus", "Chaetoceros", "Rhizosolenia", "Guinardia_delicatula", "Cerataulina",
            "Cylindrotheca", "Skeletonema", "Dactyliosolen", "Thalassiosira", "Dinobryon", "Corethron", "Thalassionema",
            "Ditylum", "pennate", "Prorocentrum", "Pseudonitzschia", "Tintinnid", "Guinardia_striata", "Phaeocystis"]
-pp = Preprocessor(years, include_classes=classes, train_eg_per_class=HP.number_of_images_per_classm)
+pp = Preprocessor(years, include_classes=classes, train_eg_per_class=HP.number_of_images_per_class)
 
 pp.create_datasets([0.6,0.2,0.2])
 
