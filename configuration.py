@@ -16,3 +16,4 @@ class Hyperparameters:
 	loss_function = nn.MSELoss
 
 
+

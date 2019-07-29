@@ -3,13 +3,15 @@
 # https://jamesmccaffrey.wordpress.com/2019/01/23/pytorch-train-vs-eval-mode/
 
 #version 1.1 = all classes
-#version 2.0 = only 20 classes
+#version 2.0 = 20 classes and change of architecture
+#version 2.1/2.2 - 20 classes but change of #of images, now pushed to configuration but not reverting back version #s 
+#version 2.3 = only 3 classes
 
 import torch.nn as nn
 import torch.nn.functional as F
 
 class firstCNN(nn.Module):
-	version = 2.2
+	version = 2.3
 
 	def __init__(self):
 		super(firstCNN, self).__init__()
@@ -29,7 +31,7 @@ class firstCNN(nn.Module):
 		self.conv8 = nn.Conv2d(256, 256, 3, padding = 1)
 		
 		self.fc1 = nn.Linear(32*256, 128) # 27 * 60 from image dimension, see implementation doc for details
-		self.fc2 = nn.Linear(128, 20)
+		self.fc2 = nn.Linear(128, 3)
 		self.softmax = nn.Softmax() 
 		#self.fc3 = nn.Linear(84, 86) # 102 because ignored_classes = ['mix'] and using all data
 
