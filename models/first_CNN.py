@@ -58,4 +58,4 @@ class firstCNN(nn.Module):
 		return x
 
 	def __str__(self):
-		return type(self).__name__ + "_"+str(version)
+		return type(self).__name__ + "_"+str(firstCNN.version)
