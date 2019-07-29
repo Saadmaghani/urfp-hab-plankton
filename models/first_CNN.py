@@ -5,7 +5,7 @@
 #version 1.1 = all data except mix
 #version 2.0 = only 20 and 500 data images
 #version 2.1 = 20 classes, 2000 data images
-#version 2.2 = 20 classes, 1000 data images
+#version 2.2 = 20 classes, 1000 data images takes approx 6 hours and 16 minutes 
 import torch.nn as nn
 import torch.nn.functional as F
 
@@ -57,3 +57,6 @@ class firstCNN(nn.Module):
 		x = F.relu(self.fc2(x))
 		x = self.softmax(x)
 		return x
+
+	def __str__(self):
+		return type(self).__name__ + "_"+str(Version)

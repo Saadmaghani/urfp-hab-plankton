@@ -34,6 +34,6 @@ met.recall()
 met.f_score()
 #met.plot_CM()
 
-f= open("stats-model2.1.txt","w+")
+f= open("stats-"+str(model)+".txt","w+")
 f.write("{TrainAcc:",trainAcc,", ValidAcc:",validAcc,", TestAcc:",met.accuracy(),"}")
 f.close()
