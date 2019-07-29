@@ -16,6 +16,7 @@ class Trainer:
         
         
 	def train(self, model, trainLoader, validLoader, partialModelFile = None):
+		print(self.device)
 		self.timeStart = time.time()
 		all_train_acc = []
 		all_valid_acc = []
@@ -115,7 +116,7 @@ class Trainer:
 
 	def load_full_model(self, model, path_to_statedict):
 		model.load_state_dict(torch.load(path_to_statedict))
-		#model.eval()
+		model.eval()
 		return model
 
 	def test(self, model, testloader): #stats finder

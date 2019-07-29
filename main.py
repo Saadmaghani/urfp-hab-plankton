@@ -8,7 +8,7 @@ years = [str(y) for y in range(2006, 2015)]
 classes = ["detritus", "Leptocylindrus", "Chaetoceros", "Rhizosolenia", "Guinardia_delicatula", "Cerataulina",
            "Cylindrotheca", "Skeletonema", "Dactyliosolen", "Thalassiosira", "Dinobryon", "Corethron", "Thalassionema",
            "Ditylum", "pennate", "Prorocentrum", "Pseudonitzschia", "Tintinnid", "Guinardia_striata", "Phaeocystis"]
-pp = Preprocessor(years, include_classes=classes, train_eg_per_class=500)
+pp = Preprocessor(years, include_classes=classes, train_eg_per_class=1000)
 
 pp.create_datasets([0.6,0.2,0.2])
 
@@ -32,10 +32,8 @@ met = Metrics(target, pred)
 met.accuracy()
 met.recall()
 met.f_score()
-met.plot_CM()
+#met.plot_CM()
 
-f= open("stats-model2.0.txt","w+")
-f.write("TrainAcc: ", trainAcc)
-f.write("ValidAcc: ", validAcc)
-f.write("testAcc: ", met.accuracy())
+f= open("stats-model2.1.txt","w+")
+f.write("{TrainAcc:",trainAcc,", ValidAcc:",validAcc,", TestAcc:",met.accuracy(),"}")
 f.close()

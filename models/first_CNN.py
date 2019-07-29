@@ -4,11 +4,13 @@
 
 #version 1.1 = all data except mix
 #version 2.0 = only 20 and 500 data images
+#version 2.1 = 20 classes, 2000 data images
+#version 2.2 = 20 classes, 1000 data images
 import torch.nn as nn
 import torch.nn.functional as F
 
 class firstCNN(nn.Module):
-	Version = 2.0
+	Version = 2.2
 
 	def __init__(self):
 		super(firstCNN, self).__init__()
