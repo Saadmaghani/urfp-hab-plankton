@@ -37,5 +37,6 @@ met.f_score()
 #met.plot_CM()
 
 f= open("stats-"+str(model)+"-"+str(HP.version)+".txt","w+")
-f.write("{TrainAcc:",trainAcc,", ValidAcc:",validAcc,", TestAcc:",met.accuracy(),"}")
+str_to_write = "{TrainAcc: "+ str(trainAcc)+", ValidAcc: "+str(validAcc)+", TestAcc: "+str(met.accuracy())+"}"
+f.write(str_to_write)
 f.close()
