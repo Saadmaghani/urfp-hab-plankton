@@ -3,19 +3,21 @@ from training import Trainer, Metrics
 import torch.nn as nn
 import torch.optim as optim
 from models.first_CNN import firstCNN
+from configuration import Hyperparameters as HP
 
 years = [str(y) for y in range(2006, 2015)]
 classes = ["detritus", "Leptocylindrus", "Chaetoceros", "Rhizosolenia", "Guinardia_delicatula", "Cerataulina",
            "Cylindrotheca", "Skeletonema", "Dactyliosolen", "Thalassiosira", "Dinobryon", "Corethron", "Thalassionema",
            "Ditylum", "pennate", "Prorocentrum", "Pseudonitzschia", "Tintinnid", "Guinardia_striata", "Phaeocystis"]
-pp = Preprocessor(years, include_classes=classes, train_eg_per_class=1000)
+pp = Preprocessor(years, include_classes=classes, train_eg_per_class=HP.number_of_images_per_classm)
 
 pp.create_datasets([0.6,0.2,0.2])
 
 trainLoader = pp.get_loaders('train', 128)
 validLoader = pp.get_loaders('validation', 128)
 
-trainer = Trainer(epochs = 10, loss_fn = nn.MSELoss, optimizer = optim.SGD, lr = 0.01, momentum = 0.9, useCuda=True)
+trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn = HP.loss_function, 
+	optimizer = HP.optimizer, lr = HP.learning_rate, momentum = HP.momentum, useCuda=True)
 
 model = firstCNN()
 
@@ -34,6 +36,6 @@ met.recall()
 met.f_score()
 #met.plot_CM()
 
-f= open("stats-"+str(model)+".txt","w+")
+f= open("stats-"+str(model)+"-"+str(HP.version)+".txt","w+")
 f.write("{TrainAcc:",trainAcc,", ValidAcc:",validAcc,", TestAcc:",met.accuracy(),"}")
 f.close()

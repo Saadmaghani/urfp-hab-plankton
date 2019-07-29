@@ -2,8 +2,9 @@ import torch
 import time
 
 class Trainer:
-	def __init__(self, epochs, loss_fn, optimizer, lr = 0.01, momentum=0.9, useCuda = False):
+	def __init__(self, HP_version, epochs, loss_fn, optimizer, lr = 0.01, momentum=0.9, useCuda = False):
 		self.epochs = epochs
+		self.hp_version = HP_version
 		self.criterion = loss_fn()
 		self.optimizer = optimizer
 		self.lr = lr
@@ -85,9 +86,9 @@ class Trainer:
         
         
 	def _save_partial_model(self, model, epoch, loss, optimizer):
-		model_name = type(model).__name__
-		version = type(model).Version
-		path_to_statedict = './models/'+model_name+'-'+str(version)+'.tar' 
+
+
+		path_to_statedict = './models/'+str(model)+"-"+str(self.hp_version)+'.tar' 
 		torch.save({
 			'epoch': epoch,
 			'model_state_dict': model.state_dict(),
@@ -109,9 +110,7 @@ class Trainer:
 
 	def _save_full_model(self, model):
 		# saving model
-		model_name = type(model).__name__
-		version = type(model).Version
-		path_to_statedict = './models/'+model_name+'-'+str(version)+'.pth' 
+		path_to_statedict = './models/'+str(model)+"-"+str(self.hp_version)+'.pth' 
 		torch.save(model.state_dict(), path_to_statedict)
 
 	def load_full_model(self, model, path_to_statedict):
@@ -153,6 +152,11 @@ class Metrics:
         self.target = y_true.cpu()
         self.pred = y_pred.cpu()
 
+    def sample(self, n):
+    	random_idx = np.random.choice(list(range(len(self.target))), size = n, replace = False)
+    	target = np.array(self.target)[random_idx]
+    	pred = np.array(self.pred)[random_idx]
+    	return (target, pred)
 
     def accuracy(self):
         x = accuracy_score(self.target, self.pred)

@@ -1,0 +1,129 @@
+3/7 - wednesday
+1.	the 103 categories of WHOI plankton dataset are not a super category of the 82 special planktons of the algae which cause red tides (taken from hk gov site). There are only 2 which match in exact name, 
+	44 which match the first name (guessing thats a general name for type of plankton) and 36 of the remaining 82 which dont match at all.
+	Idealy all 82 categories would match one category of the 103. ie. the 82 would be a subset of the 103.
+
+
+4/7 - thursday
+1.	regarding 1 of 3/7:
+	a)	i started to find out what exactly the naming system is. i am using marinespecies.org to find out the meaning. 
+		basically the 82 names are species names whereas the 103 are mostly genus names. therefore i have started to list which of the partial matches have how many species in each genus. maybe only one species for a particular genus will lead to good result
+		results: only akashiwo genus had 1 child. the rest had more and thus completely useless. but we can change yes to 3 and partially to 43 yay lol
+	b)	find another dataset of pics which give species
+	c)	will find synonymous names to the species names. maybe of the 'no's there are matches when put to synonymous names. uhhh doubt it though.
+
+
+5/7 - friday
+1. 	regarding 2 of 4/7: 
+	a) 	of downloaded multiple datasets. none seem to be promising however, online resources seem to be promising
+			1- https://ecotaxa.obs-vlfr.fr/explore/
+			2- https://www.st.nmfs.noaa.gov/nauplius/media/copepedia/taxa/T2000000/html/photoframe.html
+			3- http://www.ices.dk/marine-data/dataset-collections/Pages/Plankton.aspx
+			4- https://planktonnet.awi.de/#search
+	b) 	3 does not have images. 2 does not have enough images. 1 does not have images to the species degree which i am looking for. 
+		4 i have emailed the PI and hopefully can download the entire dataset of images. however images are varied and will require a lot of preprocessing in order to be helpful for the ML task
+2. 	regarding 3 of 4/7:
+	a) I have not taken this approach yet because its unlikely that it will yield good results
+3. 	another approach to solve 1 of 3/7 is to tune the problem to match the data. the WHOI dataset is VERY good but it does not solve the problem at hand and most of the datasets dont. 
+	therefore maybe we change the problem? predict a few species which cause HAB? of the WHOI dataset only 3 species exactly match and 43 which partially cause. maybe change the problem
+	to further classify the species given genus data. 
+4. 	another approach - find a larger set of algal species which cause HAB rather than just the 82 mentioned... Will try this next!
+
+
+6/7 - Saturday
+1. 	regarding 4 of 5/7:
+	a) 	looking at resources which gives more information about algae which cause HAB:
+	 		1- https://www.whoi.edu/website/redtide/species/by-name/
+	 		2- http://www.marinespecies.org/hab/aphia.php?p=taxlist
+		certain genus are harmful, without exception, and therefore if we can detect the genus then we dont have to further specify the species. 
+		will take note of which genus are harmful on spreadsheet.
+	b)	1 is a subset of 2. therefore i took all accepted algae of 2 (311) and added it to the 82 species which cause HAB.
+	c) 	now I have 11 algae which can be matched from the WHOI dataset from algae of 2 and 3 which can be matched from the 82. so total of 14
+2. 	because I have 14 things which I can classify I will proceed to the next step but I have to talk with Zhiming (or Prof) about this dataset issue
+	Next steps:
+		a) 	data exploration with regards to the 14 things
+		b)	pipeline. as of now this is what I have. Raw Data -> Data augmentation -> Auto-encoder -> CNN
+		c) 	literature review
+		d) 	hyper-parameters of CNN and Auto-encoder (get from literature review)
+	Will start with data exploration today
+
+
+8/7 - Monday
+1.	Data exploration:
+	a)	new document - data_exploration.txt
+	b) 	make a python script (data_exploration.py) which gets all the #of pics per year per category (15)
+	c) 	downloading all datasets on chiwah computer and then getting all the statistics (count). not a good way cuz chiwah net fast but computer slow.
+		would rather have access to a better computer (maybe in a lab? lol). ASK ZHIMING ABOUT THIS
+2. 	Literature review:
+	a)	new google document - literature review
+	b) 	references:
+			1- https://towardsdatascience.com/deep-blue-sea-using-deep-learning-to-detect-hundreds-of-different-plankton-species-dff895d3b226
+			2- http://cs231n.stanford.edu/reports/2015/pdfs/Dangelo_Tennefoss_Final_paper.pdf
+			3- http://mmlab.ie.cuhk.edu.hk/archive/2006/JOE06_plankton.pdf
+			4- http://vincent-net.com/luc/papers/98air_plankton.pdf
+			5- https://www-sciencedirect-com.eproxy.lib.hku.hk/science/article/pii/S156898830600031X
+			6- https://www2.whoi.edu/staff/hsosik/wp-content/uploads/sites/11/2017/03/Campbell_etal_EnvironSciPollutResInt2013.pdf
+			7- https://pdfs.semanticscholar.org/ed26/f44893b2e53147ca86b4e7bfaa1eeeb9832f.pdf
+			8- https://ieeexplore-ieee-org.eproxy.lib.hku.hk/stamp/stamp.jsp?tp=&arnumber=7533053
+	c) 	Some questions to ask zhiming in literature review doc
+
+
+9/7 - Tuesday
+1. 	regarding to 1c of 8/7: 
+		shifted work to GPU cluster. downloaded all datasets and started to unzip them. might need more space and time
+2.	continued work on literature review. will add links to the papers I am reviewing
+
+
+10/7 - wednesday
+1. 	continued to work on literature review
+	a)	will look into Hintons capsules as possible new architecture - get zhiming advice
+	b) 	will look into papers which use WHOI dataset
+2.	unziping datasets and upd`ating numbers on google sheets
+3.	meeting with zheming:
+	a)	VGG, Googlenet and resnet to extract features
+	b)	JUST DO IT
+
+
+11/7 - thursday
+1.	worked on data exploration
+
+13/7 - saturday
+1. 	started learning pytorch
+2.	will make a simple CNN classifier by the end of today (Insha Allah)
+3.	new google document - implementation
+
+14/7 - Sunday
+1.	regarding 2 of 13/7, made a simple CNN from tutorial. now will work on using it for my dataset
+2.	added 'dimensions' to list of stats which we need. modifying data_exploration.py to get dimensions
+
+15/7 - monday
+1.	hopefully will finish up first CNN today. shifted jupyter notebook on gpu-cluster
+
+17/7 - wednesday
+1.	regarding 1. of 15/7, havent finished CNN. problems faced is structuring the dataset
+
+18/7 - thursday
+1.	NEED TO GET THE MDOEL RUNNING MY GOD
+
+19/7 - thursday
+1.	AAAHHH
+2.	started working on making the entire structure so that it is modular. new files mentioned in implementation doc
+
+21/7 - sunday
+1.	finished with preprocessing.py
+
+22/7 - monday
+1.	finished training.py and main.ipynb
+2. 	will push all work to github and then pull from gpu cluster and start training
+
+24/7 - wednesday
+1.	met with Zhiming, new architecture (version 2) and lots of tips.
+2. 	now need to train it and see if it helps.
+
+26/7 - friday
+1.	ran on 500 image data sets / class, total of 10000 images. accuracy low - 5%
+1.	ran out of GPU time, applied for more
+
+29/7 - monday
+1.	got GPU time. training. approx will take 6 hours for 10000 data. 
+2.	another file - configuration.py, has all the hyperparameters and hyperparameter version. 

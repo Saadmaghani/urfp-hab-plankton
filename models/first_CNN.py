@@ -2,15 +2,14 @@
 #Define a CNN
 # https://jamesmccaffrey.wordpress.com/2019/01/23/pytorch-train-vs-eval-mode/
 
-#version 1.1 = all data except mix
-#version 2.0 = only 20 and 500 data images
-#version 2.1 = 20 classes, 2000 data images
-#version 2.2 = 20 classes, 1000 data images takes approx 6 hours and 16 minutes 
+#version 1.1 = all classes
+#version 2.0 = only 20 classes
+
 import torch.nn as nn
 import torch.nn.functional as F
 
 class firstCNN(nn.Module):
-	Version = 2.2
+	version = 2.2
 
 	def __init__(self):
 		super(firstCNN, self).__init__()
@@ -59,4 +58,4 @@ class firstCNN(nn.Module):
 		return x
 
 	def __str__(self):
-		return type(self).__name__ + "_"+str(Version)
+		return type(self).__name__ + "_"+str(version)

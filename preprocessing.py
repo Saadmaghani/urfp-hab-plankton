@@ -153,6 +153,10 @@ class Preprocessor:
 		n = np.max(integer_encoded)
 		return torch.nn.functional.one_hot(torch.from_numpy(integer_encoded), int(n)+1)
 
+	# -- TODO --
+	def get_Class(self, index):
+		pass
+
 	def apply_augmentations(self):
 		pass
 
