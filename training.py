@@ -82,7 +82,7 @@ class Trainer:
 			self._save_partial_model(model, epoch, loss, optimizer)
 
 			#early stopping checked every epoch rather than every minibatch
-                        if earlyStopping is not None and earlyStopping.step(valid_acc):
+			if earlyStopping is not None and earlyStopping.step(valid_acc):
 				break
 			
 		self._save_full_model(model)
