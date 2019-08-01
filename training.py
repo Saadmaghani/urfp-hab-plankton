@@ -38,7 +38,8 @@ class Trainer:
 		model.to(self.device)
 			
 		loss = None
-		breaks = 0
+		valid_acc = None
+		train_acc = None
 		while epoch < self.epochs:
 			running_loss = 0.0
             
@@ -77,14 +78,11 @@ class Trainer:
 				all_train_acc.append(train_acc)
 				all_valid_acc.append(valid_acc)
 				
-				if earlyStopping is not None and earlyStopping.step(valid_acc):
-					breaks += 1
-					break
-
 			epoch += 1
 			self._save_partial_model(model, epoch, loss, optimizer)
 
-			if earlyStopping is not None and breaks > earlyStopping.patience:
+			#early stopping checked every epoch rather than every minibatch
+                        if earlyStopping is not None and earlyStopping.step(valid_acc):
 				break
 			
 		self._save_full_model(model)
@@ -208,7 +206,7 @@ class Metrics:
         
 
 class EarlyStopping(object):
-    def __init__(self, mode='min', min_delta=0, patience=10, percentage=False):
+    def __init__(self, mode='max', min_delta=0, patience=10, percentage=False):
         self.mode = mode
         self.min_delta = min_delta
         self.patience = patience
