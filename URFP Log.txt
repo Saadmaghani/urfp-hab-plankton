@@ -127,3 +127,8 @@
 29/7 - monday
 1.	got GPU time. training. approx will take 6 hours for 10000 data. 
 2.	another file - configuration.py, has all the hyperparameters and hyperparameter version. 
+3.	45% on model 2.2 HP 2.0
+
+1/8 - thursday 
+1. 	got gpu time. training with model 2.3 HP 2.0 - test accuracy 36%
+
