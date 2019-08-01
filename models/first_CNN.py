@@ -11,7 +11,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class firstCNN(nn.Module):
-	version = 2.3
+	version = 2.2
 
 	def __init__(self):
 		super(firstCNN, self).__init__()
@@ -31,7 +31,7 @@ class firstCNN(nn.Module):
 		self.conv8 = nn.Conv2d(256, 256, 3, padding = 1)
 		
 		self.fc1 = nn.Linear(32*256, 128) # 27 * 60 from image dimension, see implementation doc for details
-		self.fc2 = nn.Linear(128, 3)
+		self.fc2 = nn.Linear(128, 20)
 		self.softmax = nn.Softmax() 
 		#self.fc3 = nn.Linear(84, 86) # 102 because ignored_classes = ['mix'] and using all data
 

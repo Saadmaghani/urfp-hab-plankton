@@ -16,7 +16,7 @@ class Trainer:
 			self.device = torch.device("cpu")
         
         
-	def train(self, model, trainLoader, validLoader, partialModelFile = None):
+	def train(self, model, trainLoader, validLoader, earlyStopping = None, partialModelFile = None):
 		print(self.device)
 		self.timeStart = time.time()
 		all_train_acc = []
@@ -36,7 +36,9 @@ class Trainer:
 			model, optimizer, epoch = self.load_partial_model(model, optimizer, partialModelFile)
             
 		model.to(self.device)
+			
 		loss = None
+		breaks = 0
 		while epoch < self.epochs:
 			running_loss = 0.0
             
@@ -65,6 +67,7 @@ class Trainer:
 				train_acc = accuracy_score(train_target.cpu(), train_pred.cpu())
 				valid_acc = accuracy_score(valid_target.cpu(), valid_pred.cpu())
 				
+
 				print('Training Loss:', running_loss)
 				print('Training Accuracy:', train_acc)
 				print('Valid Accuracy:', valid_acc)
@@ -73,11 +76,17 @@ class Trainer:
 				
 				all_train_acc.append(train_acc)
 				all_valid_acc.append(valid_acc)
-		
+				
+				if earlyStopping is not None and earlyStopping.step(valid_acc):
+					breaks += 1
+					break
+
 			epoch += 1
-			
-			
 			self._save_partial_model(model, epoch, loss, optimizer)
+
+			if earlyStopping is not None and breaks > earlyStopping.patience:
+				break
+			
 		self._save_full_model(model)
 		print('Finished Training')
 		self.timeEnd = time.time()
@@ -90,8 +99,6 @@ class Trainer:
         
         
 	def _save_partial_model(self, model, epoch, loss, optimizer):
-
-
 		path_to_statedict = './models/'+str(model)+"-"+str(self.hp_version)+'.tar' 
 		torch.save({
 			'epoch': epoch,
@@ -199,3 +206,52 @@ class Metrics:
         plt.show()
         
         
+
+class EarlyStopping(object):
+    def __init__(self, mode='min', min_delta=0, patience=10, percentage=False):
+        self.mode = mode
+        self.min_delta = min_delta
+        self.patience = patience
+        self.best = None
+        self.num_bad_epochs = 0
+        self.is_better = None
+        self._init_is_better(mode, min_delta, percentage)
+
+        if patience == 0:
+            self.is_better = lambda a, b: True
+            self.step = lambda a: False
+
+    def step(self, metrics):
+        if self.best is None:
+            self.best = metrics
+            return False
+
+        if np.isnan(metrics):
+            return True
+
+        if self.is_better(metrics, self.best):
+            self.num_bad_epochs = 0
+            self.best = metrics
+        else:
+            self.num_bad_epochs += 1
+
+        if self.num_bad_epochs >= self.patience:
+            return True
+
+        return False
+
+    def _init_is_better(self, mode, min_delta, percentage):
+        if mode not in {'min', 'max'}:
+            raise ValueError('mode ' + mode + ' is unknown!')
+        if not percentage:
+            if mode == 'min':
+                self.is_better = lambda a, best: a < best - min_delta
+            if mode == 'max':
+                self.is_better = lambda a, best: a > best + min_delta
+        else:
+            if mode == 'min':
+                self.is_better = lambda a, best: a < best - (
+                            best * min_delta / 100)
+            if mode == 'max':
+                self.is_better = lambda a, best: a > best + (
+                            best * min_delta / 100)
