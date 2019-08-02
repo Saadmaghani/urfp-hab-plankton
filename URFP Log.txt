@@ -134,4 +134,9 @@
 2. 	implemented early stopping, trying with 1000 images and early stopping (epochs = 200) 
 	1.	33% accuracy with model 2.3 HP 3.0
 3. 	going to train with model 2.2 HP 3.0
+4.	training with HP 3.1 - minibatch = 256
+
+2/8 - friday
+1.	70% with model 2.3 HP 3.1
+2.	plotting train, valid accuracies and will see whats the issues
 
