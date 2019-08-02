@@ -1,154 +1,155 @@
 import torch
 import time
+from sklearn.metrics import accuracy_score
 
 class Trainer:
-	def __init__(self, HP_version, epochs, loss_fn, optimizer, lr = 0.01, momentum=0.9, useCuda = False):
-		self.epochs = epochs
-		self.hp_version = HP_version
-		self.criterion = loss_fn()
-		self.optimizer = optimizer
-		self.lr = lr
-		self.momentum = momentum
-		self.device = torch.device("cpu")
-		if useCuda:
-			self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-		else:
-			self.device = torch.device("cpu")
-        
-        
-	def train(self, model, trainLoader, validLoader, earlyStopping = None, partialModelFile = None):
-		print(self.device)
-		self.timeStart = time.time()
-		all_train_acc = []
-		all_valid_acc = []
-		
-		
-		model = model.float()
-		model.to(self.device)
-		if self.optimizer == torch.optim.Adam:
-			optimizer = self.optimizer(model.parameters(), lr=self.lr)
-		else:
-			optimizer = self.optimizer(model.parameters(), lr=self.lr, momentum=self.momentum)
+    def __init__(self, HP_version, epochs, loss_fn, optimizer, lr = 0.01, momentum=0.9, useCuda = False):
+        self.epochs = epochs
+        self.hp_version = HP_version
+        self.criterion = loss_fn()
+        self.optimizer = optimizer
+        self.lr = lr
+        self.momentum = momentum
+        self.device = torch.device("cpu")
+        if useCuda:
+            self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        else:
+            self.device = torch.device("cpu")
 
-		epoch = 0
         
-		if partialModelFile is not None:
-			model, optimizer, epoch = self.load_partial_model(model, optimizer, partialModelFile)
+    def train(self, model, trainLoader, validLoader, earlyStopping = None, partialModelFile = None):
+        print(self.device)
+        self.timeStart = time.time()
+        all_train_acc = []
+        all_valid_acc = []
+        
+        
+        model = model.float()
+        model.to(self.device)
+        if self.optimizer == torch.optim.Adam:
+            optimizer = self.optimizer(model.parameters(), lr=self.lr)
+        else:
+            optimizer = self.optimizer(model.parameters(), lr=self.lr, momentum=self.momentum)
+
+        epoch = 0
+        
+        if partialModelFile is not None:
+            model, optimizer, epoch = self.load_partial_model(model, optimizer, partialModelFile)
             
-		model.to(self.device)
-			
-		loss = None
-		valid_acc = None
-		train_acc = None
-		while epoch < self.epochs:
-			running_loss = 0.0
+        model.to(self.device)
             
-			for i, data in enumerate(trainLoader, 0):
-				#get the unputs; data is a list of [inputs, labels]
-				inputs, labels = data['image'].to(self.device), data['encoded_label'].to(self.device).float()
+        loss = None
+        valid_acc = None
+        train_acc = None
+        while epoch < self.epochs:
+            running_loss = 0.0
+            
+            for i, data in enumerate(trainLoader, 0):
+                #get the unputs; data is a list of [inputs, labels]
+                inputs, labels = data['image'].to(self.device), data['encoded_label'].to(self.device).float()
 
                 
-				#zero the param gradients
-				optimizer.zero_grad()
-				
-				#forward + backward + optimize
-				outputs = model(inputs.float())
-				
-				loss = self.criterion(outputs, labels)
-				loss.backward()
-				optimizer.step()
-				
-				#print statistics - have to get more of these
-				running_loss += loss.item()
-				
-				
-				#every batch print - loss, training acc, validation acc
-				train_pred, train_target = self.test(model, trainLoader)
-				valid_pred, valid_target = self.test(model, validLoader)
-				train_acc = accuracy_score(train_target.cpu(), train_pred.cpu())
-				valid_acc = accuracy_score(valid_target.cpu(), valid_pred.cpu())
-				
+                #zero the param gradients
+                optimizer.zero_grad()
+                
+                #forward + backward + optimize
+                outputs = model(inputs.float())
+                
+                loss = self.criterion(outputs, labels)
+                loss.backward()
+                optimizer.step()
+                
+                #print statistics - have to get more of these
+                running_loss += loss.item()
+                
+                
+                #every batch print - loss, training acc, validation acc
+                train_pred, train_target = self.test(model, trainLoader)
+                valid_pred, valid_target = self.test(model, validLoader)
+                train_acc = accuracy_score(train_target.cpu(), train_pred.cpu())
+                valid_acc = accuracy_score(valid_target.cpu(), valid_pred.cpu())
+                
 
-				print('Training Loss:', running_loss)
-				print('Training Accuracy:', train_acc)
-				print('Valid Accuracy:', valid_acc)
-				print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-				running_loss = 0.0
-				
-				all_train_acc.append(train_acc)
-				all_valid_acc.append(valid_acc)
-				
-			epoch += 1
-			self._save_partial_model(model, epoch, loss, optimizer)
+                print('Training Loss:', running_loss)
+                print('Training Accuracy:', train_acc)
+                print('Valid Accuracy:', valid_acc)
+                print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+                running_loss = 0.0
+                
+                all_train_acc.append(train_acc)
+                all_valid_acc.append(valid_acc)
+                
+            epoch += 1
+            self._save_partial_model(model, epoch, loss, optimizer)
 
-			#early stopping checked every epoch rather than every minibatch
-			if earlyStopping is not None and earlyStopping.step(valid_acc):
-				break
-			
-		self._save_full_model(model)
-		print('Finished Training')
-		self.timeEnd = time.time()
-		return all_train_acc, all_valid_acc, epoch
-	
+            #early stopping checked every epoch rather than every minibatch
+            if earlyStopping is not None and earlyStopping.step(valid_acc):
+                break
+            
+        self._save_full_model(model)
+        print('Finished Training')
+        self.timeEnd = time.time()
+        return all_train_acc, all_valid_acc, epoch
+    
         
-	def getTime(self):
-		return self.timeEnd - self.timeStart
+    def getTime(self):
+        return self.timeEnd - self.timeStart
 
         
         
-	def _save_partial_model(self, model, epoch, loss, optimizer):
-		path_to_statedict = './models/'+str(model)+"-"+str(self.hp_version)+'.tar' 
-		torch.save({
-			'epoch': epoch,
-			'model_state_dict': model.state_dict(),
-			'optimizer_state_dict': optimizer.state_dict()
-			}, path_to_statedict)
+    def _save_partial_model(self, model, epoch, loss, optimizer):
+        path_to_statedict = './models/'+str(model)+"-"+str(self.hp_version)+'.tar' 
+        torch.save({
+            'epoch': epoch,
+            'model_state_dict': model.state_dict(),
+            'optimizer_state_dict': optimizer.state_dict()
+            }, path_to_statedict)
 
-	def load_partial_model(self, model, optimizer, path_to_statedict):
-		checkpoint = torch.load(path_to_statedict)
+    def load_partial_model(self, model, optimizer, path_to_statedict):
+        checkpoint = torch.load(path_to_statedict)
         
-		model.load_state_dict(checkpoint['model_state_dict'])
-		optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-		epoch = checkpoint['epoch']
+        model.load_state_dict(checkpoint['model_state_dict'])
+        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+        epoch = checkpoint['epoch']
         
-		# model.eval()
-		# - or -
-		model.train()
+        # model.eval()
+        # - or -
+        model.train()
         
-		return model, optimizer, epoch
+        return model, optimizer, epoch
 
-	def _save_full_model(self, model):
-		# saving model
-		path_to_statedict = './models/'+str(model)+"-"+str(self.hp_version)+'.pth' 
-		torch.save(model.state_dict(), path_to_statedict)
+    def _save_full_model(self, model):
+        # saving model
+        path_to_statedict = './models/'+str(model)+"-"+str(self.hp_version)+'.pth' 
+        torch.save(model.state_dict(), path_to_statedict)
 
-	def load_full_model(self, model, path_to_statedict):
-		model.load_state_dict(torch.load(path_to_statedict))
-		model.eval()
-		return model
+    def load_full_model(self, model, path_to_statedict):
+        model.load_state_dict(torch.load(path_to_statedict))
+        model.eval()
+        return model
 
-	def test(self, model, testloader): #stats finder
-		all_preds = torch.LongTensor().to(self.device)
-		all_targets = torch.LongTensor().to(self.device)
-		model.to(self.device)
-		
-		with torch.no_grad():
+    def test(self, model, testloader): #stats finder
+        all_preds = torch.LongTensor().to(self.device)
+        all_targets = torch.LongTensor().to(self.device)
+        model.to(self.device)
+        
+        with torch.no_grad():
 
-			for data in testloader:
-				inputs, labels = data['image'].to(self.device), data['encoded_label'].to(self.device).float()
-				_, labels = torch.max(labels, 1)
+            for data in testloader:
+                inputs, labels = data['image'].to(self.device), data['encoded_label'].to(self.device).float()
+                _, labels = torch.max(labels, 1)
 
-				outputs = model(inputs.float())
-				_, predicted = torch.max(outputs.data, 1)
-				#print("labels:", labels)
-				#print("predicted:", predicted)
-				#print("~~~~~~~~~~~~~~~~")
-				all_preds = torch.cat((all_preds, predicted), 0)
-				all_targets = torch.cat((all_targets, labels), 0) 
-				#if total >=10:
-				#	break
+                outputs = model(inputs.float())
+                _, predicted = torch.max(outputs.data, 1)
+                #print("labels:", labels)
+                #print("predicted:", predicted)
+                #print("~~~~~~~~~~~~~~~~")
+                all_preds = torch.cat((all_preds, predicted), 0)
+                all_targets = torch.cat((all_targets, labels), 0) 
+                #if total >=10:
+                #   break
 
-		return all_preds, all_targets
+        return all_preds, all_targets
 
 
 class EarlyStopping(object):

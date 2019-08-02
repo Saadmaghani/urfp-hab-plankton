@@ -5,16 +5,16 @@ import json
 
 
 class Metrics:
-	
+    
     def __init__(self, y_true, y_pred):
         self.target = y_true.cpu()
         self.pred = y_pred.cpu()
 
     def sample(self, n):
-    	random_idx = np.random.choice(list(range(len(self.target))), size = n, replace = False)
-    	target = np.array(self.target)[random_idx]
-    	pred = np.array(self.pred)[random_idx]
-    	return (target, pred)
+        random_idx = np.random.choice(list(range(len(self.target))), size = n, replace = False)
+        target = np.array(self.target)[random_idx]
+        pred = np.array(self.pred)[random_idx]
+        return (target, pred)
 
     def accuracy(self):
         x = accuracy_score(self.target, self.pred)
@@ -53,13 +53,13 @@ class Metrics:
         plt.show()
         
     def plot_series(series):
-    	x = np.arrange(len(series['train']))
-    	legend = []
-    	for key, value in series.items():
-    		plt.plot(x, loss)
-    		legend.append(key)
-		plt.legend(legend, loc='upper left')
-    	plt.show()
+        x = np.arange(len(series['TrainAcc']))
+        legend = []
+        for key, value in series.items():
+            plt.plot(x, value)
+            legend.append(key)
+        plt.legend(legend, loc='upper left')
+        plt.show()
 
 
 def load_json_from_file(filename):

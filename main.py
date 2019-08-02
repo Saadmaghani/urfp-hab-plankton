@@ -8,8 +8,8 @@ from configuration import Hyperparameters as HP
 
 years = [str(y) for y in range(2006, 2015)]
 classes = ["detritus", "Leptocylindrus", "Chaetoceros", "Rhizosolenia", "Guinardia_delicatula", "Cerataulina", "Cylindrotheca", 
-	"Skeletonema", "Dactyliosolen", "Thalassiosira", "Dinobryon", "Corethron", "Thalassionema", "Ditylum", "pennate", "Prorocentrum", 
-	"Pseudonitzschia", "Tintinnid", "Guinardia_striata", "Phaeocystis"]
+    "Skeletonema", "Dactyliosolen", "Thalassiosira", "Dinobryon", "Corethron", "Thalassionema", "Ditylum", "pennate", "Prorocentrum", 
+    "Pseudonitzschia", "Tintinnid", "Guinardia_striata", "Phaeocystis"]
 
 pp = Preprocessor(years, include_classes=classes, train_eg_per_class=HP.number_of_images_per_class)
 
@@ -19,7 +19,7 @@ trainLoader = pp.get_loaders('train', HP.batch_size)
 validLoader = pp.get_loaders('validation', HP.batch_size)
 
 trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn = HP.loss_function, 
-	optimizer = HP.optimizer, lr = HP.learning_rate, momentum = HP.momentum, useCuda=True)
+    optimizer = HP.optimizer, lr = HP.learning_rate, momentum = HP.momentum, useCuda=True)
 
 model = firstCNN()
 
@@ -39,6 +39,6 @@ met.f_score()
 #met.plot_CM()
 
 f= open("stats-"+str(model)+"-"+str(HP.version)+".txt","w+")
-str_to_write = "{Epochs: "+str(epochs)+ ", TrainAcc: "+ str(trainAcc)+", ValidAcc: "+str(validAcc)+", TestAcc: "+str(met.accuracy())+"}"
+str_to_write = "{\"Epochs\": "+str(epochs)+ ", \"TrainAcc\": "+ str(trainAcc)+", \"ValidAcc\": "+str(validAcc)+", \"TestAcc\": "+str(met.accuracy())+"}"
 f.write(str_to_write)
 f.close()
