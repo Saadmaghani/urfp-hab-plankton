@@ -22,7 +22,7 @@ trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn
 
 model = firstCNN()
 
-trainAcc, validAcc = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
+trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
 
 # - or -
 
@@ -38,6 +38,6 @@ met.f_score()
 #met.plot_CM()
 
 f= open("stats-"+str(model)+"-"+str(HP.version)+".txt","w+")
-str_to_write = "{TrainAcc: "+ str(trainAcc)+", ValidAcc: "+str(validAcc)+", TestAcc: "+str(met.accuracy())+"}"
+str_to_write = "{Epochs: "+str(epochs)+ ", TrainAcc: "+ str(trainAcc)+", ValidAcc: "+str(validAcc)+", TestAcc: "+str(met.accuracy())+"}"
 f.write(str_to_write)
 f.close()
