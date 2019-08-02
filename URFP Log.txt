@@ -139,4 +139,5 @@
 2/8 - friday
 1.	70% with model 2.3 HP 3.1
 2.	plotting train, valid accuracies and will see whats the issues
+3.	train 2.3/3.1 more as 2.3/3.2 = 75% test accuracy plotting train/valid accuracies
 

@@ -23,10 +23,9 @@ trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn
 
 model = firstCNN()
 
-trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es, partialModelFile='models/firstCNN_2.2-3.1.tar')
+trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es, partialModelFile='models/firstCNN_2.2-3.2.tar')
 
 # - or -
-
 #model = trainer.load_full_model(model, "./models/firstCNN_2.2-3.1.pth")
 
 testLoader = pp.get_loaders('test', HP.batch_size)
