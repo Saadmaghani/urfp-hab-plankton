@@ -1,5 +1,6 @@
 from preprocessing import Preprocessor
-from training import Trainer, Metrics
+from training import Trainer
+from metrics import Metrics
 import torch.nn as nn
 import torch.optim as optim
 from models.first_CNN import firstCNN
