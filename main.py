@@ -23,30 +23,21 @@ trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn
 
 model = firstCNN()
 
-#trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es, partialModelFile='models/firstCNN_2.2-3.1.tar')
+trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es, partialModelFile='models/firstCNN_2.2-3.1.tar')
 
 # - or -
 
-model = trainer.load_full_model(model, "./models/firstCNN_2.2-3.1.pth")
+#model = trainer.load_full_model(model, "./models/firstCNN_2.2-3.1.pth")
 
 testLoader = pp.get_loaders('test', HP.batch_size)
 pred, target = trainer.test(model, testLoader)
 met = Metrics(target, pred)
-met.accuracy()
-pred, target = trainer.test(model, trainLoader)
-met = Metrics(target, pred)
-met.accuracy()
-
-pred,target = trainer.test(model, validLoader)
-met = Metrics(target, pred)
-met.accuracy()
+#met.accuracy()
 
 #met.recall()
 #met.f_score()
 #met.plot_CM()
-"""
 f= open("stats-"+str(model)+"-"+str(HP.version)+".json","w+")
 str_to_write = "{\"Epochs\": "+str(epochs)+ ", \"TrainAcc\": "+ str(trainAcc)+", \"ValidAcc\": "+str(validAcc)+", \"TestAcc\": "+str(met.accuracy())+"}"
 f.write(str_to_write)
 f.close()
-"""

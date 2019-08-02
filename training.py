@@ -1,6 +1,7 @@
 import torch
 import time
 from sklearn.metrics import accuracy_score
+import numpy as np
 
 class Trainer:
     def __init__(self, HP_version, epochs, loss_fn, optimizer, lr = 0.01, momentum=0.9, useCuda = False):
