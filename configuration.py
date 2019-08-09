@@ -1,4 +1,5 @@
 import torch.optim as optim
+from optim import lr_scheduler
 import torch.nn as nn
 from training import EarlyStopping
 
@@ -14,8 +15,9 @@ from training import EarlyStopping
 #version 3.1 = minibatch_size = 256, else all same with version 3.0
 #version 3.2 = further training of HP 3.1, model 2.2
 #version 3.3 = further training of HP 3.1, model 2.2, patience = 20
+#version 3.4 = seperate training with lr_scheduler
 class Hyperparameters:
-    version=3.3
+    version=3.4
     learning_rate = 0.0003
     number_of_epochs = 200
     momentum = 0.9
@@ -24,3 +26,5 @@ class Hyperparameters:
     loss_function = nn.MSELoss
     es = EarlyStopping(patience=20)
     batch_size = 256
+    scheduler = {'scheduler': lr_scheduler.StepLR, 'step_size': 7}
+

@@ -1,14 +1,16 @@
 import torch
 import time
+import copy
 from sklearn.metrics import accuracy_score
 import numpy as np
 
 class Trainer:
-    def __init__(self, HP_version, epochs, loss_fn, optimizer, lr = 0.01, momentum=0.9, useCuda = False):
+    def __init__(self, HP_version, epochs, loss_fn, optimizer, scheduler = None, lr = 0.01, momentum=0.9, useCuda = False):
         self.epochs = epochs
         self.hp_version = HP_version
         self.criterion = loss_fn()
         self.optimizer = optimizer
+        self.scheduler = scheduler
         self.lr = lr
         self.momentum = momentum
         self.device = torch.device("cpu")
@@ -23,14 +25,15 @@ class Trainer:
         self.timeStart = time.time()
         all_train_acc = []
         all_valid_acc = []
-        
-        
+
         model = model.float()
         model.to(self.device)
         if self.optimizer == torch.optim.Adam:
             optimizer = self.optimizer(model.parameters(), lr=self.lr)
         else:
             optimizer = self.optimizer(model.parameters(), lr=self.lr, momentum=self.momentum)
+
+        scheduler = None if self.scheduler is None else self.scheduler['scheduler'](optimizer, self.scheduler['step_size'])
 
         epoch = 0
         
@@ -42,9 +45,15 @@ class Trainer:
         loss = None
         valid_acc = None
         train_acc = None
+
+        best_model_weights = copy.deepcopy(model.state_dict())
+        best_acc = 0.0
+
         while epoch < self.epochs:
             running_loss = 0.0
-            
+            if scheduler is not None:
+                    scheduler.step()
+
             for i, data in enumerate(trainLoader, 0):
                 #get the unputs; data is a list of [inputs, labels]
                 inputs, labels = data['image'].to(self.device), data['encoded_label'].to(self.device).float()
@@ -63,22 +72,26 @@ class Trainer:
                 #print statistics - have to get more of these
                 running_loss += loss.item()
                 
-                
-                #every batch print - loss, training acc, validation acc
-                train_pred, train_target = self.test(model, trainLoader)
-                valid_pred, valid_target = self.test(model, validLoader)
-                train_acc = accuracy_score(train_target.cpu(), train_pred.cpu())
-                valid_acc = accuracy_score(valid_target.cpu(), valid_pred.cpu())
-                
+                if i % 50 == 0:
+                    #every batch print - loss, training acc, validation acc
+                    train_pred, train_target = self.test(model, trainLoader)
+                    valid_pred, valid_target = self.test(model, validLoader)
+                    train_acc = accuracy_score(train_target.cpu(), train_pred.cpu())
+                    valid_acc = accuracy_score(valid_target.cpu(), valid_pred.cpu())
+                    
 
-                print('Training Loss:', running_loss)
-                print('Training Accuracy:', train_acc)
-                print('Valid Accuracy:', valid_acc)
-                print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-                running_loss = 0.0
-                
-                all_train_acc.append(train_acc)
-                all_valid_acc.append(valid_acc)
+                    print('Training Loss:', running_loss)
+                    print('Training Accuracy:', train_acc)
+                    print('Valid Accuracy:', valid_acc)
+                    print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+                    running_loss = 0.0
+                    
+                    if valid_acc > best_acc:
+                        best_acc = valid_acc
+                        best_model_weights = copy.deepcopy(model.state_dict())
+
+                    all_train_acc.append(train_acc)
+                    all_valid_acc.append(valid_acc)
                 
             epoch += 1
             self._save_partial_model(model, epoch, loss, optimizer)
@@ -86,7 +99,8 @@ class Trainer:
             #early stopping checked every epoch rather than every minibatch
             if earlyStopping is not None and earlyStopping.step(valid_acc):
                 break
-            
+        
+        model.load_state_dict(best_model_weights)
         self._save_full_model(model)
         print('Finished Training')
         self.timeEnd = time.time()

@@ -137,11 +137,14 @@
 4.	training with HP 3.1 - minibatch = 256
 
 2/8 - friday
-1.	70% with model 2.3 HP 3.1
+1.	70% with model 2.2 HP 3.1
 2.	plotting train, valid accuracies and will see whats the issues
-3.	train 2.3/3.1 more as 2.3/3.2 = 75% test accuracy plotting train/valid accuracies
+3.	train 2.2/3.1 more as 2.2/3.2 = 75% test accuracy plotting train/valid accuracies
 
 
-8/8 - Thursday
-1.	implement 
+9/8 - Friday
+1.	change training:
+	1.	to include getting best weights over epochs
+	2.	to include a scheduler which would decrease Learning Rate over time
+	3.	to test against test data and validation data after X minibatches (X = 50) 
 
