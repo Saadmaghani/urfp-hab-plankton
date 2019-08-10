@@ -140,6 +140,7 @@
 1.	70% with model 2.2 HP 3.1
 2.	plotting train, valid accuracies and will see whats the issues
 3.	train 2.2/3.1 more as 2.2/3.2 = 75% test accuracy plotting train/valid accuracies
+4.	train 2.2/3.1 more as 2.2/3.3 with patience = 20; test acc = 77%
 
 
 9/8 - Friday
@@ -148,3 +149,6 @@
 	2.	to include a scheduler which would decrease Learning Rate over time
 	3.	to test against test data and validation data after X minibatches (X = 50) 
 
+10/8 - Saturday
+1.	added seeds to getting data from raw data and train/valid/test splits
+2. 	added TL vgg16 model. will test against vgg16 bn and others. need to do more literature review to figure out best tl model.

@@ -135,12 +135,13 @@ class Preprocessor:
 		self.transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) if transformations is None else transformations
 		ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-	def _normalize_classes(self, data_per_class):
+	def _normalize_classes(self, data_per_class, seed = 3):
 		new_labels = []
 		new_fnames = []
 		if self.include_classes is not None:
 			for class_name in self.include_classes:
 				class_idx = np.where(np.array(self.labels) == class_name)
+				random.seed(seed)
 				random_idx = np.random.choice(class_idx[0], size = data_per_class, replace=False)
 				image_files = list(np.array(self.fnames)[random_idx])
 				new_fnames.extend(image_files)
@@ -162,13 +163,13 @@ class Preprocessor:
 
 	
 	# split into train,test or train,val,test
-	def _split(self, pc_splits):
-		xTrain, xTest, yTrain, yTest, eyTrain, eyTest = train_test_split(self.fnames, self.labels, self.encoded_labels, test_size = pc_splits[-1])
+	def _split(self, pc_splits, seed = 3):
+		xTrain, xTest, yTrain, yTest, eyTrain, eyTest = train_test_split(self.fnames, self.labels, self.encoded_labels, test_size = pc_splits[-1], random_state=seed)
 		xVal = [] 
 		yVal = []
 		eyVal = []
 		if len(pc_splits) == 3:
-			xTrain, xVal, yTrain, yVal, eyTrain, eyVal = train_test_split(xTrain, yTrain, eyTrain, test_size = pc_splits[1]/(pc_splits[0]+pc_splits[1]))
+			xTrain, xVal, yTrain, yVal, eyTrain, eyVal = train_test_split(xTrain, yTrain, eyTrain, test_size = pc_splits[1]/(pc_splits[0]+pc_splits[1]), random_state=seed)
 
 		partition = {'train': xTrain, 'validation': xVal, 'test': xTest}
 		labels = {'train': yTrain, 'validation': yVal, 'test': yTest}
