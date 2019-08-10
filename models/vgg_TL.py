@@ -6,7 +6,7 @@ class VGG(nn.Module):
     version = 1.0
 
     def __init__(self, freeze = False, pretrain = True):
-        super(firstCNN, self).__init__()
+        super(VGG, self).__init__()
 
         self.model = models.vgg16(pretrained=pretrain)
         if freeze:
