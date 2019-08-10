@@ -9,6 +9,7 @@ class VGG(nn.Module):
         super(VGG, self).__init__()
 
         self.model = models.vgg16(pretrained=pretrain)
+        self.model.features[0] = nn.Conv2d(1, 64, 3, padding = 1)
         if freeze:
             for param in self.model.parameters():
                 param.requires_grad = False
