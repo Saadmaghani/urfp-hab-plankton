@@ -152,3 +152,5 @@
 10/8 - Saturday
 1.	added seeds to getting data from raw data and train/valid/test splits
 2. 	added TL vgg16 model. will test against vgg16 bn and others. need to do more literature review to figure out best tl model.
+3.	82% with vgg v1.0. lets plot it.
+4.	vgg_bn = 1.1; lets train it
