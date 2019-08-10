@@ -141,7 +141,7 @@ class Preprocessor:
 		if self.include_classes is not None:
 			for class_name in self.include_classes:
 				class_idx = np.where(np.array(self.labels) == class_name)
-				random.seed(seed)
+				np.random.seed(seed)
 				random_idx = np.random.choice(class_idx[0], size = data_per_class, replace=False)
 				image_files = list(np.array(self.fnames)[random_idx])
 				new_fnames.extend(image_files)
