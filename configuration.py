@@ -1,5 +1,5 @@
 import torch.optim as optim
-from optim import lr_scheduler
+from torch.optim import lr_scheduler
 import torch.nn as nn
 from training import EarlyStopping
 
