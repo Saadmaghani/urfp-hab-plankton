@@ -4,6 +4,7 @@ from metrics import Metrics
 import torch.nn as nn
 import torch.optim as optim
 from models.first_CNN import firstCNN
+from models.vgg_TL import VGG
 from configuration import Hyperparameters as HP
 
 years = [str(y) for y in range(2006, 2015)]
@@ -21,7 +22,7 @@ validLoader = pp.get_loaders('validation', HP.batch_size)
 trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn = HP.loss_function, 
     optimizer = HP.optimizer, scheduler = HP.scheduler, lr = HP.learning_rate, momentum = HP.momentum, useCuda=True)
 
-model = firstCNN()
+model = VGG()
 
 trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
 
