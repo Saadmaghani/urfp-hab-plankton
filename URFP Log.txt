@@ -152,5 +152,15 @@
 10/8 - Saturday
 1.	added seeds to getting data from raw data and train/valid/test splits
 2. 	added TL vgg16 model. will test against vgg16 bn and others. need to do more literature review to figure out best tl model.
-3.	82% with vgg v1.0. lets plot it.
+3.	82% with vgg v1.0. lets plot it -> training was increasing but validation wasnt. epochs for 21.
 4.	vgg_bn = 1.1; lets train it
+5.	next I should try to see what happens if i use it as a feature extractor, increase size of dataset, change model (vgg)
+
+11/8 - Sunday
+1.	86.9% with vgg16_bn; now trying vgg_bn as feature extractor = 66.89%
+2.	vgg16 as feature extractor = 33.3%
+3.	so feature extractor = bad. lets try vgg11_bn?
+
+12/8 - Monday
+1.	vg11_bn = 85.8%. vg19_bn? 
+2.	vgg19_bn = 89.15%; im guessing vgg19 is less but lets do it.
