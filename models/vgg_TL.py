@@ -9,7 +9,7 @@ import torch.nn as nn
 #version 1.5 = vgg19_bn
 #version 1.6 = vgg19
 class VGG(nn.Module):
-    version = 1.5
+    version = 1.6
 
     def __init__(self, freeze = False, pretrain = True):
         super(VGG, self).__init__()
