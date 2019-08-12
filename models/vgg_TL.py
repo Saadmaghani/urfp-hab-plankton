@@ -3,13 +3,18 @@ import torch.nn as nn
 
 #version 1.0 = vgg16
 #version 1.1 = vgg16_bn
+#version 1.2 = vgg16_bn as feature extractor
+#version 1.3 = vgg16 as feature extractor
+#version 1.4 = vgg11_bn
+#version 1.5 = vgg19_bn
+#version 1.6 = vgg19
 class VGG(nn.Module):
-    version = 1.1
+    version = 1.5
 
     def __init__(self, freeze = False, pretrain = True):
         super(VGG, self).__init__()
 
-        self.model = models.vgg16_bn(pretrained=pretrain)
+        self.model = models.vgg19(pretrained=pretrain)
         self.model.features[0] = nn.Conv2d(1, 64, 3, padding = 1)
         if freeze:
             for param in self.model.parameters():
