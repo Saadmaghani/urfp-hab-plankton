@@ -6,10 +6,10 @@ import torch.nn as nn
 #version 1.2 = vgg16_bn as feature extractor
 #version 1.3 = vgg16 as feature extractor
 #version 1.4 = vgg11_bn
-#version 1.5 = vgg19_bn
+#version 1.5 = vgg19_bn ****
 #version 1.6 = vgg19
 class VGG(nn.Module):
-    version = 1.5
+    version = 1.6
 
     def __init__(self, freeze = False, pretrain = True):
         super(VGG, self).__init__()
@@ -32,4 +32,4 @@ class VGG(nn.Module):
         return x
 
     def __str__(self):
-        return type(self).__name__ + "_"+str(VGG.version)
+        return type(self).__name__ + "_" + str(VGG.version)

@@ -163,4 +163,19 @@
 
 12/8 - Monday
 1.	vg11_bn = 85.8%. vg19_bn? 
-2.	vgg19_bn = 89.15%; im guessing vgg19 is less but lets do it.
+2.	vgg19_bn = 89.15%; im guessing vgg19 is less but lets do it. vgg_19 = 86.35%
+3.	so with all of them, early stopping is working but its weird. i think i have to train it more.
+4.	going to print out validation and train acc more frequently (every 10)
+5.	IDEAS:
+	1.	to reflect the actual distribution of classes, I will take unnormalized classes and predict on them. A paper does 
+		transfer learning on normalized classes and then fine tunes it on unnormalized classes. I could TL from vgg19_bn -> normalized 
+		data -> unnormalized data then test it on unnormalized data. - ASK ZHIMING
+	2. 	increase output classes to all 103? 
+		near impossible as some have literally 4. could have a cut off at 100 meaning we can predict 77 classes. we could then use data augmentation
+	3.	Incorporate "thresholding" which means to take at most N images of a particular class. so you could have <N images of a class too
+
+
+
+
+
+

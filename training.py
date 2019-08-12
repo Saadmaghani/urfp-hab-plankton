@@ -72,7 +72,7 @@ class Trainer:
                 #print statistics - have to get more of these
                 running_loss += loss.item()
                 
-                if i % 50 == 0:
+                if i % 10 == 0:
                     #every batch print - loss, training acc, validation acc
                     train_pred, train_target = self.test(model, trainLoader)
                     valid_pred, valid_target = self.test(model, validLoader)
