@@ -8,14 +8,15 @@ import torch.nn as nn
 #version 1.4 = vgg11_bn
 #version 1.5 = vgg19_bn ****
 #version 1.6 = vgg19
+#version 1.7 = vgg19_bn with 3 input channels
 class VGG(nn.Module):
-    version = 1.6
+    version = 1.7
 
     def __init__(self, freeze = False, pretrain = True):
         super(VGG, self).__init__()
 
-        self.model = models.vgg19(pretrained=pretrain)
-        self.model.features[0] = nn.Conv2d(1, 64, 3, padding = 1)
+        self.model = models.vgg19_bn(pretrained=pretrain)
+        #self.model.features[0] = nn.Conv2d(1, 64, 3, padding = 1)
         if freeze:
             for param in self.model.parameters():
                 param.requires_grad = False
@@ -26,9 +27,9 @@ class VGG(nn.Module):
         self.softmax = nn.Softmax()
 
     def forward(self, x):
+        x = x.repeat(1,3,1,1)
         x = self.model(x)
         x = self.softmax(x)
-
         return x
 
     def __str__(self):

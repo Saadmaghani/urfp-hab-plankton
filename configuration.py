@@ -16,17 +16,17 @@ from training import EarlyStopping
 #version 3.2 = further training of HP 3.1, model 2.2
 #version 3.3 = further training of HP 3.1, model 2.2, patience = 20
 #version 3.4 = same as 3.1 + lr_scheduler w/ StepLR & step size = 7
-#version 3.5 = same as 3.1 except patience = 20
+#version 3.5 = same as 3.1 except patience = 20 ***
 #version 3.6 = same as 3.5 except patience = 40
 class Hyperparameters:
-    version=3.6
+    version=3.5
     learning_rate = 0.0003
     number_of_epochs = 200
     momentum = 0.9
     number_of_images_per_class = 500
     optimizer = optim.Adam
     loss_function = nn.MSELoss
-    es = EarlyStopping(patience=40)
+    es = EarlyStopping(patience=20)
     batch_size = 256
     scheduler = None
 

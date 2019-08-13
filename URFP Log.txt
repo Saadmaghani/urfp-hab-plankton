@@ -173,9 +173,9 @@
 	2. 	increase output classes to all 103? 
 		near impossible as some have literally 4. could have a cut off at 100 meaning we can predict 77 classes. we could then use data augmentation
 	3.	Incorporate "thresholding" which means to take at most N images of a particular class. so you could have <N images of a class too
+	4.	Instead of making the data normalized (ie. all classes have equal images), split each class into train/valid/test. so dont split over entire
+		dataset rather split over each class. (lets implement this)
 
-
-
-
-
-
+13/8 - Tuesday
+1.	Result of vgg19 with 40 patience = 81% so decrease patience to 20 and keep it vgg19_bn
+2.	taking zhiming advice - copying input to 3 channels. 
