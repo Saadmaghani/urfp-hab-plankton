@@ -163,7 +163,7 @@
 
 12/8 - Monday
 1.	vg11_bn = 85.8%. vg19_bn? 
-2.	vgg19_bn = 89.15%; im guessing vgg19 is less but lets do it. vgg_19 = 86.35%
+2.	vgg19_bn = 89.15% (1.5/3.5); im guessing vgg19 is less but lets do it. vgg_19 = 86.35%
 3.	so with all of them, early stopping is working but its weird. i think i have to train it more.
 4.	going to print out validation and train acc more frequently (every 10)
 5.	IDEAS:
@@ -178,4 +178,8 @@
 
 13/8 - Tuesday
 1.	Result of vgg19 with 40 patience = 81% so decrease patience to 20 and keep it vgg19_bn
-2.	taking zhiming advice - copying input to 3 channels. 
+2.	taking zhiming advice - copying input to 3 channels. - 89.45% (1.7/3.5)
+3.	increasing to 1000 images - 1.7/3.7 - 92%
+
+14/8 - Wednesday
+1.	will take in all 103 classes right now and train it.

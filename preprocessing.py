@@ -135,6 +135,14 @@ class Preprocessor:
 		self.transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) if transformations is None else transformations
 		ImageFile.LOAD_TRUNCATED_IMAGES = True
 
+
+	# -- TODO --
+	def _class_split(self, pc_splits, seed=3):
+		if self.include_classes is not None:
+			for class_name in self.include_classes:
+				class_idx = np.where(np.array(self.labels) == class_name)	
+		pass
+
 	def _normalize_classes(self, data_per_class, seed = 3):
 		new_labels = []
 		new_fnames = []
@@ -153,10 +161,6 @@ class Preprocessor:
 		integer_encoded = label_encoder.fit_transform(self.labels)
 		n = np.max(integer_encoded)
 		return torch.nn.functional.one_hot(torch.from_numpy(integer_encoded), int(n)+1)
-
-	# -- TODO --
-	def get_Class(self, index):
-		pass
 
 	def apply_augmentations(self):
 		pass

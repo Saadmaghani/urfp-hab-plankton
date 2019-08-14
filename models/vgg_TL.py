@@ -8,9 +8,10 @@ import torch.nn as nn
 #version 1.4 = vgg11_bn
 #version 1.5 = vgg19_bn ****
 #version 1.6 = vgg19
-#version 1.7 = vgg19_bn with 3 input channels
+#version 1.7 = vgg19_bn with 3 input channels ****
+#version 1.8 = vgg19_bn with 3 input channels & output of all 103 classes
 class VGG(nn.Module):
-    version = 1.7
+    version = 1.8
 
     def __init__(self, freeze = False, pretrain = True):
         super(VGG, self).__init__()
@@ -22,7 +23,7 @@ class VGG(nn.Module):
                 param.requires_grad = False
 
         num_ftrs = self.model.classifier[6].in_features
-        self.model.classifier[6] = nn.Linear(num_ftrs, 20)
+        self.model.classifier[6] = nn.Linear(num_ftrs, 103)
 
         self.softmax = nn.Softmax()
 

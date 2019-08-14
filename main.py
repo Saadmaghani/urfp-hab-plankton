@@ -12,7 +12,23 @@ classes = ["detritus", "Leptocylindrus", "Chaetoceros", "Rhizosolenia", "Guinard
     "Skeletonema", "Dactyliosolen", "Thalassiosira", "Dinobryon", "Corethron", "Thalassionema", "Ditylum", "pennate", "Prorocentrum", 
     "Pseudonitzschia", "Tintinnid", "Guinardia_striata", "Phaeocystis"]
 
-pp = Preprocessor(years, include_classes=classes, train_eg_per_class=HP.number_of_images_per_class)
+all_classes = ["mix", "detritus", "Leptocylindrus", "mix_elongated", "Chaetoceros", "dino30", "Rhizosolenia", "Guinardia_delicatula", 
+"Cerataulina", "Cylindrotheca", "Skeletonema", "Ciliate_mix", "Dactyliosolen", "Thalassiosira", "bad", "Dinobryon", "Corethron", 
+"DactFragCerataul", "Thalassionema", "Ditylum", "pennate", "Prorocentrum", "Pseudonitzschia", "Mesodinium_sp", "G_delicatula_parasite", 
+"Tintinnid", "Guinardia_striata", "Phaeocystis", "Totals_of_above", "Dictyocha", "Pleurosigma", "Eucampia", "Thalassiosira_dirty", 
+"Asterionellopsis", "flagellate_sp3", "Laboea_strobila", "Chaetoceros_didymus_flagellate", "Heterocapsa_triquetra", "Guinardia_flaccida", 
+"Chaetoceros_pennate", "Ceratium", "Euglena", "Coscinodiscus", "Strombidium_morphotype1", "Paralia", "Gyrodinium", "Ephemera", "Pyramimonas_longicauda", 
+"Proterythropsis_sp", "Gonyaulax", "kiteflagellates", "Chrysochromulina", "Chaetoceros_didymus", "bead", "Katodinium_or_Torodinium", "Leptocylindrus_mediterraneus", 
+"spore", "Tontonia_gracillima", "Delphineis", "Dinophysis", "Strombidium_morphotype2", "Licmophora", "Lauderia", "clusterflagellate", "Strobilidium_morphotype1", 
+"Leegaardiella_ovalis", "pennate_morphotype1", "amoeba", "Strombidium_inclinatum", "Pseudochattonella_farcimen", "Amphidinium_sp", "dino_large1", 
+"Strombidium_wulffi", "Chaetoceros_flagellate", "Strombidium_oculatum", "Cerataulina_flagellate", "Emiliania_huxleyi", "Pleuronema_sp", "Strombidium_conicum",
+ "Odontella", "Protoperidinium", "zooplankton", "Stephanopyxis", "Tontonia_appendiculariformis", "Strombidium_capitatum", "Bidulphia", "Euplotes_sp", 
+ "Parvicorbicula_socialis", "bubble", "Hemiaulus", "Didinium_sp", "pollen", "Tiarina_fusus", "Bacillaria", "Cochlodinium", "Akashiwo", "Karenia"]
+
+#pp = Preprocessor(years, include_classes=classes, train_eg_per_class=HP.number_of_images_per_class)
+pp = Preprocessor(years, include_classes=all_classes)
+
+
 
 pp.create_datasets([0.6,0.2,0.2])
 
@@ -32,6 +48,8 @@ trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earl
 testLoader = pp.get_loaders('test', HP.batch_size)
 pred, target = trainer.test(model, testLoader)
 met = Metrics(target, pred)
+
+met.f_score()
 
 f= open("stats-"+str(model)+"-"+str(HP.version)+".json","w+")
 str_to_write = "{\"Epochs\": "+str(epochs)+ ", \"TrainAcc\": "+ str(trainAcc)+", \"ValidAcc\": "+str(validAcc)+", \"TestAcc\": "+str(met.accuracy())+"}"
