@@ -18,12 +18,13 @@ from training import EarlyStopping
 #version 3.4 = same as 3.1 + lr_scheduler w/ StepLR & step size = 7
 #version 3.5 = same as 3.1 except patience = 20 ***
 #version 3.6 = same as 3.5 except patience = 40
+#version 3.7 = same as 3.5 except 1000 images
 class Hyperparameters:
-    version=3.5
+    version=3.7
     learning_rate = 0.0003
     number_of_epochs = 200
     momentum = 0.9
-    number_of_images_per_class = 500
+    number_of_images_per_class = 1000
     optimizer = optim.Adam
     loss_function = nn.MSELoss
     es = EarlyStopping(patience=20)
