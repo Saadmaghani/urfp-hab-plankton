@@ -16,9 +16,9 @@ from training import EarlyStopping
 # version 3.2 = further training of HP 3.1, model 2.2
 # version 3.3 = further training of HP 3.1, model 2.2, patience = 20
 # version 3.4 = same as 3.1 + lr_scheduler w/ StepLR & step size = 7
-# version 3.5 = same as 3.1 except patience = 20 ***
+# version 3.5 = same as 3.1 except patience = 20
 # version 3.6 = same as 3.5 except patience = 40
-# version 3.7 = same as 3.5 except 1000 images
+# version 3.7 = same as 3.5 except 1000 images ***
 
 
 class Hyperparameters:

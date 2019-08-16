@@ -53,7 +53,6 @@ class WideNet(nn.Module):
 
         num_ftrs = self.model.fc.in_features
         self.model.fc = nn.Linear(num_ftrs, 20)
-
         self.softmax = nn.Softmax()
 
     def forward(self, x):
@@ -64,3 +63,31 @@ class WideNet(nn.Module):
 
     def __str__(self):
         return type(self).__name__ + "_" + str(WideNet.version)
+
+# version 1.0 = alexnet with 3 input channels & 20 outputs
+class AlexNet(nn.Module):
+    version = 1.0
+
+    def __init__(self, freeze=False, pretrain=True):
+        super(AlexNet, self).__init__()
+
+        self.model = models.alexnet(pretrained=pretrain)
+
+        # self.model.features[0] = nn.Conv2d(1, 64, 3, padding = 1)
+        if freeze:
+            for param in self.model.parameters():
+                param.requires_grad = False
+
+        num_ftrs = self.model.classifier[6].in_features
+        self.model.classifier[6] = nn.Linear(num_ftrs, 20)
+
+        self.softmax = nn.Softmax()
+
+    def forward(self, x):
+        x = x.repeat(1, 3, 1, 1)
+        x = self.model(x)
+        x = self.softmax(x)
+        return x
+
+    def __str__(self):
+        return type(self).__name__ + "_" + str(AlexNet.version)
