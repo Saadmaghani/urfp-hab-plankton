@@ -52,7 +52,7 @@ class WideNet(nn.Module):
                 param.requires_grad = False
 
         num_ftrs = self.model.fc.in_features
-        self.model.classifier[6] = nn.Linear(num_ftrs, 20)
+        self.model.fc = nn.Linear(num_ftrs, 20)
 
         self.softmax = nn.Softmax()
 
