@@ -42,7 +42,7 @@ class WideNet(nn.Module):
     version = 1.0
 
     def __init__(self, freeze=False, pretrain=True):
-        super(VGG, self).__init__()
+        super(WideNet, self).__init__()
 
         self.model = models.wide_resnet101_2(pretrained=pretrain)
 
@@ -51,7 +51,7 @@ class WideNet(nn.Module):
             for param in self.model.parameters():
                 param.requires_grad = False
 
-        num_ftrs = self.model.classifier[6].in_features
+        num_ftrs = self.model.fc.in_features
         self.model.classifier[6] = nn.Linear(num_ftrs, 20)
 
         self.softmax = nn.Softmax()
