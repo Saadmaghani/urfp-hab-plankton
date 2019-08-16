@@ -187,4 +187,8 @@
 16/8 - Friday
 1.	1. of 14/8 failed because it was taking toooo long (8 hours and 1 epoch was not done).
 2.  According to one paper I should fine tune only certain layers and freeze the other layers. Lets incrementally find out (while i program other shiz)
-    a.
+    a.	Wide ResNet-101-2 w/ 3.7 = 91.625
+    b.	AlexNet w/ 3.7 = 
+
+
+

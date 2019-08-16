@@ -44,9 +44,37 @@ class WideNet(nn.Module):
     version = 1.0
 
     def __init__(self, freeze=False, pretrain=True):
-        super(VGG, self).__init__()
+        super(WideNet, self).__init__()
 
         self.model = models.wide_resnet101_2(pretrained=pretrain)
+
+        # self.model.features[0] = nn.Conv2d(1, 64, 3, padding = 1)
+        if freeze:
+            for param in self.model.parameters():
+                param.requires_grad = False
+
+        num_ftrs = self.model.fc.in_features
+        self.model.fc = nn.Linear(num_ftrs, 20)
+
+        self.softmax = nn.Softmax()
+
+    def forward(self, x):
+        x = x.repeat(1, 3, 1, 1)
+        x = self.model(x)
+        x = self.softmax(x)
+        return x
+
+    def __str__(self):
+        return type(self).__name__ + "_" + str(WideNet.version)
+
+# version 1.0 = alexnet with 3 input channels & 20 outputs
+class AlexNet(nn.Module):
+    version = 1.0
+
+    def __init__(self, freeze=False, pretrain=True):
+        super(AlexNet, self).__init__()
+
+        self.model = models.alexnet(pretrained=pretrain)
 
         # self.model.features[0] = nn.Conv2d(1, 64, 3, padding = 1)
         if freeze:
@@ -65,4 +93,4 @@ class WideNet(nn.Module):
         return x
 
     def __str__(self):
-        return type(self).__name__ + "_" + str(WideNet.version)
+        return type(self).__name__ + "_" + str(AlexNet.version)
