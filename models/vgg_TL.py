@@ -70,7 +70,6 @@ class WideNet(nn.Module):
 
         num_ftrs = self.model.fc.in_features
         self.model.fc = nn.Linear(num_ftrs, 20)
-
         self.softmax = nn.Softmax()
 
     def forward(self, x):
