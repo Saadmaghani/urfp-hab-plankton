@@ -20,7 +20,7 @@ class Trainer:
             self.device = torch.device("cpu")
 
         
-    def train(self, model, trainLoader, validLoader, earlyStopping = None, partialModelFile = None):
+    def train(self, model, trainLoader, validLoader, earlyStopping = None, partialModelFile = None, save = True):
         print(self.device)
         self.timeStart = time.time()
         all_train_acc = []
@@ -100,8 +100,9 @@ class Trainer:
             if earlyStopping is not None and earlyStopping.step(valid_acc):
                 break
         
-        model.load_state_dict(best_model_weights)
-        self._save_full_model(model)
+        if save == True:
+            model.load_state_dict(best_model_weights)
+            self._save_full_model(model)
         print('Finished Training')
         self.timeEnd = time.time()
         return all_train_acc, all_valid_acc, epoch
