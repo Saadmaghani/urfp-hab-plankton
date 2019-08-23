@@ -94,7 +94,8 @@ class Trainer:
                     all_valid_acc.append(valid_acc)
                 
             epoch += 1
-            self._save_partial_model(model, epoch, loss, optimizer)
+            if save == True:
+                self._save_partial_model(model, epoch, loss, optimizer)
 
             #early stopping checked every epoch rather than every minibatch
             if earlyStopping is not None and earlyStopping.step(valid_acc):

@@ -124,10 +124,11 @@ class ToTensor(object):
 class Preprocessor:
 	DATA_FOLDER = "./data"
 
-	def __init__(self, years, transformations = None, include_classes = None, train_eg_per_class = None):
+	def __init__(self, years, transformations = None, include_classes = None, thresholding = False, train_eg_per_class = None):
 		self.years = years
 		self.include_classes = include_classes
 		self.fnames, self.labels = self._get_lbls_fnames()
+		self.thresholding = thresholding
 		if train_eg_per_class is not None:
 			self.fnames, self.labels = self._normalize_classes(train_eg_per_class)
 
@@ -136,7 +137,7 @@ class Preprocessor:
 		ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 
-	# -- TODO --
+	# -- TODO -- or nah
 	def _class_split(self, pc_splits, seed=3):
 		if self.include_classes is not None:
 			for class_name in self.include_classes:
@@ -150,7 +151,10 @@ class Preprocessor:
 			for class_name in self.include_classes:
 				class_idx = np.where(np.array(self.labels) == class_name)
 				np.random.seed(seed)
-				random_idx = np.random.choice(class_idx[0], size = data_per_class, replace=False)
+				if self.thresholding is True and len(class_idx) <= data_per_class:
+					random_idx = class_idx[0]
+				else:
+					random_idx = np.random.choice(class_idx[0], size = data_per_class, replace=False)
 				image_files = list(np.array(self.fnames)[random_idx])
 				new_fnames.extend(image_files)
 				new_labels.extend([class_name]*data_per_class)

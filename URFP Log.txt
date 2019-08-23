@@ -192,6 +192,17 @@
     b.	AlexNet w/ 3.7 = 86.5
     c.	according to one paper [http://vashishtm.net/pdf/practices-fine-tuning.pdf] you should fine tune half and randomly initialize other half for
     	best results. so im gonna do that 
+    		1 - 0.8905
+    		2 - 
+
+17/8 - Saturday
+1.	ran out of gpu time.
+
+19/8 - Monday
+1.	implementing thresholding.
 
 
-
+23/8 - Friday
+1.  Didnt do anything the entire week, just got GPU rss approved. GOTTA DO SOMETHING. Very limited time, i want to do 16/8 - 1c.
+    Then I will do 19/8 - 1 with the best result of 16/8 - 1c.
+2.  restarting 16/8 1c.
