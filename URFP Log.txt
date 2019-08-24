@@ -192,7 +192,7 @@
     b.	AlexNet w/ 3.7 = 86.5
     c.	according to one paper [http://vashishtm.net/pdf/practices-fine-tuning.pdf] you should fine tune half and randomly initialize other half for
     	best results. so im gonna do that 
-    		1 - 0.8905
+    		1 - 0.922
     		2 - 
 
 17/8 - Saturday
