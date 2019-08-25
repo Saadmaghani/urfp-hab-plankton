@@ -122,7 +122,7 @@ class GoogleNet(nn.Module):
             for param in self.model.parameters():
                 param.requires_grad = False
 
-        self.model.fc = nn.Linear(1024, 94)
+        self.model.fc = nn.Linear(1024, 96)
 
         self.softmax = nn.Softmax()
 
