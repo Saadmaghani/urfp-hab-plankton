@@ -22,7 +22,7 @@ from training import EarlyStopping
 # version 4.0 = same as 3.5 except 5000 images and thresholding
 
 class Hyperparameters:
-    version=3.7
+    version=4.0
     learning_rate = 0.0003
     number_of_epochs = 200
     momentum = 0.9
