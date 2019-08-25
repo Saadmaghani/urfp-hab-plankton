@@ -19,17 +19,18 @@ from training import EarlyStopping
 # version 3.5 = same as 3.1 except patience = 20
 # version 3.6 = same as 3.5 except patience = 40
 # version 3.7 = same as 3.5 except 1000 images ***
-
+# version 4.0 = same as 3.5 except 5000 images and thresholding
 
 class Hyperparameters:
-    version=3.7
+    version=4.0
     learning_rate = 0.0003
     number_of_epochs = 200
     momentum = 0.9
-    number_of_images_per_class = 1000
+    number_of_images_per_class = 5000
     optimizer = optim.Adam
     loss_function = nn.MSELoss
     es = EarlyStopping(patience=20)
     batch_size = 256
     scheduler = None
+    thresholding = True
 

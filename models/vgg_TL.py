@@ -9,10 +9,8 @@ import torch.nn as nn
 # version 1.5 = vgg19_bn ***
 # version 1.6 = vgg19
 # version 1.7 = vgg19_bn with 3 input channels ****
-# version 1.8 = vgg19_bn with 3 input channels & output of all 103 classes
+# version 1.8 = vgg19_bn with 3 input channels & output of all 96 classes
 # version 1.9 = vgg19_bn, 3 input channels, 20 classes, iteratively find out to how many layers we should randomly initializes
-
-
 class VGG(nn.Module):
     version = 1.9
 
@@ -110,8 +108,9 @@ class AlexNet(nn.Module):
         return type(self).__name__ + "_" + str(AlexNet.version)
 
 # version 1.0 = googlenet with 3 input channels & 20 outputs
+# version 1.1 = all outputs (94)
 class GoogleNet(nn.Module):
-    version = 1.0
+    version = 1.1
 
     def __init__(self, freeze=None, pretrain=True):
         super(GoogleNet, self).__init__()
@@ -123,7 +122,7 @@ class GoogleNet(nn.Module):
             for param in self.model.parameters():
                 param.requires_grad = False
 
-        self.model.fc = nn.Linear(1024, 20)
+        self.model.fc = nn.Linear(1024, 94)
 
         self.softmax = nn.Softmax()
 
