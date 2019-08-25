@@ -206,3 +206,8 @@
 1.  Didnt do anything the entire week, just got GPU rss approved. GOTTA DO SOMETHING. Very limited time, i want to do 16/8 - 1c.
     Then I will do 19/8 - 1 with the best result of 16/8 - 1c.
 2.  restarting 16/8 1c.
+
+
+25/8 - Sunday
+1.	GoogleNet - 93.05% best result yet
+2.	lets do thresholding with googlenet
