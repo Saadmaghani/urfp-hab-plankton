@@ -3,7 +3,7 @@ from training import Trainer
 from metrics import Metrics
 import torch.nn as nn
 import torch.optim as optim
-from models.vgg_TL import VGG, GoogleNet
+from models.vgg_TL import VGG, GoogleNet, ResNet
 from configuration import Hyperparameters as HP
 
 years = [str(y) for y in range(2006, 2015)]
@@ -25,8 +25,8 @@ all_classes = ["mix", "detritus", "Leptocylindrus", "mix_elongated", "Chaetocero
  "Odontella", "Protoperidinium", "zooplankton", "Stephanopyxis", "Tontonia_appendiculariformis", "Strombidium_capitatum", "Bidulphia", "Euplotes_sp", 
  "Parvicorbicula_socialis", "bubble", "Hemiaulus", "Didinium_sp", "pollen", "Tiarina_fusus", "Bacillaria", "Cochlodinium", "Akashiwo", "Karenia"]
 
-pp = Preprocessor(years, include_classes=all_classes, train_eg_per_class=HP.number_of_images_per_class, thresholding=HP.thresholding)
-#pp = Preprocessor(years, include_classes=all_classes)
+pp = Preprocessor(years, include_classes=classes, train_eg_per_class=HP.number_of_images_per_class)
+#pp = Preprocessor(years, include_classes=all_classes, train_eg_per_class=HP.number_of_images_per_class, thresholding=HP.thresholding)
 
 
 pp.create_datasets([0.6,0.2,0.2])
@@ -38,7 +38,7 @@ validLoader = pp.get_loaders('validation', HP.batch_size)
 trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn = HP.loss_function, 
 	optimizer = HP.optimizer, scheduler = HP.scheduler, lr = HP.learning_rate, momentum = HP.momentum, useCuda=True)
 
-model = GoogleNet()
+model = ResNet()
 
 trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
 

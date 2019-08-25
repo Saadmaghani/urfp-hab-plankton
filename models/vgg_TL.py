@@ -77,7 +77,7 @@ class WideNet(nn.Module):
         return x
 
     def __str__(self):
-        return type(self).__name__ + "_" + str(WideNet.version)
+        return type(self).__name__ + "_" + str(self.version)
 
 # version 1.0 = alexnet with 3 input channels & 20 outputs
 class AlexNet(nn.Module):
@@ -105,7 +105,7 @@ class AlexNet(nn.Module):
         return x
 
     def __str__(self):
-        return type(self).__name__ + "_" + str(AlexNet.version)
+        return type(self).__name__ + "_" + str(self.version)
 
 # version 1.0 = googlenet with 3 input channels & 20 outputs
 # version 1.1 = all outputs (94)
@@ -133,4 +133,31 @@ class GoogleNet(nn.Module):
         return x
 
     def __str__(self):
-        return type(self).__name__ + "_" + str(GoogleNet.version)
+        return type(self).__name__ + "_" + str(self.version)
+
+# version 1.0 = resnet18 with 20 outputs
+class ResNet(nn.Module):
+    version = 1.0
+
+    def __init__(self, freeze=None, pretrain=True):
+        super(ResNet, self).__init__()
+
+        self.model = models.resnet18(pretrained=pretrain)
+
+        # self.model.features[0] = nn.Conv2d(1, 64, 3, padding = 1)
+        if freeze is not None:
+            for param in self.model.parameters():
+                param.requires_grad = False
+
+        self.model.fc = nn.Linear(512, 20)
+
+        self.softmax = nn.Softmax()
+
+    def forward(self, x):
+        x = x.repeat(1, 3, 1, 1)
+        x = self.model(x)
+        x = self.softmax(x)
+        return x
+
+    def __str__(self):
+        return type(self).__name__ + "_" + str(self.version)
