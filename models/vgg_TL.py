@@ -150,7 +150,7 @@ class ResNet(nn.Module):
             for param in self.model.parameters():
                 param.requires_grad = False
 
-        self.model.fc = nn.Linear(512, 20)
+        self.model.fc = nn.Linear(2048, 20)
 
         self.softmax = nn.Softmax()
 
