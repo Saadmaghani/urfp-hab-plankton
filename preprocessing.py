@@ -153,6 +153,7 @@ class Preprocessor:
 				np.random.seed(seed)
 				if self.thresholding is True and len(class_idx) <= data_per_class:
 					random_idx = class_idx[0]
+					data_per_class = len(class_idx[0])
 				else:
 					random_idx = np.random.choice(class_idx[0], size = data_per_class, replace=False)
 				image_files = list(np.array(self.fnames)[random_idx])
