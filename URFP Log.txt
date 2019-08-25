@@ -209,5 +209,11 @@
 
 
 25/8 - Sunday
-1.	GoogleNet - 93.05% best result yet
+1.	GoogleNet (3.7) - 93.05% best result yet
 2.	lets do thresholding with googlenet
+3.	thresholding with googlenet taking long time. doing resnet18, resnet50 with 3.7
+4.	talked to zhiming, first will find out ba
+
+
+
+
