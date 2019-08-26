@@ -109,6 +109,7 @@ class AlexNet(nn.Module):
 
 # version 1.0 = googlenet with 3 input channels & 20 outputs
 # version 1.1 = all outputs (94)
+# version 1.2 = 30 outputs
 class GoogleNet(nn.Module):
     version = 1.1
 
@@ -122,7 +123,7 @@ class GoogleNet(nn.Module):
             for param in self.model.parameters():
                 param.requires_grad = False
 
-        self.model.fc = nn.Linear(1024, 96)
+        self.model.fc = nn.Linear(1024, 30)
 
         self.softmax = nn.Softmax()
 
