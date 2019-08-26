@@ -19,12 +19,7 @@ from training import EarlyStopping
 # version 3.5 = same as 3.1 except patience = 20
 # version 3.6 = same as 3.5 except patience = 40
 # version 3.7 = same as 3.5 except 1000 images ***
-<<<<<<< HEAD
-# version 4.0 = same as 3.5 except 1000 images and thresholding
-
-=======
 # version 4.0 = same as 3.5 except 2000 images and thresholding
->>>>>>> 52da0bafc9d90fd53f66851a1639c6176c61ffb1
 class Hyperparameters:
     version=4.0
     learning_rate = 0.0003
