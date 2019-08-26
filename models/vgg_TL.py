@@ -111,7 +111,7 @@ class AlexNet(nn.Module):
 # version 1.1 = all outputs (94)
 # version 1.2 = 30 outputs
 class GoogleNet(nn.Module):
-    version = 1.1
+    version = 1.2
 
     def __init__(self, freeze=None, pretrain=True):
         super(GoogleNet, self).__init__()
