@@ -212,7 +212,18 @@
 1.	GoogleNet (3.7) - 93.05% best result yet
 2.	lets do thresholding with googlenet
 3.	thresholding with googlenet taking long time. doing resnet18, resnet50 with 3.7
-4.	talked to zhiming, first will find out ba
+4.	talked to zhiming:
+	1.	find out backbone NN 
+	2.	apply some idea using backbone NN to get higher accuracy/f-measure
+	3.	share onenote with him (done)
+	4.	read cvpr iccv eccv conference papers
+	5.	email professors about phd (look at chinese U and UST professors too)
+	6.	email Ping Lou about working as an undergraduate RA and then about PhD
+	7.	include more images
+	
+
+
+
 
 
 
