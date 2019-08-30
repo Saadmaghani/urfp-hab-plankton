@@ -51,7 +51,7 @@ model = GoogleNet()
 #trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
 
 # - or -
-path_to_statedict = "./models/GoogleNet_1.2-4.0.tar"
+path_to_statedict = "../GoogleNet_1.2-4.0.tar"
 
 checkpoint = torch.load(path_to_statedict)
 model.load_state_dict(checkpoint['model_state_dict'])
@@ -66,6 +66,6 @@ met.f_score()
 
 f= open("target-"+str(model)+"-"+str(HP.version)+".json","w+")
 #str_to_write = "{\"Epochs\": "+str(epochs)+ ", \"TrainAcc\": "+ str(trainAcc)+", \"ValidAcc\": "+str(validAcc)+", \"TestAcc\": "+str(met.accuracy())+"}"
-str_to_write = "{\"Pred\": "+str(pred)+", \"Target\": "+str(target)+"}"
+str_to_write = "{\"Pred\": "+str(list(pred.cpu().numpy()))+", \"Target\": "+str(list(target.cpu().numpy()))+"}"
 f.write(str_to_write)
 f.close()
