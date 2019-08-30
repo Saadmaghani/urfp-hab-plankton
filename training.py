@@ -129,9 +129,9 @@ class Trainer:
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
         epoch = checkpoint['epoch']
         
-        model.eval()
+        #model.eval()
         # - or -
-        # model.train()
+        model.train()
         
         return model, optimizer, epoch
 

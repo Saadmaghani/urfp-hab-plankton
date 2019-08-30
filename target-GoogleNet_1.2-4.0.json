@@ -1,0 +1,1 @@
+{"Pred": tensor([15, 27, 26,  ..., 26, 26, 15], device='cuda:0'), "Target": tensor([15, 27, 26,  ..., 26, 26, 15], device='cuda:0')}

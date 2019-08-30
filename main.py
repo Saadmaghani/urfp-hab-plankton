@@ -5,6 +5,7 @@ import torch.nn as nn
 import torch.optim as optim
 from models.vgg_TL import VGG, GoogleNet, ResNet
 from configuration import Hyperparameters as HP
+import torch
 
 years = [str(y) for y in range(2006, 2015)]
 
@@ -47,10 +48,15 @@ trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn
 
 model = GoogleNet()
 
-trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
+#trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
 
 # - or -
-#model = trainer.load_full_model(model, "./models/firstCNN_2.2-3.1.pth")
+path_to_statedict = "./models/GoogleNet_1.2-4.0.tar"
+
+checkpoint = torch.load(path_to_statedict)
+model.load_state_dict(checkpoint['model_state_dict'])
+
+model.eval()
 
 testLoader = pp.get_loaders('test', HP.batch_size)
 pred, target = trainer.test(model, testLoader)
@@ -58,7 +64,8 @@ met = Metrics(target, pred)
 
 met.f_score()
 
-f= open("stats-"+str(model)+"-"+str(HP.version)+".json","w+")
-str_to_write = "{\"Epochs\": "+str(epochs)+ ", \"TrainAcc\": "+ str(trainAcc)+", \"ValidAcc\": "+str(validAcc)+", \"TestAcc\": "+str(met.accuracy())+"}"
+f= open("target-"+str(model)+"-"+str(HP.version)+".json","w+")
+#str_to_write = "{\"Epochs\": "+str(epochs)+ ", \"TrainAcc\": "+ str(trainAcc)+", \"ValidAcc\": "+str(validAcc)+", \"TestAcc\": "+str(met.accuracy())+"}"
+str_to_write = "{\"Pred\": "+str(pred)+", \"Target\": "+str(target)+"}"
 f.write(str_to_write)
 f.close()
