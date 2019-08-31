@@ -1,7 +1,7 @@
 import torch.optim as optim
 from torch.optim import lr_scheduler
 import torch.nn as nn
-from training import EarlyStopping
+from training import EarlyStopping, FocalLoss
 
 # default:
 # lr = 0.01, optim - optim.SGD, epochs = 10, es = None, loss_fun = nn.MSELoss, momentum = 0.9, batch size = 128, es w/ patience=10
@@ -20,16 +20,19 @@ from training import EarlyStopping
 # version 3.6 = same as 3.5 except patience = 40
 # version 3.7 = same as 3.5 except 1000 images ***
 # version 4.0 = same as 3.5 except 2000 images and thresholding
+# version 4.1 = same as 3.5 except maxN = 30000, no thresholding, no images/class, loss_fc = FocalLoss
+
 class Hyperparameters:
-    version=4.0
+    version=4.1
     learning_rate = 0.0003
     number_of_epochs = 200
     momentum = 0.9
-    number_of_images_per_class = 2000
+    number_of_images_per_class = None
     optimizer = optim.Adam
-    loss_function = nn.MSELoss
+    loss_function = FocalLoss
     es = EarlyStopping(patience=20)
     batch_size = 256
     scheduler = None
-    thresholding = True
+    thresholding = False
+    maxN = 30000
 
