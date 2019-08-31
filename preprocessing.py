@@ -124,11 +124,15 @@ class ToTensor(object):
 class Preprocessor:
 	DATA_FOLDER = "./data"
 
-	def __init__(self, years, transformations = None, include_classes = None, thresholding = False, train_eg_per_class = None):
+	def __init__(self, years, transformations = None, include_classes = None, thresholding = False, maxN = None, train_eg_per_class = None):
+                self.seed = 3
 		self.years = years
 		self.include_classes = include_classes
 		self.fnames, self.labels = self._get_lbls_fnames()
 		self.thresholding = thresholding
+                
+                if maxN is not None and thresholding is False and train_eg_per_class is None:
+                    self.fnames, self.labels = self._reduce_classes(maxN)
 		if train_eg_per_class is not None:
 			self.fnames, self.labels = self._normalize_classes(train_eg_per_class)
 
@@ -137,20 +141,28 @@ class Preprocessor:
 		ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 
-	# -- TODO -- or nah
-	def _class_split(self, pc_splits, seed=3):
-		if self.include_classes is not None:
-			for class_name in self.include_classes:
-				class_idx = np.where(np.array(self.labels) == class_name)	
-		pass
+        def _reduce_classes(self, maxN):
+            new_labels = []
+            new_fnames = []
+            n = len(self.labels)
+            for class_name in self.include_classes:
+                class_idx = np.where(np.array(self.labels) == class_name)
+                expected = (len(class_idx)//n)*maxN
+                np.random.seed(self.seed)
+                random_idx = np.random.choice(class_idx, expected, replace=False)
+                image_files = list(np.array(self.fnames)[random_idx])
+                new_fnames.extend(image_files)
+                new_labels.extend([class_name]*expected)
+            return new_fnames, new_labels
 
-	def _normalize_classes(self, data_per_class, seed = 3):
+
+	def _normalize_classes(self, data_per_class):
 		new_labels = []
 		new_fnames = []
 		if self.include_classes is not None:
 			for class_name in self.include_classes:
 				class_idx = np.where(np.array(self.labels) == class_name)
-				np.random.seed(seed)
+				np.random.seed(self.seed)
 				if self.thresholding is True and len(class_idx) <= data_per_class:
 					random_idx = class_idx[0]
 					data_per_class = len(class_idx[0])
@@ -172,13 +184,13 @@ class Preprocessor:
 
 	
 	# split into train,test or train,val,test
-	def _split(self, pc_splits, seed = 3):
-		xTrain, xTest, yTrain, yTest, eyTrain, eyTest = train_test_split(self.fnames, self.labels, self.encoded_labels, test_size = pc_splits[-1], random_state=seed)
+	def _split(self, pc_splits):
+		xTrain, xTest, yTrain, yTest, eyTrain, eyTest = train_test_split(self.fnames, self.labels, self.encoded_labels, test_size = pc_splits[-1], random_state=self.seed)
 		xVal = [] 
 		yVal = []
 		eyVal = []
 		if len(pc_splits) == 3:
-			xTrain, xVal, yTrain, yVal, eyTrain, eyVal = train_test_split(xTrain, yTrain, eyTrain, test_size = pc_splits[1]/(pc_splits[0]+pc_splits[1]), random_state=seed)
+			xTrain, xVal, yTrain, yVal, eyTrain, eyVal = train_test_split(xTrain, yTrain, eyTrain, test_size = pc_splits[1]/(pc_splits[0]+pc_splits[1]), random_state=self.seed)
 
 		partition = {'train': xTrain, 'validation': xVal, 'test': xTest}
 		labels = {'train': yTrain, 'validation': yVal, 'test': yTest}
