@@ -125,7 +125,7 @@ class Preprocessor:
     DATA_FOLDER = "./data"
 
     def __init__(self, years, transformations = None, include_classes = None, thresholding = False, maxN = None, train_eg_per_class = None):
-                self.seed = 3
+        self.seed = 3
         self.years = years
         self.include_classes = include_classes
         self.fnames, self.labels = self._get_lbls_fnames()
@@ -150,13 +150,12 @@ class Preprocessor:
         n = len(self.labels)
         for class_name in self.include_classes:
             class_idx = np.where(np.array(self.labels) == class_name)
-            expected = (len(class_idx)//n)*maxN
+            expected = (len(class_idx[0])*maxN)//n
             np.random.seed(self.seed)
-            random_idx = np.random.choice(class_idx, expected, replace=False)
+            random_idx = np.random.choice(class_idx[0], expected, replace=False)
             image_files = list(np.array(self.fnames)[random_idx])
             new_fnames.extend(image_files)
             new_labels.extend([class_name]*expected)
-            print(class_name, len(random_idx))
         return new_fnames, new_labels
 
 
@@ -167,7 +166,7 @@ class Preprocessor:
             for class_name in self.include_classes:
                 class_idx = np.where(np.array(self.labels) == class_name)
                 np.random.seed(self.seed)
-                if self.thresholding is True and len(class_idx) <= data_per_class:
+                if self.thresholding is True and len(class_idx[0]) <= data_per_class:
                     random_idx = class_idx[0]
                     data_per_class = len(class_idx[0])
                 else:
