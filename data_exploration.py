@@ -3,7 +3,7 @@ from PIL import Image
 import matplotlib.pyplot as plt
 
 data_folder = "data"
-years = [str(i) for i in range(2014, 2015)]
+years = [str(i) for i in range(2006, 2015)]
 class_names = ["Akashiwo", "Amphidinium sp", "Chrysochromulina", "Cochlodinium", 
 	"Dinophysis", "Gonyaulax", "Guinardia_delicatula", "Guinardia_striata", "Gyrodinium", 
 	"Heterocapsa_triquetra", "Karenia", "Phaeocystis", "Prorocentrum", "Pseudochattonella_farcimen", 
@@ -56,8 +56,12 @@ print(class_stats)
 print("#############################")
 print(classB_stats)
 print("#############################")
-xc = [x[0] for x in image_stats]
-yc = [y[0] for y in image_stats]
-plt.scatter(xc, yc, s=list(image_stats.values()))
-plt.show()
+f=open("no1.txt","w+")
+f.write(str(classB_stats))
+f.close()
+
+#xc = [x[0] for x in image_stats]
+#yc = [y[0] for y in image_stats]
+#plt.scatter(xc, yc, s=list(image_stats.values()))
+#plt.show()
 
