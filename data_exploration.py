@@ -29,8 +29,13 @@ for year in years:
 	if os.path.isdir(data_path):
 		non_hab_causing = [0]
 		for class_name in os.listdir(data_path):
+
 			if class_name not in class_names or class_name in ignored_classes:
 				continue
+
+			#if class_name in ignored_classes:
+			#	continue
+
 			c_path = data_path + "/"+class_name
 
 
@@ -42,8 +47,8 @@ for year in years:
 				else:
 					non_hab_causing[0] += len(image_files) 
 
-				#if class_name in all_classes:
-				#	classB_stats[class_name][year][0] = len(image_files) 
+				if class_name in all_classes:
+					classB_stats[class_name][year][0] = len(image_files) 
 
 				#for img in image_files:
 				#	im = Image.open(c_path + "/" + img)
@@ -58,6 +63,11 @@ print(class_stats)
 print("#############################")
 print(classB_stats)
 print("#############################")
+
+f=open("no1.txt","w+")
+f.write(str(classB_stats))
+f.close()
+
 #xc = [x[0] for x in image_stats]
 #yc = [y[0] for y in image_stats]
 #plt.scatter(xc, yc, s=list(image_stats.values()))
