@@ -27,8 +27,8 @@ for year in years:
 	if os.path.isdir(data_path):
 		non_hab_causing = [0]
 		for class_name in os.listdir(data_path):
-			if class_name in ignored_classes:
-				continue
+			#if class_name in ignored_classes:
+			#	continue
 			c_path = data_path + "/"+class_name
 
 
@@ -40,15 +40,15 @@ for year in years:
 				#else:
 				#	non_hab_causing[0] += len(image_files) 
 
-				#if class_name in all_classes:
-				#	classB_stats[class_name][year][0] = len(image_files) 
+				if class_name in all_classes:
+					classB_stats[class_name][year][0] = len(image_files) 
 
-				for img in image_files:
-					im = Image.open(c_path + "/" + img)
-					width, height = im.size
-					if (width, height) not in image_stats:
-						image_stats[(width, height)] = 0
-					image_stats[(width, height)] += 1
+				#for img in image_files:
+				#	im = Image.open(c_path + "/" + img)
+				#	width, height = im.size
+				#	if (width, height) not in image_stats:
+				#		image_stats[(width, height)] = 0
+				#	image_stats[(width, height)] += 1
 
 		#class_stats["non-HAB-causing"][year] = non_hab_causing
 
