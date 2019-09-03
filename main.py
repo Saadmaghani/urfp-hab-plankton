@@ -53,10 +53,10 @@ trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earl
 # - or -
 #path_to_statedict = "../GoogleNet_1.2-4.0.tar"
 
-checkpoint = torch.load(path_to_statedict)
-model.load_state_dict(checkpoint['model_state_dict'])
+#checkpoint = torch.load(path_to_statedict)
+#model.load_state_dict(checkpoint['model_state_dict'])
 
-model.eval()
+#model.eval()
 
 testLoader = pp.get_loaders('test', HP.batch_size)
 pred, target = trainer.test(model, testLoader)
