@@ -64,7 +64,7 @@ met = Metrics(target, pred)
 
 met.f_score()
 
-f= open("target-"+str(model)+"-"+str(HP.version)+".json","w+")
+f= open("stats-"+str(model)+"-"+str(HP.version)+".json","w+")
 str_to_write = "{\"Epochs\": "+str(epochs)+ ", \"TrainAcc\": "+ str(trainAcc)+", \"ValidAcc\": "+str(validAcc)+", \"TestAcc\": "+str(met.accuracy())+"}"
 #str_to_write = "{\"Pred\": "+str(list(pred.cpu().numpy()))+", \"Target\": "+str(list(target.cpu().numpy()))+"}"
 f.write(str_to_write)
