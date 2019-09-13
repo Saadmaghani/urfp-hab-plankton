@@ -7,7 +7,8 @@
 4/7 - thursday
 1.	regarding 1 of 3/7:
 	a)	i started to find out what exactly the naming system is. i am using marinespecies.org to find out the meaning. 
-		basically the 82 names are species names whereas the 103 are mostly genus names. therefore i have started to list which of the partial matches have how many species in each genus. maybe only one species for a particular genus will lead to good result
+		basically the 82 names are species names whereas the 103 are mostly genus names. therefore i have started to list which of the partial matches 
+		have how many species in each genus. maybe only one species for a particular genus will lead to good result
 		results: only akashiwo genus had 1 child. the rest had more and thus completely useless. but we can change yes to 3 and partially to 43 yay lol
 	b)	find another dataset of pics which give species
 	c)	will find synonymous names to the species names. maybe of the 'no's there are matches when put to synonymous names. uhhh doubt it though.
@@ -222,9 +223,9 @@
 	7.	include more images
 	
 
-
-
-
-
+2/9 - Monday
+Stastics of each category - accuracy
+czm
+czm
 
 

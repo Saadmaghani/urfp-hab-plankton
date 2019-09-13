@@ -130,12 +130,13 @@ class Preprocessor:
         self.include_classes = include_classes
         self.fnames, self.labels = self._get_lbls_fnames()
         self.thresholding = thresholding
-                
+        print(len(self.fnames)) 
         if maxN is not None and thresholding is False and train_eg_per_class is None:
             self.fnames, self.labels = self._reduce_classes(maxN)
         if train_eg_per_class is not None:
             self.fnames, self.labels = self._normalize_classes(train_eg_per_class)
 
+        print(len(self.fnames))
         self.encoded_labels = self._oneHotEncoding().tolist()
         self.transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) if transformations is None else transformations
         ImageFile.LOAD_TRUNCATED_IMAGES = True
@@ -162,15 +163,19 @@ class Preprocessor:
     def _normalize_classes(self, data_per_class):
         new_labels = []
         new_fnames = []
+        og_dpc = data_per_class
         if self.include_classes is not None:
             for class_name in self.include_classes:
+                data_per_class = og_dpc
                 class_idx = np.where(np.array(self.labels) == class_name)
                 np.random.seed(self.seed)
                 if self.thresholding is True and len(class_idx[0]) <= data_per_class:
+                    print(class_idx[0])
                     random_idx = class_idx[0]
                     data_per_class = len(class_idx[0])
                 else:
                     random_idx = np.random.choice(class_idx[0], size = data_per_class, replace=False)
+                print(class_name, len(random_idx))
                 image_files = list(np.array(self.fnames)[random_idx])
                 new_fnames.extend(image_files)
                 new_labels.extend([class_name]*data_per_class)
