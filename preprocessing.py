@@ -42,6 +42,7 @@ class PlanktonDataset(Dataset):
         return sample
 
 
+
 # image transformations
 class Rescale(object):
     """Rescale the image in a sample to a given size.
@@ -143,7 +144,6 @@ class Preprocessor:
         print(len(self.fnames))
 
 
-
     def _reduce_classes(self, maxN):
         new_labels = []
         new_fnames = []
@@ -182,9 +182,6 @@ class Preprocessor:
         n = np.max(integer_encoded)
         return torch.nn.functional.one_hot(torch.from_numpy(integer_encoded), int(n)+1)
 
-    def apply_augmentations(self):
-        pass
-
     
     # split into train,test or train,val,test
     def _split(self, pc_splits):
@@ -200,6 +197,7 @@ class Preprocessor:
         encoded = {'train': eyTrain, 'validation': eyVal, 'test': eyTest}
         return (partition, labels, encoded)
 
+
     def create_datasets(self, splits):
         partition, labels, onehot_labels = self._split(splits)
         self.train_dataset = PlanktonDataset(partition['train'], labels['train'], onehot_labels['train'],
@@ -211,6 +209,10 @@ class Preprocessor:
         self.test_dataset = PlanktonDataset(partition['test'], labels['test'], onehot_labels['test'],
             Preprocessor.DATA_FOLDER, transform=self.transformations)
 
+
+    def onehot_to_label(self, onehot):
+        ind = self.encoded_labels.index(onehot)
+        return self.labels[ind]
 
 
     def get_loaders(self, lType, batch_size):
