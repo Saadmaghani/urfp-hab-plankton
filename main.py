@@ -59,13 +59,22 @@ trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earl
 #model.eval()
 
 testLoader = pp.get_loaders('test', HP.batch_size)
-pred, target = trainer.test(model, testLoader)
-met = Metrics(target, pred)
+test_pred, test_target = trainer.test(model, testLoader)
+valid_pred, valid_target = trainer.test(model, validLoader)
+train_pred, train_target = trainer.test(model, trainLoader)
 
-met.f_score()
+test_met = Metrics(test_target, test_pred)
+#valid_met = Metrics(valid_target, valid_pred)
+#train_met = Metrics(train_target, train_pred)
+
+print(test_met.accuracy())
 
 f= open("stats-"+str(model)+"-"+str(HP.version)+".json","w+")
-str_to_write = "{\"Epochs\": "+str(epochs)+ ", \"TrainAcc\": "+ str(trainAcc)+", \"ValidAcc\": "+str(validAcc)+", \"TestAcc\": "+str(met.accuracy())+"}"
-#str_to_write = "{\"Pred\": "+str(list(pred.cpu().numpy()))+", \"Target\": "+str(list(target.cpu().numpy()))+"}"
+str_to_write = "{\"Epochs\": "+str(epochs)+ ", \"TrainAcc\": "+ str(trainAcc)+", \"ValidAcc\": "+str(validAcc)+", \"TestAcc\": "+str(test_met.accuracy()) +
+	", \"Train_Pred\": " + str(list(train_pred.cpu().numpy())) + ", \"Train_Target\": " + str(list(train_target.cpu().numpy())) + 
+	", \"Valid_Pred\": " + str(list(valid_pred.cpu().numpy())) + ", \"Valid_Target\": " + str(list(valid_target.cpu().numpy())) + 
+	", \"Test_Pred\": " + str(list(test_pred.cpu().numpy())) + ", \"Test_Target\": " + str(list(test_target.cpu().numpy())) + "}"
 f.write(str_to_write)
 f.close()
+
+

@@ -214,13 +214,13 @@
 2.	lets do thresholding with googlenet
 3.	thresholding with googlenet taking long time. doing resnet18, resnet50 with 3.7
 4.	talked to zhiming:
-	1.	find out backbone NN 
+	1.	find out backbone NN (done)
 	2.	apply some idea using backbone NN to get higher accuracy/f-measure
 	3.	share onenote with him (done)
 	4.	read cvpr iccv eccv conference papers
 	5.	email professors about phd (look at chinese U and UST professors too)
 	6.	email Ping Lou about working as an undergraduate RA and then about PhD
-	7.	include more images
+	7.	include more images (done)
 	
 
 2/9 - Monday
@@ -248,6 +248,5 @@ preprocessing
 2. 	noisy images we could use autoencode
 classification tree after googlenet 
 
-accuracies of training/validation/test sets of each class
-
+accuracies of training/validation/test sets of each class (done)
 
