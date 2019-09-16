@@ -214,8 +214,9 @@ class Preprocessor:
         self.test_dataset = PlanktonDataset(partition['test'], labels['test'], onehot_labels['test'],
             Preprocessor.DATA_FOLDER, transform=self.transformations)
 
-
-    def onehot_to_label(self, onehot):
+    def onehot_to_label(self, onehot_ind):
+        onehot = [0 for x in range(len(self.encoded_labels[0]))]
+        onehot[onehot_ind] = 1
         ind = self.encoded_labels.index(onehot)
         return self.labels[ind]
 

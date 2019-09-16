@@ -7,8 +7,8 @@ import json
 class Metrics:
     
     def __init__(self, y_true, y_pred):
-        self.target = y_true.cpu()
-        self.pred = y_pred.cpu()
+        self.target = y_true.tolist()
+        self.pred = y_pred.tolist()
 
     def sample(self, n):
         random_idx = np.random.choice(list(range(len(self.target))), size = n, replace = False)
