@@ -23,8 +23,9 @@ from training import EarlyStopping, FocalLoss
 # version 4.1 = same as 4.0 except 2500 images
 # version 5.0 = same as 3.5 except maxN = 30000, no thresholding, no images/class, loss_fc = FocalLoss
 # version 5.1 = same as 5.0 except maxN = 56000 which is similar N to 4.1 (56111)
+# version 5.2 = same as 5.0 except maxN = 100000
 class Hyperparameters:
-    version=5.1
+    version=5.2
     learning_rate = 0.0003
     number_of_epochs = 200
     momentum = 0.9
@@ -35,5 +36,5 @@ class Hyperparameters:
     batch_size = 256
     scheduler = None
     thresholding = False
-    maxN = 56000 
+    maxN = 100000 
 

@@ -101,8 +101,8 @@ class Trainer:
             if earlyStopping is not None and earlyStopping.step(valid_acc):
                 break
         
-        if save == True:
             model.load_state_dict(best_model_weights)
+        if save == True:
             self._save_full_model(model)
         print('Finished Training')
         self.timeEnd = time.time()
@@ -110,9 +110,15 @@ class Trainer:
     
         
     def getTime(self):
-        return self.timeEnd - self.timeStart
+        time_delta = self.timeEnd - self.timeStart
+        secs = time_delta % 60
+        mins = time_delta // 60
+        hours = mins // 60
+        mins = mins % 60
+        hms = str(hours) + ":" + str(mins) + ":" + str(secs)
+        return hms
 
-        
+
         
     def _save_partial_model(self, model, epoch, loss, optimizer):
         path_to_statedict = './models/'+str(model)+"-"+str(self.hp_version)+'.tar' 
