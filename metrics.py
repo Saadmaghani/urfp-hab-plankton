@@ -1,4 +1,4 @@
-from sklearn.metrics import confusion_matrix, accuracy_score, f1_score, recall_score
+from sklearn.metrics import confusion_matrix, accuracy_score, f1_score, recall_score, classification_report
 import matplotlib.pyplot as plt
 import numpy as np
 import json
@@ -7,8 +7,8 @@ import json
 class Metrics:
     
     def __init__(self, y_true, y_pred):
-        self.target = y_true.cpu()
-        self.pred = y_pred.cpu()
+        self.target = y_true.tolist()
+        self.pred = y_pred.tolist()
 
     def sample(self, n):
         random_idx = np.random.choice(list(range(len(self.target))), size = n, replace = False)
@@ -31,8 +31,13 @@ class Metrics:
         print(x)
         return x
 
-    def class_accuracies(self):
-        pass
+    def class_accuracies(self, preprocessor):
+        uniq_classes = set(self.target)
+        class_names = []
+        for cl in uniq_classes:
+            class_names.append(preprocessor.onehot_to_label(cl))
+        ca_dic = class_accuracies(self.target, self.pred, target_names=class_names, output_dict=True)
+        return ca_dict
     
     def plot_CM(self, normalize = True):
         cm = confusion_matrix(self.target.view(-1), self.pred.view(-1))

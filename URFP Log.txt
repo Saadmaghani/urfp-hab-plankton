@@ -214,13 +214,13 @@
 2.	lets do thresholding with googlenet
 3.	thresholding with googlenet taking long time. doing resnet18, resnet50 with 3.7
 4.	talked to zhiming:
-	1.	find out backbone NN 
+	1.	find out backbone NN (done)
 	2.	apply some idea using backbone NN to get higher accuracy/f-measure
 	3.	share onenote with him (done)
 	4.	read cvpr iccv eccv conference papers
 	5.	email professors about phd (look at chinese U and UST professors too)
 	6.	email Ping Lou about working as an undergraduate RA and then about PhD
-	7.	include more images
+	7.	include more images (done)
 	
 
 2/9 - Monday
@@ -228,4 +228,26 @@ Stastics of each category - accuracy
 czm
 czm
 
+
+week of 2/9:
+1. talked to zhiming and need to introduce statistics of each category. lets do that today (8/9)
+2. trained some models:
+	1. GoogleNet 1.2:
+		- 4.0 = 93.95% (7,50 hours)
+		- 4.1 = 94.04% (11,45 hours)
+		- 5.0 = 93.08% (2,30 hours)
+		- 5.1 = 94.00% (13,30 hours)
+		- 5.2 = 94.75% (??)
+
+
+
+data distribution
+shape/appearance of classes not consistent
+1.	choose sample of misclassified images
+preprocessing
+1.	resizing
+2. 	noisy images we could use autoencode
+classification tree after googlenet 
+
+accuracies of training/validation/test sets of each class (done)
 
