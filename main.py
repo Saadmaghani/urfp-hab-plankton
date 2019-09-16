@@ -41,6 +41,7 @@ pp.create_datasets([0.6,0.2,0.2])
 
 trainLoader = pp.get_loaders('train', HP.batch_size)
 validLoader = pp.get_loaders('validation', HP.batch_size)
+testLoader = pp.get_loaders('test', HP.batch_size)
 
 
 trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn = HP.loss_function, 
@@ -58,7 +59,6 @@ trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earl
 
 #model.eval()
 
-testLoader = pp.get_loaders('test', HP.batch_size)
 test_pred, test_target = trainer.test(model, testLoader)
 valid_pred, valid_target = trainer.test(model, validLoader)
 train_pred, train_target = trainer.test(model, trainLoader)

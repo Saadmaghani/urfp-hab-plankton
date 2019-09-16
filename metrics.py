@@ -36,7 +36,7 @@ class Metrics:
         class_names = []
         for cl in uniq_classes:
             class_names.append(preprocessor.onehot_to_label(cl))
-        ca_dic = class_accuracies(self.target, self.pred, target_names=class_names, output_dict=True)
+        ca_dict = classification_report(self.target, self.pred, target_names=class_names, output_dict=True)
         return ca_dict
     
     def plot_CM(self, normalize = True):
