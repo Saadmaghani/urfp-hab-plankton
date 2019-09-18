@@ -38,7 +38,7 @@ class PlanktonDataset(Dataset):
             
         sample['encoded_label'] = encoded_label
         sample['image'] = sample['image'].reshape((1,sample['image'].shape[0], sample['image'].shape[1]))
-
+        sample['fname'] = img_name
         return sample
 
 
@@ -214,11 +214,17 @@ class Preprocessor:
         self.test_dataset = PlanktonDataset(partition['test'], labels['test'], onehot_labels['test'],
             Preprocessor.DATA_FOLDER, transform=self.transformations)
 
-    def onehot_to_label(self, onehot_ind):
+    def onehotInd_to_label(self, onehot_ind):
         onehot = [0 for x in range(len(self.encoded_labels[0]))]
         onehot[onehot_ind] = 1
         ind = self.encoded_labels.index(onehot)
         return self.labels[ind]
+
+    def label_to_onehotInd(self, label):
+        ind = self.labels.index(label)
+        onehot = self.encoded_labels[ind]
+        _, onehot_ind = torch.max(onehot, 0)
+        return onehot_ind
 
 
     def get_loaders(self, lType, batch_size):
