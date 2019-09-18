@@ -171,7 +171,7 @@ class Trainer:
                 #print("~~~~~~~~~~~~~~~~")
                 all_preds = torch.cat((all_preds, predicted), 0)
                 all_targets = torch.cat((all_targets, labels), 0) 
-                all_fnames.extend(date['fname'])
+                all_fnames.extend(data['fname'])
                 #if total >=10:
                 #   break
 

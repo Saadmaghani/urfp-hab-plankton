@@ -7,15 +7,35 @@ import json
 class Metrics:
     
     def __init__(self, y_true, y_pred):
-        self.target = y_true.tolist()
-        self.pred = y_pred.tolist()
 
-    def sample(self, n):
-        random_idx = np.random.choice(list(range(len(self.target))), size = n, replace = False)
+        if not isinstance(y_true, list):
+            self.target = y_true.tolist()
+        else:
+            self.target = y_true
+        if not isinstance(y_pred, list):
+            self.pred = y_pred.tolist()
+        else:
+            self.pred = y_pred
+
+    def sample(self, n, fname=None, classname = None, preprocessor = None):
+
+        working_indices = list(range(len(self.target)))
+        if classname is not None:
+            if isinstance(classname, str) and preprocessor is not None:
+                classname = preprocessor.label_to_onehotInd(classname)
+            working_indices = np.where(np.array(self.target) == classname)
+
+        random_idx = np.random.choice(working_indices, size = n, replace = False)
         target = np.array(self.target)[random_idx]
         pred = np.array(self.pred)[random_idx]
+
+        if fname is not None:
+            imgs = np.array(fname)[random_idx]
+            show_plankton(imgs)
+
         return (target, pred)
 
+    
     def accuracy(self):
         x = accuracy_score(self.target, self.pred)
         print(x)
@@ -31,13 +51,18 @@ class Metrics:
         print(x)
         return x
 
-    def class_accuracies(self, preprocessor):
-        uniq_classes = set(self.target)
-        class_names = []
-        for cl in uniq_classes:
-            class_names.append(preprocessor.onehot_to_label(cl))
-        ca_dict = classification_report(self.target, self.pred, target_names=class_names, output_dict=True)
-        return ca_dict
+    def class_accuracies(self, preprocessor = None):
+
+        if preprocessor is None:
+            ca_dict = classification_report(self.target, self.pred, output_dict=True)
+            return ca_dict
+        else:
+            uniq_classes = set(self.target)
+            class_names = []
+            for cl in uniq_classes:
+                class_names.append(preprocessor.onehotInd_to_label(cl))
+            ca_dict = classification_report(self.target, self.pred, target_names=class_names, output_dict=True)
+            return ca_dict
     
     def plot_CM(self, normalize = True):
         cm = confusion_matrix(self.target.view(-1), self.pred.view(-1))
@@ -65,6 +90,22 @@ class Metrics:
             legend.append(key)
         plt.legend(legend, loc='upper left')
         plt.show()
+
+
+def show_plankton(fnames):
+    pass
+    ln = len(fnames)
+
+    fig = plt.figure()
+    ax = fig.add_subplot(222)
+    plt.imshow(img,cmap = 'gray')
+    cax = ax.matshow(cm, cmap = plt.cm.Blues)
+    fig.colorbar(cax)
+    plt.title(title)
+    plt.xlabel('Predicted')
+    plt.ylabel('True')
+    plt.show()
+
 
 
 def load_json_from_file(filename):
