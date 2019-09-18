@@ -38,6 +38,7 @@ class PlanktonDataset(Dataset):
             
         sample['encoded_label'] = encoded_label
         sample['image'] = sample['image'].reshape((1,sample['image'].shape[0], sample['image'].shape[1]))
+        sample['fname'] = img_name
 
         return sample
 

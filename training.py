@@ -154,11 +154,13 @@ class Trainer:
     def test(self, model, testloader): #stats finder
         all_preds = torch.LongTensor().to(self.device)
         all_targets = torch.LongTensor().to(self.device)
+        all_fnames = []
         model.to(self.device)
         
         with torch.no_grad():
 
             for data in testloader:
+                print(data['fname'])
                 inputs, labels = data['image'].to(self.device), data['encoded_label'].to(self.device).float()
                 _, labels = torch.max(labels, 1)
 
@@ -169,10 +171,11 @@ class Trainer:
                 #print("~~~~~~~~~~~~~~~~")
                 all_preds = torch.cat((all_preds, predicted), 0)
                 all_targets = torch.cat((all_targets, labels), 0) 
+                all_fnames.extend(date['fname'])
                 #if total >=10:
                 #   break
 
-        return all_preds, all_targets
+        return all_preds, all_targets, all_fnames
 
 # script copied from https://gist.github.com/stefanonardo/693d96ceb2f531fa05db530f3e21517d
 # author: Stefano Nardo, Github: stefanonardo
