@@ -237,11 +237,10 @@ week of 2/9:
 		- 4.1 = 94.04% (11,45 hours)
 		- 5.0 = 93.08% (2,30 hours)
 		- 5.1 = 94.00% (13,30 hours)
-		- 5.2 = 94.75% (??)
+		- 5.2 = 94.75% (??) (model file located in czm server)
 
 
-
-data distribution
+data distribution -> class distribution. maybe we should make a table out of it.
 shape/appearance of classes not consistent
 1.	choose sample of misclassified images
 preprocessing
