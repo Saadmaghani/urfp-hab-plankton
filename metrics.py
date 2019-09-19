@@ -2,7 +2,7 @@ from sklearn.metrics import confusion_matrix, accuracy_score, f1_score, recall_s
 import matplotlib.pyplot as plt
 import numpy as np
 import json
-
+from skimage import io, transform
 
 class Metrics:
     
@@ -25,12 +25,13 @@ class Metrics:
                 classname = preprocessor.label_to_onehotInd(classname)
             working_indices = np.where(np.array(self.target) == classname)
 
-        random_idx = np.random.choice(working_indices, size = n, replace = False)
+        random_idx = np.random.choice(working_indices[0], size = n, replace = False)
         target = np.array(self.target)[random_idx]
         pred = np.array(self.pred)[random_idx]
 
         if fname is not None:
             imgs = np.array(fname)[random_idx]
+            print(fname)
             show_plankton(imgs)
 
         return (target, pred)
@@ -65,7 +66,10 @@ class Metrics:
             return ca_dict
     
     def plot_CM(self, normalize = True):
-        cm = confusion_matrix(self.target.view(-1), self.pred.view(-1))
+        if not isinstance(self.target, list):
+            cm = confusion_matrix(self.target.view(-1), self.pred.view(-1))
+        else:
+            cm = confusion_matrix(self.target, self.pred)
         if normalize:
             cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
             title = "Confusion Matrix - normalized"
@@ -93,17 +97,23 @@ class Metrics:
 
 
 def show_plankton(fnames):
-    pass
     ln = len(fnames)
-
+    imgs = np.array([])
+    
+    for fname in fnames:
+        img = io.imread(fname)
+        np.append(imgs, img)
+    
+    
     fig = plt.figure()
     ax = fig.add_subplot(222)
-    plt.imshow(img,cmap = 'gray')
-    cax = ax.matshow(cm, cmap = plt.cm.Blues)
-    fig.colorbar(cax)
-    plt.title(title)
-    plt.xlabel('Predicted')
-    plt.ylabel('True')
+    for img in imgs:
+        plt.imshow(img.reshape((64,64)))
+        plt.pause(0.001)
+    
+    
+    plt.title("images")
+
     plt.show()
 
 

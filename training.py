@@ -160,7 +160,6 @@ class Trainer:
         with torch.no_grad():
 
             for data in testloader:
-                print(data['fname'])
                 inputs, labels = data['image'].to(self.device), data['encoded_label'].to(self.device).float()
                 _, labels = torch.max(labels, 1)
 

@@ -223,7 +223,7 @@ class Preprocessor:
     def label_to_onehotInd(self, label):
         ind = self.labels.index(label)
         onehot = self.encoded_labels[ind]
-        _, onehot_ind = torch.max(onehot, 0)
+        onehot_ind = onehot.index(max(onehot))
         return onehot_ind
 
 
