@@ -223,8 +223,7 @@ class Preprocessor:
     def label_to_onehotInd(self, label):
         ind = self.labels.index(label)
         onehot = self.encoded_labels[ind]
-        onehot_ind = onehot.index(max(onehot))
-        return onehot_ind
+        return onehot.index(max(onehot))
 
 
     def get_loaders(self, lType, batch_size):
