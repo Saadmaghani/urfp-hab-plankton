@@ -2,6 +2,7 @@ from sklearn.metrics import confusion_matrix, accuracy_score, f1_score, recall_s
 import matplotlib.pyplot as plt
 import numpy as np
 import json
+from skimage import io, transform
 
 
 class Metrics:
@@ -20,12 +21,14 @@ class Metrics:
     def sample(self, n, fname=None, classname = None, preprocessor = None):
 
         working_indices = list(range(len(self.target)))
+
+
         if classname is not None:
             if isinstance(classname, str) and preprocessor is not None:
                 classname = preprocessor.label_to_onehotInd(classname)
             working_indices = np.where(np.array(self.target) == classname)
 
-        random_idx = np.random.choice(working_indices, size = n, replace = False)
+        random_idx = np.random.choice(working_indices[0], size = n, replace = False)[0]
         target = np.array(self.target)[random_idx]
         pred = np.array(self.pred)[random_idx]
 
@@ -35,7 +38,33 @@ class Metrics:
 
         return (target, pred)
 
-    
+    def sample_diff(self, n, fname=None, classname=None, preprocessor=None):
+        working_indices = np.where(self.target != self.pred)[0]
+
+        if classname is not None:
+            if isinstance(classname, str) and preprocessor is not None:
+                classname = preprocessor.label_to_onehotInd(classname)
+            working_indices = np.where(np.array(self.target) == classname)
+
+        if n > len(working_indices):
+            n = len(working_indices)
+        random_idx = np.random.choice(working_indices[0], size = n, replace = False)[0]
+        target = np.array(self.target)[random_idx]
+        pred = np.array(self.pred)[random_idx]
+
+        if fname is not None:
+            imgs = np.array(fname)[random_idx]
+            i=0
+            while i < len(pred):
+                indxs = np.where(np.array(self.target)==pred[i])[0]
+                pred_img = fname[np.random.choice(indx, size = 1)[0][0]]
+                np.insert(imgs, i*2 + 1, pred_img)
+                i += 1
+            show_plankton(imgs)
+
+        return (target, pred)
+
+
     def accuracy(self):
         x = accuracy_score(self.target, self.pred)
         print(x)
@@ -65,7 +94,10 @@ class Metrics:
             return ca_dict
     
     def plot_CM(self, normalize = True):
-        cm = confusion_matrix(self.target.view(-1), self.pred.view(-1))
+        if not isinstance(self.target, list):
+            cm = confusion_matrix(self.target.view(-1), self.pred.view(-1))
+        else:
+            cm = confusion_matrix(self.target, self.pred)
         if normalize:
             cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
             title = "Confusion Matrix - normalized"
@@ -93,19 +125,19 @@ class Metrics:
 
 
 def show_plankton(fnames):
-    pass
-    ln = len(fnames)
-
-    fig = plt.figure()
-    ax = fig.add_subplot(222)
-    plt.imshow(img,cmap = 'gray')
-    cax = ax.matshow(cm, cmap = plt.cm.Blues)
-    fig.colorbar(cax)
-    plt.title(title)
-    plt.xlabel('Predicted')
-    plt.ylabel('True')
+    fig, (ax1, ax2) = plt.subplots(1,2)
+    c=0
+    for fname in fnames:
+        img = io.imread(fname)
+        if c % 2==0:
+            ax1.imshow(img)
+            ax1.set_title(fname)
+        else:
+            ax2.imshow(img)
+            ax2.set_title(fname)
+            fig, (ax1, ax2) = plt.subplots(1,2)
+        c += 1
     plt.show()
-
 
 
 def load_json_from_file(filename):
