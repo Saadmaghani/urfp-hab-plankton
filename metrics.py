@@ -94,13 +94,10 @@ class Metrics:
             return ca_dict
     
     def plot_CM(self, preprocessor = None, normalize = True):
-        labels = None
-        if preprocessor is not None:
-            labels = self.get_classnames(preprocessor)
         if not isinstance(self.target, list):
-            cm = confusion_matrix(self.target.view(-1), self.pred.view(-1), labels)
+            cm = confusion_matrix(self.target.view(-1), self.pred.view(-1))
         else:
-            cm = confusion_matrix(self.target, self.pred, labels)
+            cm = confusion_matrix(self.target, self.pred)
         if normalize:
             cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
             title = "Confusion Matrix - normalized"
@@ -111,10 +108,18 @@ class Metrics:
         ax = fig.add_subplot(111)
         
         cax = ax.matshow(cm, cmap = plt.cm.Blues)
+
+        labels = None
+        if preprocessor is not None:
+            labels = self.get_classnames(preprocessor)
+
+
         fig.colorbar(cax)
         plt.title(title)
         plt.xlabel('Predicted')
+        plt.xticks(np.arrange(cm.shape[1]), labels)
         plt.ylabel('True')
+        plt.yticks(np.arrange(cm.shape[0]), labels)
         plt.show()
         
     def plot_series(series):
