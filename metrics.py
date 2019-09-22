@@ -89,18 +89,18 @@ class Metrics:
             ca_dict = classification_report(self.target, self.pred, output_dict=True)
             return ca_dict
         else:
-            uniq_classes = set(self.target)
-            class_names = []
-            for cl in uniq_classes:
-                class_names.append(preprocessor.onehotInd_to_label(cl))
+            class_names = get_classnames(preprocessor)
             ca_dict = classification_report(self.target, self.pred, target_names=class_names, output_dict=True)
             return ca_dict
     
-    def plot_CM(self, normalize = True):
+    def plot_CM(self, preprocessor = None, normalize = True):
+        labels = None
+        if preprocessor is not None:
+            labels = get_classnames(preprocessor)
         if not isinstance(self.target, list):
-            cm = confusion_matrix(self.target.view(-1), self.pred.view(-1))
+            cm = confusion_matrix(self.target.view(-1), self.pred.view(-1), labels)
         else:
-            cm = confusion_matrix(self.target, self.pred)
+            cm = confusion_matrix(self.target, self.pred, labels)
         if normalize:
             cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
             title = "Confusion Matrix - normalized"
@@ -125,6 +125,15 @@ class Metrics:
             legend.append(key)
         plt.legend(legend, loc='upper left')
         plt.show()
+
+
+    def get_classnames(self, preprocessor = None):
+        if preprocessor is not None:
+            uniq_classes = set(self.target)
+            class_names = []
+            for cl in uniq_classes:
+                class_names.append(preprocessor.onehotInd_to_label(cl))
+            return class_names
 
 
 def show_plankton(fnames):
