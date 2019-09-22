@@ -240,7 +240,7 @@ week of 2/9:
 		- 5.2 = 94.75% (??) (model file located in czm server)
 
 
-data distribution -> class distribution. maybe we should make a table out of it.
+data distribution -> class distribution. maybe we should make a table out of it. okay lol lets do that.
 shape/appearance of classes not consistent
 1.	choose sample of misclassified images
 preprocessing

@@ -27,7 +27,8 @@ class Metrics:
             if isinstance(classname, str) and preprocessor is not None:
                 classname = preprocessor.label_to_onehotInd(classname)
             working_indices = np.where(np.array(self.target) == classname)
-
+        if n > len(random_idx):
+            n = len(random_idx)
         random_idx = np.random.choice(working_indices[0], size = n, replace = False)[0]
         target = np.array(self.target)[random_idx]
         pred = np.array(self.pred)[random_idx]
