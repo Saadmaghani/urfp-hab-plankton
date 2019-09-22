@@ -96,7 +96,7 @@ class Metrics:
     def plot_CM(self, preprocessor = None, normalize = True):
         labels = None
         if preprocessor is not None:
-            labels = get_classnames(preprocessor)
+            labels = self.get_classnames(preprocessor)
         if not isinstance(self.target, list):
             cm = confusion_matrix(self.target.view(-1), self.pred.view(-1), labels)
         else:
