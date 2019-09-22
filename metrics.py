@@ -19,22 +19,24 @@ class Metrics:
             self.pred = y_pred
 
     def sample(self, n, fname=None, classname = None, preprocessor = None):
-
         working_indices = list(range(len(self.target)))
-
 
         if classname is not None:
             if isinstance(classname, str) and preprocessor is not None:
                 classname = preprocessor.label_to_onehotInd(classname)
             working_indices = np.where(np.array(self.target) == classname)
-        if n > len(random_idx):
-            n = len(random_idx)
+        if n > len(working_indices):
+            n = len(working_indices)
         random_idx = np.random.choice(working_indices[0], size = n, replace = False)[0]
         target = np.array(self.target)[random_idx]
         pred = np.array(self.pred)[random_idx]
-
+        print(pred)
+        print(fname)
         if fname is not None:
+            print(fname)
+            print(random_idx)
             imgs = np.array(fname)[random_idx]
+            print(imgs)
             show_plankton(imgs)
 
         return (target, pred)
@@ -129,6 +131,7 @@ def show_plankton(fnames):
     fig, (ax1, ax2) = plt.subplots(1,2)
     c=0
     for fname in fnames:
+        print(fname)
         img = io.imread(fname)
         if c % 2==0:
             ax1.imshow(img)
