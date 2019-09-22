@@ -117,9 +117,9 @@ class Metrics:
         fig.colorbar(cax)
         plt.title(title)
         plt.xlabel('Predicted')
-        plt.xticks(np.arrange(cm.shape[1]), labels)
+        plt.xticks(np.arange(cm.shape[1]), labels)
         plt.ylabel('True')
-        plt.yticks(np.arrange(cm.shape[0]), labels)
+        plt.yticks(np.arange(cm.shape[0]), labels)
         plt.show()
         
     def plot_series(series):
