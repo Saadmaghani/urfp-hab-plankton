@@ -89,7 +89,7 @@ class Metrics:
             ca_dict = classification_report(self.target, self.pred, output_dict=True)
             return ca_dict
         else:
-            class_names = get_classnames(preprocessor)
+            class_names = self.get_classnames(preprocessor)
             ca_dict = classification_report(self.target, self.pred, target_names=class_names, output_dict=True)
             return ca_dict
     

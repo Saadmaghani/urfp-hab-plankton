@@ -8,3 +8,5 @@ testing/*
 .ipynb_checkpoints/*
 
 .idea/*
+
+.DS_STORE
