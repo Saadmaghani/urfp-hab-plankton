@@ -89,7 +89,7 @@ class Metrics:
             ca_dict = classification_report(self.target, self.pred, output_dict=True)
             return ca_dict
         else:
-            class_names = get_classnames(preprocessor)
+            class_names = self.get_classnames(preprocessor)
             ca_dict = classification_report(self.target, self.pred, target_names=class_names, output_dict=True)
             return ca_dict
     
@@ -113,11 +113,11 @@ class Metrics:
         if preprocessor is not None:
             labels = self.get_classnames(preprocessor)
 
-
+        fig.set_size_inches(10, 10)
         fig.colorbar(cax)
         plt.title(title)
         plt.xlabel('Predicted')
-        plt.xticks(np.arange(cm.shape[1]), labels)
+        plt.xticks(np.arange(cm.shape[1]), labels, rotation = 'vertical')
         plt.ylabel('True')
         plt.yticks(np.arange(cm.shape[0]), labels)
         plt.show()
