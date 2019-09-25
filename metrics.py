@@ -48,7 +48,7 @@ class Metrics:
                     raise TypeError("preprocessor must be given with classname type str")
                 else:
                     classname = preprocessor.label_to_onehotInd(classname)
-            working_indices = np.where(np.array(self.target) == classname)[0]
+            working_indices = working_indices[np.where(np.array(self.target)[working_indices] == classname)[0]]
 
         if n > len(working_indices):
             n = len(working_indices)
@@ -61,7 +61,7 @@ class Metrics:
             i=0
             while i < len(pred):
                 indxs = np.where(np.array(self.target)==pred[i])[0]
-                pred_img = fname[np.random.choice(indx, size = 1)[0]]
+                pred_img = fname[np.random.choice(indxs, size = 1)[0]]
                 np.insert(imgs, i*2 + 1, pred_img)
                 i += 1
             show_plankton(imgs)
