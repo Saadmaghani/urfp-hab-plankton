@@ -125,6 +125,10 @@ class ToTensor(object):
 class Preprocessor:
     DATA_FOLDER = "./data"
 
+
+    def parse_name(file_name):
+        pass
+
     def __init__(self, years, transformations = None, include_classes = None, thresholding = False, maxN = None, train_eg_per_class = None):
         self.seed = 3
         self.years = years
@@ -157,19 +161,6 @@ class Preprocessor:
             Preprocessor.DATA_FOLDER, transform=self.transformations)
 
 
-    def onehotInd_to_label(self, onehot_ind):
-        onehot = [0 for x in range(len(self.encoded_labels[0]))]
-        onehot[onehot_ind] = 1
-        ind = self.encoded_labels.index(onehot)
-        return self.labels[ind]
-
-
-    def label_to_onehotInd(self, label):
-        ind = self.labels.index(label)
-        onehot = self.encoded_labels[ind]
-        return onehot.index(max(onehot))
-
-
     def get_loaders(self, lType, batch_size):
         loader = None
         if lType == "train":
@@ -181,6 +172,19 @@ class Preprocessor:
         else:
             print("no such dataset loader")
         return loader
+
+
+    def onehotInd_to_label(self, onehot_ind):
+        onehot = [0 for x in range(len(self.encoded_labels[0]))]
+        onehot[onehot_ind] = 1
+        ind = self.encoded_labels.index(onehot)
+        return self.labels[ind]
+
+
+    def label_to_onehotInd(self, label):
+        ind = self.labels.index(label)
+        onehot = self.encoded_labels[ind]
+        return onehot.index(max(onehot))
 
 
     def _reduce_classes(self, maxN):

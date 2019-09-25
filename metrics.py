@@ -18,35 +18,8 @@ class Metrics:
         else:
             self.pred = y_pred
 
-    def sample(self, n, fname=None, classname = None, preprocessor = None):
-        working_indices = list(range(len(self.target)))
-
-        if classname is not None:
-            if isinstance(classname, str):
-                if preprocessor is None:
-                    raise TypeError("preprocessor must be given with classname type str")
-                else:
-                    classname = preprocessor.label_to_onehotInd(classname)
-            working_indices = np.where(np.array(self.target) == classname)[0]
-        if n > len(working_indices):
-            n = len(working_indices)
-        random_idx = np.random.choice(working_indices, size = n, replace = False)
-        target = np.array(self.target)[random_idx]
-        pred = np.array(self.pred)[random_idx]
-        if fname is not None:
-            imgs = np.array(fname)[random_idx]
-            i=0
-            while i < len(pred):
-                indxs = np.where(np.array(self.target)==pred[i])[0]
-                pred_img = fname[np.random.choice(indxs, size = 1)]
-                imgs = np.insert(imgs, i*2 + 1, pred_img)
-                i += 1
-            show_plankton(imgs)
-
-        return (target, pred)
-
-    def sample_diff(self, n, fname=None, classname=None, preprocessor=None):
-        working_indices = np.where(np.array(self.target) != np.array(self.pred))[0]
+    def sample(self, n, classname = None, preprocessor = None, fname=None, working_indices = np.arange(self.target)):
+        working_indices = np.arange(self.target)
 
         if classname is not None:
             if isinstance(classname, str):
@@ -61,18 +34,23 @@ class Metrics:
         random_idx = np.random.choice(working_indices, size = n, replace = False)
         target = np.array(self.target)[random_idx]
         pred = np.array(self.pred)[random_idx]
-
         if fname is not None:
             imgs = np.array(fname)[random_idx]
             i=0
             while i < len(pred):
                 indxs = np.where(np.array(self.target)==pred[i])[0]
-                pred_img = fname[np.random.choice(indxs, size = 1)]
+                pred_img = np.array(fname)[np.random.choice(indxs, size = 1)]
                 imgs = np.insert(imgs, i*2 + 1, pred_img)
                 i += 1
             show_plankton(imgs)
 
         return (target, pred)
+
+
+    def sample_diff(self, n, classname=None, preprocessor=None, fname=None):
+        working_indices = np.where(np.array(self.target) != np.array(self.pred))[0]
+        
+        return sample(n, classname, preprocessor, fname, working_indices)
 
 
     def accuracy(self):
@@ -152,7 +130,6 @@ def show_plankton(fnames):
     fig, (ax1, ax2) = plt.subplots(1,2)
     c=0
     for fname in fnames:
-        print(fname)
         img = io.imread(fname)
         if c % 2==0:
             ax1.imshow(img)
