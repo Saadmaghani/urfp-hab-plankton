@@ -50,7 +50,7 @@ class Metrics:
     def sample_diff(self, n, classname=None, preprocessor=None, fname=None):
         working_indices = np.where(np.array(self.target) != np.array(self.pred))[0]
         
-        return sample(n, classname, preprocessor, fname, working_indices)
+        return self.sample(n, classname, preprocessor, fname, working_indices)
 
 
     def accuracy(self):
