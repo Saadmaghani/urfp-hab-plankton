@@ -1,0 +1,40 @@
+['./data/2010/Chaetoceros_flagellate/IFCB5_2010_259_094055_00754.png'
+ './data/2007/Chaetoceros_flagellate/IFCB1_2007_059_221306_00457.png'
+ './data/2013/Chaetoceros_flagellate/IFCB5_2013_184_211057_01375.png'
+ './data/2008/Chaetoceros_flagellate/IFCB1_2008_218_001524_02102.png'
+ './data/2012/Chaetoceros_flagellate/IFCB1_2012_269_071532_00897.png']
+['./data/2008/detritus/IFCB1_2008_213_192735_01916.png']
+['./data/2010/Chaetoceros_flagellate/IFCB5_2010_259_094055_00754.png'
+ './data/2008/detritus/IFCB1_2008_213_192735_01916.png'
+ './data/2007/Chaetoceros_flagellate/IFCB1_2007_059_221306_00457.png'
+ './data/2013/Chaetoceros_flagellate/IFCB5_2013_184_211057_01375.png'
+ './data/2008/Chaetoceros_flagellate/IFCB1_2008_218_001524_02102.png'
+ './data/2012/Chaetoceros_flagellate/IFCB1_2012_269_071532_00897.png']
+['./data/2013/Chaetoceros/IFCB5_2013_184_213410_08050.png']
+['./data/2010/Chaetoceros_flagellate/IFCB5_2010_259_094055_00754.png'
+ './data/2008/detritus/IFCB1_2008_213_192735_01916.png'
+ './data/2007/Chaetoceros_flagellate/IFCB1_2007_059_221306_00457.png'
+ './data/2013/Chaetoceros/IFCB5_2013_184_213410_08050.png'
+ './data/2013/Chaetoceros_flagellate/IFCB5_2013_184_211057_01375.png'
+ './data/2008/Chaetoceros_flagellate/IFCB1_2008_218_001524_02102.png'
+ './data/2012/Chaetoceros_flagellate/IFCB1_2012_269_071532_00897.png']
+['./data/2009/detritus/IFCB1_2009_155_143810_02110.png']
+['./data/2010/Chaetoceros_flagellate/IFCB5_2010_259_094055_00754.png'
+ './data/2008/detritus/IFCB1_2008_213_192735_01916.png'
+ './data/2007/Chaetoceros_flagellate/IFCB1_2007_059_221306_00457.png'
+ './data/2013/Chaetoceros/IFCB5_2013_184_213410_08050.png'
+ './data/2013/Chaetoceros_flagellate/IFCB5_2013_184_211057_01375.png'
+ './data/2009/detritus/IFCB1_2009_155_143810_02110.png'
+ './data/2008/Chaetoceros_flagellate/IFCB1_2008_218_001524_02102.png'
+ './data/2012/Chaetoceros_flagellate/IFCB1_2012_269_071532_00897.png']
+['./data/2008/detritus/IFCB1_2008_145_003908_03480.png']
+['./data/2010/Chaetoceros_flagellate/IFCB5_2010_259_094055_00754.png'
+ './data/2008/detritus/IFCB1_2008_213_192735_01916.png'
+ './data/2007/Chaetoceros_flagellate/IFCB1_2007_059_221306_00457.png'
+ './data/2013/Chaetoceros/IFCB5_2013_184_213410_08050.png'
+ './data/2013/Chaetoceros_flagellate/IFCB5_2013_184_211057_01375.png'
+ './data/2009/detritus/IFCB1_2009_155_143810_02110.png'
+ './data/2008/Chaetoceros_flagellate/IFCB1_2008_218_001524_02102.png'
+ './data/2008/detritus/IFCB1_2008_145_003908_03480.png'
+ './data/2012/Chaetoceros_flagellate/IFCB1_2012_269_071532_00897.png']
+['./data/2010/detritus/IFCB1_2010_225_111714_02026.png']
