@@ -35,6 +35,12 @@ class Metrics:
         pred = np.array(self.pred)[random_idx]
         if fname is not None:
             imgs = np.array(fname)[random_idx]
+            i=0
+            while i < len(pred):
+                indxs = np.where(np.array(self.target)==pred[i])[0]
+                pred_img = fname[np.random.choice(indxs, size = 1)]
+                imgs = np.insert(imgs, i*2 + 1, pred_img)
+                i += 1
             show_plankton(imgs)
 
         return (target, pred)
@@ -61,8 +67,8 @@ class Metrics:
             i=0
             while i < len(pred):
                 indxs = np.where(np.array(self.target)==pred[i])[0]
-                pred_img = fname[np.random.choice(indxs, size = 1)[0]]
-                np.insert(imgs, i*2 + 1, pred_img)
+                pred_img = fname[np.random.choice(indxs, size = 1)]
+                imgs = np.insert(imgs, i*2 + 1, pred_img)
                 i += 1
             show_plankton(imgs)
 

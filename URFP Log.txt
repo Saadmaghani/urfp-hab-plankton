@@ -254,4 +254,5 @@ accuracies of training/validation/test sets of each class (done)
 24/9:
 1. 	had meeting with wenping, twas goood. he liked my passion "want to publish paper", "bigger goal of impact"
 2.	zheming - augment classes with less than threshold amount. lets do it but first lets see the training accuracies
+3.	we should apply transfer learning from GN -> WHOI -> ST database
 

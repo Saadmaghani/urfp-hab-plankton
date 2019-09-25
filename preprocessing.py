@@ -145,6 +145,44 @@ class Preprocessor:
         print(len(self.fnames))
 
 
+    def create_datasets(self, splits):
+        partition, labels, onehot_labels = self._split(splits)
+        self.train_dataset = PlanktonDataset(partition['train'], labels['train'], onehot_labels['train'],
+            Preprocessor.DATA_FOLDER, transform=self.transformations)
+
+        self.validation_dataset = PlanktonDataset(partition['validation'], labels['validation'], onehot_labels['validation'],
+            Preprocessor.DATA_FOLDER, transform=self.transformations)
+
+        self.test_dataset = PlanktonDataset(partition['test'], labels['test'], onehot_labels['test'],
+            Preprocessor.DATA_FOLDER, transform=self.transformations)
+
+
+    def onehotInd_to_label(self, onehot_ind):
+        onehot = [0 for x in range(len(self.encoded_labels[0]))]
+        onehot[onehot_ind] = 1
+        ind = self.encoded_labels.index(onehot)
+        return self.labels[ind]
+
+
+    def label_to_onehotInd(self, label):
+        ind = self.labels.index(label)
+        onehot = self.encoded_labels[ind]
+        return onehot.index(max(onehot))
+
+
+    def get_loaders(self, lType, batch_size):
+        loader = None
+        if lType == "train":
+            loader = DataLoader(self.train_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
+        elif lType == "validation":
+            loader = DataLoader(self.validation_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
+        elif lType == "test":
+            loader = DataLoader(self.test_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
+        else:
+            print("no such dataset loader")
+        return loader
+
+
     def _reduce_classes(self, maxN):
         new_labels = []
         new_fnames = []
@@ -181,6 +219,7 @@ class Preprocessor:
                 new_labels.extend([class_name]*data_per_class)
         return new_fnames, new_labels
 
+
     def _oneHotEncoding(self):
         label_encoder = LabelEncoder()
         integer_encoded = label_encoder.fit_transform(self.labels)
@@ -202,41 +241,6 @@ class Preprocessor:
         encoded = {'train': eyTrain, 'validation': eyVal, 'test': eyTest}
         return (partition, labels, encoded)
 
-
-    def create_datasets(self, splits):
-        partition, labels, onehot_labels = self._split(splits)
-        self.train_dataset = PlanktonDataset(partition['train'], labels['train'], onehot_labels['train'],
-            Preprocessor.DATA_FOLDER, transform=self.transformations)
-
-        self.validation_dataset = PlanktonDataset(partition['validation'], labels['validation'], onehot_labels['validation'],
-            Preprocessor.DATA_FOLDER, transform=self.transformations)
-
-        self.test_dataset = PlanktonDataset(partition['test'], labels['test'], onehot_labels['test'],
-            Preprocessor.DATA_FOLDER, transform=self.transformations)
-
-    def onehotInd_to_label(self, onehot_ind):
-        onehot = [0 for x in range(len(self.encoded_labels[0]))]
-        onehot[onehot_ind] = 1
-        ind = self.encoded_labels.index(onehot)
-        return self.labels[ind]
-
-    def label_to_onehotInd(self, label):
-        ind = self.labels.index(label)
-        onehot = self.encoded_labels[ind]
-        return onehot.index(max(onehot))
-
-
-    def get_loaders(self, lType, batch_size):
-        loader = None
-        if lType == "train":
-            loader = DataLoader(self.train_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
-        elif lType == "validation":
-            loader = DataLoader(self.validation_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
-        elif lType == "test":
-            loader = DataLoader(self.test_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
-        else:
-            print("no such dataset loader")
-        return loader
 
     # get all labels and file names
     def _get_lbls_fnames(self):
