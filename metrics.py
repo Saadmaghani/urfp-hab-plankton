@@ -6,7 +6,7 @@ from skimage import io, transform
 
 
 class Metrics:
-    
+
     def __init__(self, y_true, y_pred):
 
         if not isinstance(y_true, list):
@@ -18,7 +18,9 @@ class Metrics:
         else:
             self.pred = y_pred
 
-    def sample(self, n, classname = None, preprocessor = None, fname=None, working_indices = np.arange(self.target)):
+    def sample(self, n, classname = None, preprocessor = None, fname=None, working_indices = None):
+        if working_indices is None:
+            working_indices = np.arange(len(self.target))
         if classname is not None:
             if isinstance(classname, str):
                 if preprocessor is None:
