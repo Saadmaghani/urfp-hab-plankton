@@ -22,12 +22,15 @@ class Metrics:
         working_indices = list(range(len(self.target)))
 
         if classname is not None:
-            if isinstance(classname, str) and preprocessor is not None:
-                classname = preprocessor.label_to_onehotInd(classname)
-            working_indices = np.where(np.array(self.target) == classname)
+            if isinstance(classname, str):
+                if preprocessor is None:
+                    raise TypeError("preprocessor must be given with classname type str")
+                else:
+                    classname = preprocessor.label_to_onehotInd(classname)
+            working_indices = np.where(np.array(self.target) == classname)[0]
         if n > len(working_indices):
             n = len(working_indices)
-        random_idx = np.random.choice(working_indices[0], size = n, replace = False)[0]
+        random_idx = np.random.choice(working_indices, size = n, replace = False)
         target = np.array(self.target)[random_idx]
         pred = np.array(self.pred)[random_idx]
         print(pred)
@@ -45,13 +48,16 @@ class Metrics:
         working_indices = np.where(self.target != self.pred)[0]
 
         if classname is not None:
-            if isinstance(classname, str) and preprocessor is not None:
-                classname = preprocessor.label_to_onehotInd(classname)
-            working_indices = np.where(np.array(self.target) == classname)
+            if isinstance(classname, str):
+                if preprocessor is None:
+                    raise TypeError("preprocessor must be given with classname type str")
+                else:
+                    classname = preprocessor.label_to_onehotInd(classname)
+            working_indices = np.where(np.array(self.target) == classname)[0]
 
         if n > len(working_indices):
             n = len(working_indices)
-        random_idx = np.random.choice(working_indices[0], size = n, replace = False)[0]
+        random_idx = np.random.choice(working_indices, size = n, replace = False)
         target = np.array(self.target)[random_idx]
         pred = np.array(self.pred)[random_idx]
 
@@ -60,7 +66,7 @@ class Metrics:
             i=0
             while i < len(pred):
                 indxs = np.where(np.array(self.target)==pred[i])[0]
-                pred_img = fname[np.random.choice(indx, size = 1)[0][0]]
+                pred_img = fname[np.random.choice(indx, size = 1)[0]]
                 np.insert(imgs, i*2 + 1, pred_img)
                 i += 1
             show_plankton(imgs)
@@ -115,7 +121,7 @@ class Metrics:
 
         fig.set_size_inches(10, 10)
         fig.colorbar(cax)
-        plt.title(title)
+        plt.title(title, loc='left')
         plt.xlabel('Predicted')
         plt.xticks(np.arange(cm.shape[1]), labels, rotation = 'vertical')
         plt.ylabel('True')
