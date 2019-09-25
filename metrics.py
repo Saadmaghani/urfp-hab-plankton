@@ -127,17 +127,16 @@ class Metrics:
 
 
 def show_plankton(fnames):
-    fig, (ax1, ax2) = plt.subplots(1,2)
     c=0
     for fname in fnames:
         img = io.imread(fname)
         if c % 2==0:
+            fig, (ax1, ax2) = plt.subplots(1,2)
             ax1.imshow(img)
             ax1.set_title(fname)
         else:
             ax2.imshow(img)
             ax2.set_title(fname)
-            fig, (ax1, ax2) = plt.subplots(1,2)
         c += 1
     plt.show()
 
