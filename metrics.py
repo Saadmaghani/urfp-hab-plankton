@@ -33,19 +33,14 @@ class Metrics:
         random_idx = np.random.choice(working_indices, size = n, replace = False)
         target = np.array(self.target)[random_idx]
         pred = np.array(self.pred)[random_idx]
-        print(pred)
-        print(fname)
         if fname is not None:
-            print(fname)
-            print(random_idx)
             imgs = np.array(fname)[random_idx]
-            print(imgs)
             show_plankton(imgs)
 
         return (target, pred)
 
     def sample_diff(self, n, fname=None, classname=None, preprocessor=None):
-        working_indices = np.where(self.target != self.pred)[0]
+        working_indices = np.where(np.array(self.target) != np.array(self.pred))[0]
 
         if classname is not None:
             if isinstance(classname, str):
