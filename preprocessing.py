@@ -125,10 +125,6 @@ class ToTensor(object):
 class Preprocessor:
     DATA_FOLDER = "./data"
 
-
-    def parse_name(file_name):
-        pass
-
     def __init__(self, years, transformations = None, include_classes = None, thresholding = False, maxN = None, train_eg_per_class = None):
         self.seed = 3
         self.years = years

@@ -19,8 +19,6 @@ class Metrics:
             self.pred = y_pred
 
     def sample(self, n, classname = None, preprocessor = None, fname=None, working_indices = np.arange(self.target)):
-        working_indices = np.arange(self.target)
-
         if classname is not None:
             if isinstance(classname, str):
                 if preprocessor is None:
@@ -133,10 +131,10 @@ def show_plankton(fnames):
         if c % 2==0:
             fig, (ax1, ax2) = plt.subplots(1,2)
             ax1.imshow(img)
-            ax1.set_title(fname)
+            ax1.set_title(fname.split("/")[3])
         else:
             ax2.imshow(img)
-            ax2.set_title(fname)
+            ax2.set_title(fname.split("/")[3])
         c += 1
     plt.show()
 
