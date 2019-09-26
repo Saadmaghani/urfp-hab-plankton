@@ -74,8 +74,8 @@ class Trainer:
                 
                 if i % 10 == 0:
                     #every batch print - loss, training acc, validation acc
-                    train_pred, train_target = self.test(model, trainLoader)
-                    valid_pred, valid_target = self.test(model, validLoader)
+                    train_pred, train_target, _ = self.test(model, trainLoader)
+                    valid_pred, valid_target, _ = self.test(model, validLoader)
                     train_acc = accuracy_score(train_target.cpu(), train_pred.cpu())
                     valid_acc = accuracy_score(valid_target.cpu(), valid_pred.cpu())
                     
