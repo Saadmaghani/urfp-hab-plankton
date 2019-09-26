@@ -59,9 +59,9 @@ trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earl
 
 #model.eval()
 
-test_pred, test_target = trainer.test(model, testLoader)
-valid_pred, valid_target = trainer.test(model, validLoader)
-train_pred, train_target = trainer.test(model, trainLoader)
+test_pred, test_target, test_fnames = trainer.test(model, testLoader)
+valid_pred, valid_target, valid_fnames = trainer.test(model, validLoader)
+train_pred, train_target, train_fnames = trainer.test(model, trainLoader)
 
 test_met = Metrics(test_target, test_pred)
 #valid_met = Metrics(valid_target, valid_pred)
@@ -73,9 +73,9 @@ print(time)
 
 f= open("stats-"+str(model)+"-"+str(HP.version)+".json","w+")
 str_to_write = "{\"Time\": "+ time +",\n \"Epochs\": "+str(epochs)+ ",\n \"TrainAcc\": "+ str(trainAcc)+",\n \"ValidAcc\": "+str(validAcc)+",\n \"TestAcc\": "+str(test_met.accuracy()) + \
-",\n \"Train_Pred\": " + str(list(train_pred.cpu().numpy())) + ",\n \"Train_Target\": " + str(list(train_target.cpu().numpy())) + \
-",\n \"Valid_Pred\": " + str(list(valid_pred.cpu().numpy())) + ",\n \"Valid_Target\": " + str(list(valid_target.cpu().numpy())) + \
-",\n \"Test_Pred\": " + str(list(test_pred.cpu().numpy())) + ",\n \"Test_Target\": " + str(list(test_target.cpu().numpy())) + "}"
+",\n \"Train_Pred\": " + str(list(train_pred.cpu().numpy())) + ",\n \"Train_Target\": " + str(list(train_target.cpu().numpy())) + ",\n \"Train_fnames\": " + str(list(train_fnames.cpu().numpy())) + \
+",\n \"Valid_Pred\": " + str(list(valid_pred.cpu().numpy())) + ",\n \"Valid_Target\": " + str(list(valid_target.cpu().numpy())) + ",\n \"Valid_fnames\": " + str(list(valid_fnames.cpu().numpy())) + \
+",\n \"Test_Pred\": " + str(list(test_pred.cpu().numpy())) + ",\n \"Test_Target\": " + str(list(test_target.cpu().numpy())) + ",\n \"Test_fnames\": " + str(list(test_fnames.cpu().numpy())) +"}"
 f.write(str_to_write)
 f.close()
 
