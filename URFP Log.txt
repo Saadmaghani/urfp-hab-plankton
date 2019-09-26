@@ -256,3 +256,7 @@ accuracies of training/validation/test sets of each class (done)
 2.	zheming - augment classes with less than threshold amount. lets do it but first lets see the training accuracies
 3.	we should apply transfer learning from GN -> WHOI -> ST database
 
+
+26/9:
+1.	first with images Tn >, include all images or up till Tn. find what are good Tn values
+

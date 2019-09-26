@@ -24,6 +24,8 @@ from training import EarlyStopping, FocalLoss
 # version 5.0 = same as 3.5 except maxN = 30000, no thresholding, no images/class, loss_fc = FocalLoss
 # version 5.1 = same as 5.0 except maxN = 56000 which is similar N to 4.1 (56111)
 # version 5.2 = same as 5.0 except maxN = 100000
+# version 6.0 = same as 5.0 except minimum = 100. this minimum means that if there are less than min images, include all st n = min(N, minimum). This will remove the population dist. bias but accuracies might increase. lets see
+
 class Hyperparameters:
     version=5.2
     learning_rate = 0.0003
@@ -36,5 +38,6 @@ class Hyperparameters:
     batch_size = 256
     scheduler = None
     thresholding = False
-    maxN = 100000 
+    maxN = 30000 
+    minimum = 100
 

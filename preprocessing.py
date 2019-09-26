@@ -125,7 +125,7 @@ class ToTensor(object):
 class Preprocessor:
     DATA_FOLDER = "./data"
 
-    def __init__(self, years, transformations = None, include_classes = None, thresholding = False, maxN = None, train_eg_per_class = None):
+    def __init__(self, years, transformations = None, include_classes = None, thresholding = False, maxN = None, train_eg_per_class = None, minimum = None):
         self.seed = 3
         self.years = years
         self.include_classes = include_classes
@@ -133,7 +133,7 @@ class Preprocessor:
         self.thresholding = thresholding
         print(len(self.fnames)) 
         if maxN is not None and thresholding is False and train_eg_per_class is None:
-            self.fnames, self.labels = self._reduce_classes(maxN)
+            self.fnames, self.labels = self._reduce_classes(maxN, minimum)
         if train_eg_per_class is not None:
             self.fnames, self.labels = self._normalize_classes(train_eg_per_class)
 
@@ -183,7 +183,7 @@ class Preprocessor:
         return onehot.index(max(onehot))
 
 
-    def _reduce_classes(self, maxN):
+    def _reduce_classes(self, maxN, minimum = None):
         new_labels = []
         new_fnames = []
         n = len(self.labels)
@@ -191,6 +191,8 @@ class Preprocessor:
             class_idx = np.where(np.array(self.labels) == class_name)
             expected = (len(class_idx[0])*maxN)//n
             np.random.seed(self.seed)
+            if minimum is not None and expected < minimum:
+                expected = min(len(class_idx[0]), minimum)
             random_idx = np.random.choice(class_idx[0], expected, replace=False)
             image_files = list(np.array(self.fnames)[random_idx])
             new_fnames.extend(image_files)
