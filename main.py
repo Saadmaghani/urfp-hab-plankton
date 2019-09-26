@@ -72,10 +72,10 @@ time = trainer.getTime()
 print(time)
 
 f= open("stats-"+str(model)+"-"+str(HP.version)+".json","w+")
-str_to_write = "{\"Time\": "+ time +", \"Epochs\": "+str(epochs)+ ", \"TrainAcc\": "+ str(trainAcc)+", \"ValidAcc\": "+str(validAcc)+", \"TestAcc\": "+str(test_met.accuracy()) +
-	", \"Train_Pred\": " + str(list(train_pred.cpu().numpy())) + ", \"Train_Target\": " + str(list(train_target.cpu().numpy())) + 
-	", \"Valid_Pred\": " + str(list(valid_pred.cpu().numpy())) + ", \"Valid_Target\": " + str(list(valid_target.cpu().numpy())) + 
-	", \"Test_Pred\": " + str(list(test_pred.cpu().numpy())) + ", \"Test_Target\": " + str(list(test_target.cpu().numpy())) + "}"
+str_to_write = "{\"Time\": "+ time +",\n \"Epochs\": "+str(epochs)+ ",\n \"TrainAcc\": "+ str(trainAcc)+",\n \"ValidAcc\": "+str(validAcc)+",\n \"TestAcc\": "+str(test_met.accuracy()) +
+	",\n \"Train_Pred\": " + str(list(train_pred.cpu().numpy())) + ",\n \"Train_Target\": " + str(list(train_target.cpu().numpy())) + 
+	",\n \"Valid_Pred\": " + str(list(valid_pred.cpu().numpy())) + ",\n \"Valid_Target\": " + str(list(valid_target.cpu().numpy())) + 
+	",\n \"Test_Pred\": " + str(list(test_pred.cpu().numpy())) + ",\n \"Test_Target\": " + str(list(test_target.cpu().numpy())) + "}"
 f.write(str_to_write)
 f.close()
 
