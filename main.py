@@ -73,9 +73,9 @@ print(time)
 
 f= open("stats-"+str(model)+"-"+str(HP.version)+".json","w+")
 str_to_write = "{\"Time\": "+ time +",\n \"Epochs\": "+str(epochs)+ ",\n \"TrainAcc\": "+ str(trainAcc)+",\n \"ValidAcc\": "+str(validAcc)+",\n \"TestAcc\": "+str(test_met.accuracy()) + \
-",\n \"Train_Pred\": " + str(list(train_pred.cpu().numpy())) + ",\n \"Train_Target\": " + str(list(train_target.cpu().numpy())) + ",\n \"Train_fnames\": " + str(list(train_fnames.cpu().numpy())) + \
-",\n \"Valid_Pred\": " + str(list(valid_pred.cpu().numpy())) + ",\n \"Valid_Target\": " + str(list(valid_target.cpu().numpy())) + ",\n \"Valid_fnames\": " + str(list(valid_fnames.cpu().numpy())) + \
-",\n \"Test_Pred\": " + str(list(test_pred.cpu().numpy())) + ",\n \"Test_Target\": " + str(list(test_target.cpu().numpy())) + ",\n \"Test_fnames\": " + str(list(test_fnames.cpu().numpy())) +"}"
+",\n \"Train_Pred\": " + str(list(train_pred.cpu().numpy())) + ",\n \"Train_Target\": " + str(list(train_target.cpu().numpy())) + ",\n \"Train_fnames\": " + str(train_fnames) + \
+",\n \"Valid_Pred\": " + str(list(valid_pred.cpu().numpy())) + ",\n \"Valid_Target\": " + str(list(valid_target.cpu().numpy())) + ",\n \"Valid_fnames\": " + str(valid_fnames) + \
+",\n \"Test_Pred\": " + str(list(test_pred.cpu().numpy())) + ",\n \"Test_Target\": " + str(list(test_target.cpu().numpy())) + ",\n \"Test_fnames\": " + str(test_fnames) +"}"
 f.write(str_to_write)
 f.close()
 
