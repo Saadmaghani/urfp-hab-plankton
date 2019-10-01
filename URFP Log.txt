@@ -58,14 +58,14 @@
 2. 	Literature review:
 	a)	new google document - literature review
 	b) 	references:
-			1- https://towardsdatascience.com/deep-blue-sea-using-deep-learning-to-detect-hundreds-of-different-plankton-species-dff895d3b226
-			2- http://cs231n.stanford.edu/reports/2015/pdfs/Dangelo_Tennefoss_Final_paper.pdf
-			3- http://mmlab.ie.cuhk.edu.hk/archive/2006/JOE06_plankton.pdf
-			4- http://vincent-net.com/luc/papers/98air_plankton.pdf
-			5- https://www-sciencedirect-com.eproxy.lib.hku.hk/science/article/pii/S156898830600031X
-			6- https://www2.whoi.edu/staff/hsosik/wp-content/uploads/sites/11/2017/03/Campbell_etal_EnvironSciPollutResInt2013.pdf
-			7- https://pdfs.semanticscholar.org/ed26/f44893b2e53147ca86b4e7bfaa1eeeb9832f.pdf
-			8- https://ieeexplore-ieee-org.eproxy.lib.hku.hk/stamp/stamp.jsp?tp=&arnumber=7533053
+			1- https://towardsdatascience.com/deep-blue-sea-using-deep-learning-to-detect-hundreds-of-different-plankton-species-dff895d3b226 (kaggle NDSB challenge)
+			2- http://cs231n.stanford.edu/reports/2015/pdfs/Dangelo_Tennefoss_Final_paper.pdf (terrible)
+			3- http://mmlab.ie.cuhk.edu.hk/archive/2006/JOE06_plankton.pdf (doesnt use NN)
+			4- http://vincent-net.com/luc/papers/98air_plankton.pdf (insane one)
+			5- https://www-sciencedirect-com.eproxy.lib.hku.hk/science/article/pii/S156898830600031X (didnt look into)
+			6- https://www2.whoi.edu/staff/hsosik/wp-content/uploads/sites/11/2017/03/Campbell_etal_EnvironSciPollutResInt2013.pdf (didnt look into)
+			7- https://pdfs.semanticscholar.org/ed26/f44893b2e53147ca86b4e7bfaa1eeeb9832f.pdf (2 phase - 1 cnn 2 cnn)
+			8- https://ieeexplore-ieee-org.eproxy.lib.hku.hk/stamp/stamp.jsp?tp=&arnumber=7533053 (thresholding)
 	c) 	Some questions to ask zhiming in literature review doc
 
 
@@ -259,4 +259,12 @@ accuracies of training/validation/test sets of each class (done)
 
 26/9:
 1.	first with images Tn >, include all images or up till Tn. find what are good Tn values
+2.	Cross Validation
+3.	data augmentation - lez do izzz
 
+29/9:
+1.	to do time-series analysis lets plot the different classes per day/year. so we have an idea of its increase/decrease ie. trend
+	to do that:
+		1.	year -> class -> get all data -> sort by date then time then order in ascending order
+			001_0500_1015 -> 001_0500_1016 -> 001_1030_1001 -> 201_0000_0001 
+			to do this we need to sort strings. awk?
