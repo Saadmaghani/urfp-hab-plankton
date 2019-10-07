@@ -28,8 +28,10 @@ from training import EarlyStopping, FocalLoss
 # version 6.1 = same as 6.0 except minimum = 200
 # version 6.2 = same as 6.0 except minimum = 300
 # version 6.3 = same as 6.0 except minimum = 400
+# version 6.4 = same as 6.0 except minimum = 500
+# version 6.5 = same as 6.0 except minimum = 600
 class Hyperparameters:
-    version=6.3
+    version=6.5
     learning_rate = 0.0003
     number_of_epochs = 200
     momentum = 0.9
@@ -41,5 +43,5 @@ class Hyperparameters:
     scheduler = None
     thresholding = False
     maxN = 30000 
-    minimum = 400
+    minimum = 600
 
