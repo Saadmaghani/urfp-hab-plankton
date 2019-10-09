@@ -56,12 +56,12 @@ class Hyperparameters:
     learning_rate = 0.0003
     number_of_epochs = 200
     momentum = 0.9
-    number_of_images_per_class = 200
     optimizer = optim.Adam
     loss_function = FocalLoss
     es = EarlyStopping(patience=20)
     batch_size = 256
     scheduler = None
+    pp_strategy = "augmentation_max"
     maxN = None 
     minimum = 100
-    strategy = "augmentation_max"
+    number_of_images_per_class = 200
