@@ -50,9 +50,10 @@ strategies (preprocessing):
 # version 6.4 = same as 6.0 except minimum = 500
 # version 6.5 = same as 6.0 except minimum = 600
 # version 7.0 = thresholding + data augmention Test with "augmentation"=T, "thresholding"=T, "number_of_images_per_class"=200 and "minimum"=100. no MaxN, same as 3.0 
+# version 7.1 = same as 7.0 except minimum = 400. max = 2500 images.
 
 class Hyperparameters:
-    version=7.0
+    version=7.1
     learning_rate = 0.0003
     number_of_epochs = 200
     momentum = 0.9
@@ -63,5 +64,5 @@ class Hyperparameters:
     scheduler = None
     pp_strategy = "augmentation_max"
     maxN = None 
-    minimum = 100
-    number_of_images_per_class = 200
+    minimum = 400
+    number_of_images_per_class = 2500
