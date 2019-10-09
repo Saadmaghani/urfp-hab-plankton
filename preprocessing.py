@@ -32,7 +32,7 @@ class PlanktonDataset(Dataset):
         encoded_label = self.encoded_labels[index]
         
         aumgents = None
-        if len(splits == 6):
+        if len(splits) == 6:
             augments = splits[5] 
             file_name = "_".join(splits[:5])
         
