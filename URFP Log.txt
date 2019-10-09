@@ -260,7 +260,6 @@ accuracies of training/validation/test sets of each class (done)
 26/9:
 1.	first with images Tn >, include all images or up till Tn. find what are good Tn values
 2.	Cross Validation
-3.	data augmentation - lez do izzz
 
 29/9:
 1.	to do time-series analysis lets plot the different classes per day/year. so we have an idea of its increase/decrease ie. trend
@@ -268,3 +267,15 @@ accuracies of training/validation/test sets of each class (done)
 		1.	year -> class -> get all data -> sort by date then time then order in ascending order
 			001_0500_1015 -> 001_0500_1016 -> 001_1030_1001 -> 201_0000_0001 
 			to do this we need to sort strings. awk?
+
+1/10:
+1.	plotted time-series data of 30 classes per time and per day
+2.	looking for database with both plankton count/day|time unit and HAB yes or no
+
+4/10:
+1.	still looking for databases, emailed afcd of hk govt and MVCO regarding access to databases
+2.	decision on using minimum:
+
+7/10:
+1.	Data augmentation time.
+	

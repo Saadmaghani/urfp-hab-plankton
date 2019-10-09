@@ -24,18 +24,38 @@ class PlanktonDataset(Dataset):
 
     def __getitem__(self, index):
         file_name = self.file_ids[index]
-        year = file_name.split("_")[1]
+        splits = file_name.split("_")
+        year = splits[1]
+
+
         label = self.file_labels[index] 
         encoded_label = self.encoded_labels[index]
+        
+        aumgents = None
+        if len(splits == 6):
+            augments = splits[5] 
+            file_name = "_".join(splits[:5])
         
         img_name = os.path.join(self.root_dir, year, label, file_name)
         img = io.imread(img_name)
 
+        if aumgents is not None:
+            if augments == 0:
+                img = np.fliplr(img)
+            elif augments == 1:
+                img = np.flipud(img)
+            elif augments == 2:
+                img = np.flipud(np.fliplr(img))
+            elif augments == 3:
+                img = np.rot90(img, 3)
+            elif augments == 4:
+                img = np.rot90(img)
+
         sample = {'image': img, 'label': label}
-        
+
         if self.transform:
             sample = self.transform(sample)
-            
+
         sample['encoded_label'] = encoded_label
         sample['image'] = sample['image'].reshape((1,sample['image'].shape[0], sample['image'].shape[1]))
         sample['fname'] = img_name
@@ -125,19 +145,26 @@ class ToTensor(object):
 class Preprocessor:
     DATA_FOLDER = "./data"
 
-    def __init__(self, years, transformations = None, include_classes = None, thresholding = False, maxN = None, train_eg_per_class = None, minimum = None):
+    def __init__(self, years, transformations = None, include_classes = None, thresholding = False, maxN = None, train_eg_per_class = None, minimum = None, augmentation = False):
         self.seed = 3
         self.years = years
         self.include_classes = include_classes
         self.fnames, self.labels = self._get_lbls_fnames()
         self.thresholding = thresholding
         print(len(self.fnames)) 
-        if maxN is not None and thresholding is False and train_eg_per_class is None:
-            self.fnames, self.labels = self._reduce_classes(maxN, minimum)
-        if train_eg_per_class is not None:
-            self.fnames, self.labels = self._normalize_classes(train_eg_per_class)
 
-        print(len(self.fnames))
+        if augmentation is not False and minimum is not None:
+            if thresholding is not False and train_eg_per_class is not None:
+                self.fnames, self.labels = self._augment_small_classes(minimum, maximum)
+            else:
+                self.fnames, self.labels = self._augment_small_classes(minimum)
+
+        if maxN is not None and thresholding is False and train_eg_per_class is None:
+            self.fnames, self.labels = self._proportinal_reduce_classes(maxN, minimum)
+
+        if train_eg_per_class is not None:
+            self.fnames, self.labels = self._threshold_classes(train_eg_per_class)
+
         self.encoded_labels = self._oneHotEncoding().tolist()
         self.transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) if transformations is None else transformations
         ImageFile.LOAD_TRUNCATED_IMAGES = True
@@ -183,8 +210,51 @@ class Preprocessor:
         return onehot.index(max(onehot))
 
 
-    def _reduce_classes(self, maxN, minimum = None):
+    def _augment_small_classes(self, minimum, maximum = None):
         new_labels = []
+        new_fnames = []
+
+        if self.include_classes is not None:
+            for class_name in self.include_classes:
+                class_idx = np.where(np.array(self.labels) == class_name)
+                class_len = len(class_idx[0])
+
+                prev_len0 = len(new_fnames)
+                prev_len1 = len(new_labels)
+
+                augmented_fnames = []
+                if class_len <= minimum:
+                    for i in range(minimum - class_len):
+                        rand_idx = np.random.choice(class_idx[0], size = 1)
+                        augment_fname = self._augment(np.array(self.fnames)[rand_idx])
+                        augmented_fnames.append(augment_fname)
+                    new_fnames.extend(np.array(self.fnames)[class_idx[0]])
+                    new_fnames.extend(augmented_fnames)
+                    new_labels.extend([class_name]* (len(augmented_fnames) + class_len))
+
+                if maximum is not None:
+                    if class_len >= maximum: 
+                        rand_idx = np.random.choice(class_idx[0], size = maximum, replace=False)
+                        new_fnames.extend(np.array(self.fnames)[rand_idx])
+                        new_labels.extend([class_name]* maximum)
+                    else:
+                        new_fnames.extend(np.array(self.fnames)[class_idx[0]])
+                        new_labels.extend([class_name]* class_len)
+                else:
+                    new_fnames.extend(np.array(self.fnames)[class_idx[0]])
+                    new_labels.extend([class_name]* class_len)
+
+                print(class_name,"-",len(new_fnames) - prev_len0, len(new_labels)- prev_len1)
+        return new_fnames, new_labels
+
+    # one of: y flip, x flip, x-y flip, 90 rotation, 270 rotation
+    def _augment(self, image_name):
+        choice = np.random.randint(0, 5) 
+        return image_name + str(choice)
+
+    # keeps class %s same but reduces total images
+    def _proportinal_reduce_classes(self, maxN, minimum = None):
+        new_labels = [] 
         new_fnames = []
         n = len(self.labels)
         for class_name in self.include_classes:
@@ -200,7 +270,8 @@ class Preprocessor:
         return new_fnames, new_labels
 
 
-    def _normalize_classes(self, data_per_class):
+    # if #images of class > N, then only randomly select N. else get all
+    def _threshold_classes(self, data_per_class):
         new_labels = []
         new_fnames = []
         og_dpc = data_per_class
@@ -210,12 +281,12 @@ class Preprocessor:
                 class_idx = np.where(np.array(self.labels) == class_name)
                 np.random.seed(self.seed)
                 if self.thresholding is True and len(class_idx[0]) <= data_per_class:
-                    print(class_idx[0])
+                    #print(class_idx[0])
                     random_idx = class_idx[0]
                     data_per_class = len(class_idx[0])
                 else:
                     random_idx = np.random.choice(class_idx[0], size = data_per_class, replace=False)
-                print(class_name, len(random_idx))
+                #print(class_name, len(random_idx))
                 image_files = list(np.array(self.fnames)[random_idx])
                 new_fnames.extend(image_files)
                 new_labels.extend([class_name]*data_per_class)
