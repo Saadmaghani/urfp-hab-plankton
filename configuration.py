@@ -3,6 +3,25 @@ from torch.optim import lr_scheduler
 import torch.nn as nn
 from training import EarlyStopping, FocalLoss
 
+"""
+versions:
+1.x - defaults + just images
+2.x - adam optimizer
+3.x - early stopping
+4.x - thresholding
+5.x - focal loss + proportional reduction of classes
+6.x - focal loss + proportional reduction + minimum 
+7.x - focal loss + data augmentation + thresholding. 
+
+strategies (preprocessing):
+1.0 - "thresholding" | thresholding
+2.0 - "propReduce" | proportional reduction
+2.1 - "propReduce_min" | proportional reduction with lower bound 
+3.0 - "augmentation" | data augmentation
+3.1 - "augmentation_max" | data augmentation with upper bound  
+
+"""
+
 # default:
 # lr = 0.01, optim - optim.SGD, epochs = 10, es = None, loss_fun = nn.MSELoss, momentum = 0.9, batch size = 128, es w/ patience=10
 
@@ -43,8 +62,6 @@ class Hyperparameters:
     es = EarlyStopping(patience=20)
     batch_size = 256
     scheduler = None
-    thresholding = True
     maxN = None 
     minimum = 100
-    augmentation = True
-
+    strategy = "augmentation_max"

@@ -145,7 +145,8 @@ class ToTensor(object):
 class Preprocessor:
     DATA_FOLDER = "./data"
 
-    def __init__(self, years, transformations = None, include_classes = None, thresholding = False, maxN = None, train_eg_per_class = None, minimum = None, augmentation = False):
+    def __init__(self, years, transformations = None, include_classes = None, strategy = None, maxN = None, train_eg_per_class = None, minimum = None):
+
         self.seed = 3
         self.years = years
         self.include_classes = include_classes
@@ -153,17 +154,21 @@ class Preprocessor:
         self.thresholding = thresholding
         print(len(self.fnames)) 
 
-        if augmentation is not False and minimum is not None:
-            if thresholding is not False and train_eg_per_class is not None:
-                self.fnames, self.labels = self._augment_small_classes(minimum, maximum)
-            else:
+        if strategy is not None:
+            if strategy == "thresholding" and train_eg_per_class is not None: # just upper thresholding
+                self.fnames, self.labels = self._threshold_classes(train_eg_per_class)
+
+            elif strategy == "propReduce" and maxN is not None: # just proportional reduction
+                self.fnames, self.labels = self._proportinal_reduce_classes(maxN)
+
+            elif strategy == "propReduce_min" and maxN is not None and minimum is not None: # proportional reduction with minimum
+                self.fnames, self.labels = self._proportinal_reduce_classes(maxN, minimum)
+
+            elif strategy == "augmentation" and minimum is not None: # augment small classes. no upper limit
                 self.fnames, self.labels = self._augment_small_classes(minimum)
 
-        if maxN is not None and thresholding is False and train_eg_per_class is None:
-            self.fnames, self.labels = self._proportinal_reduce_classes(maxN, minimum)
-
-        if train_eg_per_class is not None:
-            self.fnames, self.labels = self._threshold_classes(train_eg_per_class)
+            elif strategy == "augmentation_max" and minimum is not None and train_eg_per_class is not None: # augment small classes, upper limit
+                self.fnames, self.labels = self._augment_small_classes(minimum, maximum)
 
         self.encoded_labels = self._oneHotEncoding().tolist()
         self.transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) if transformations is None else transformations
@@ -251,6 +256,7 @@ class Preprocessor:
     def _augment(self, image_name):
         choice = np.random.randint(0, 5) 
         return image_name + str(choice)
+
 
     # keeps class %s same but reduces total images
     def _proportinal_reduce_classes(self, maxN, minimum = None):
