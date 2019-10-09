@@ -28,18 +28,21 @@ from training import EarlyStopping, FocalLoss
 # version 6.1 = same as 6.0 except minimum = 200
 # version 6.2 = same as 6.0 except minimum = 300
 # version 6.3 = same as 6.0 except minimum = 400
+# version 7.0 = thresholding + data augmention Test with "augmentation"=T, "thresholding"=T, "number_of_images_per_class"=200 and "minimum"=100. no MaxN, same as 3.0 
+
 class Hyperparameters:
-    version=6.3
+    version=7.0
     learning_rate = 0.0003
     number_of_epochs = 200
     momentum = 0.9
-    number_of_images_per_class = None
+    number_of_images_per_class = 200
     optimizer = optim.Adam
     loss_function = FocalLoss
     es = EarlyStopping(patience=20)
     batch_size = 256
     scheduler = None
-    thresholding = False
-    maxN = 30000 
-    minimum = 400
+    thresholding = True
+    maxN = None 
+    minimum = 100
+    augmentation = True
 

@@ -260,7 +260,6 @@ accuracies of training/validation/test sets of each class (done)
 26/9:
 1.	first with images Tn >, include all images or up till Tn. find what are good Tn values
 2.	Cross Validation
-3.	data augmentation - lez do izzz
 
 29/9:
 1.	to do time-series analysis lets plot the different classes per day/year. so we have an idea of its increase/decrease ie. trend
