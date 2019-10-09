@@ -230,7 +230,7 @@ class Preprocessor:
                 if class_len <= minimum:
                     for i in range(minimum - class_len):
                         rand_idx = np.random.choice(class_idx[0], size = 1)
-                        augment_fname = class_name + np.random.randint(0,5) # one of: y flip, x flip, x-y flip, 90 rotation, 270 rotation
+                        augment_fname = class_name + str(np.random.randint(0,5)) # one of: y flip, x flip, x-y flip, 90 rotation, 270 rotation
                         augmented_fnames.append(augment_fname)
                     new_fnames.extend(np.array(self.fnames)[class_idx[0]])
                     new_fnames.extend(augmented_fnames)
