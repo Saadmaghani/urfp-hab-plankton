@@ -167,7 +167,7 @@ class Preprocessor:
                 self.fnames, self.labels = self._augment_small_classes(minimum)
 
             elif strategy == "augmentation_max" and minimum is not None and train_eg_per_class is not None: # augment small classes, upper limit
-                self.fnames, self.labels = self._augment_small_classes(minimum, maximum)
+                self.fnames, self.labels = self._augment_small_classes(minimum, train_eg_per_class)
 
         self.encoded_labels = self._oneHotEncoding().tolist()
         self.transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) if transformations is None else transformations
