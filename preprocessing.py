@@ -230,7 +230,7 @@ class Preprocessor:
                 if class_len <= minimum:
                     for i in range(minimum - class_len):
                         rand_idx = np.random.choice(class_idx[0], size = 1)
-                        augment_fname = self._augment(np.array(self.fnames)[rand_idx])
+                        augment_fname = class_name + np.random.randint(0,5) # one of: y flip, x flip, x-y flip, 90 rotation, 270 rotation
                         augmented_fnames.append(augment_fname)
                     new_fnames.extend(np.array(self.fnames)[class_idx[0]])
                     new_fnames.extend(augmented_fnames)
@@ -250,11 +250,6 @@ class Preprocessor:
 
                 print(class_name,"-",len(new_fnames) - prev_len0, len(new_labels)- prev_len1)
         return new_fnames, new_labels
-
-    # one of: y flip, x flip, x-y flip, 90 rotation, 270 rotation
-    def _augment(self, image_name):
-        choice = np.random.randint(0, 5) 
-        return image_name + str(choice)
 
 
     # keeps class %s same but reduces total images
