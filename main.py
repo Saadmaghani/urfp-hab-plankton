@@ -49,15 +49,15 @@ trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn
 
 model = GoogleNet()
 
-trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
+trainAcc = []
+validAcc = [] 
+epochs = 0 
+#trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
 
 # - or -
-#path_to_statedict = "../GoogleNet_1.2-4.0.tar"
+path_to_statedict = "../GoogleNet_1.2-6.0.pth"
 
-#checkpoint = torch.load(path_to_statedict)
-#model.load_state_dict(checkpoint['model_state_dict'])
-
-#model.eval()
+model = trainer.load_full_model(model, path_to_statedict)
 
 test_pred, test_target, test_fnames = trainer.test(model, testLoader)
 valid_pred, valid_target, valid_fnames = trainer.test(model, validLoader)
@@ -68,7 +68,8 @@ test_met = Metrics(test_target, test_pred)
 #train_met = Metrics(train_target, train_pred)
 
 print(test_met.accuracy())
-time = trainer.getTime()
+#time = trainer.getTime()
+time = "xx:xx:xx"
 print(time)
 
 f= open("stats-"+str(model)+"-"+str(HP.version)+".json","w+")
