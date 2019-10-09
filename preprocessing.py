@@ -151,7 +151,6 @@ class Preprocessor:
         self.years = years
         self.include_classes = include_classes
         self.fnames, self.labels = self._get_lbls_fnames()
-        self.thresholding = thresholding
         print(len(self.fnames)) 
 
         if strategy is not None:
@@ -286,7 +285,7 @@ class Preprocessor:
                 data_per_class = og_dpc
                 class_idx = np.where(np.array(self.labels) == class_name)
                 np.random.seed(self.seed)
-                if self.thresholding is True and len(class_idx[0]) <= data_per_class:
+                if len(class_idx[0]) <= data_per_class:
                     #print(class_idx[0])
                     random_idx = class_idx[0]
                     data_per_class = len(class_idx[0])
