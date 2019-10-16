@@ -12,6 +12,7 @@ versions:
 5.x - focal loss + proportional reduction of classes
 6.x - focal loss + proportional reduction + minimum 
 7.x - focal loss + data augmentation + thresholding. 
+8.x - focal loss + thresholding (test against 4.x)
 
 strategies (preprocessing):
 1.0 - "thresholding" | thresholding
@@ -51,9 +52,10 @@ strategies (preprocessing):
 # version 6.5 = same as 6.0 except minimum = 600
 # version 7.0 = thresholding + data augmention Test with "augmentation"=T, "thresholding"=T, "number_of_images_per_class"=200 and "minimum"=100. no MaxN, same as 3.0 
 # version 7.1 = same as 7.0 except minimum = 400. #images/class = 2500. tests data augmentation and thresholding.
+# version 8.0 = same as 4.1 except with focal loss.
 
 class Hyperparameters:
-    version=7.1
+    version=8.0
     learning_rate = 0.0003
     number_of_epochs = 200
     momentum = 0.9
@@ -62,7 +64,7 @@ class Hyperparameters:
     es = EarlyStopping(patience=20)
     batch_size = 256
     scheduler = None
-    pp_strategy = "augmentation_max"
+    pp_strategy = "thresholding"
     maxN = None 
-    minimum = 400
+    minimum = None
     number_of_images_per_class = 2500

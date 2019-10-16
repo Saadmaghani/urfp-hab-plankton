@@ -244,6 +244,7 @@ week of 2/9:
 		- 6.3 = 90.79
 		- 6.4 = 89.57
 		- 6.5 = 90.75
+		- 7.1 = 
 
 
 data distribution -> class distribution. maybe we should make a table out of it. okay lol lets do that.
@@ -295,3 +296,7 @@ accuracies of training/validation/test sets of each class (done)
 1.	oof still havent fixed data augmentation. im doing it now. fixed i think. 
 2.	running 7.1 
 3.	one problem is that the test set, though same size, is different every time. i think.
+	1.	solved. now everything is exactly the same given #images. so if #images same (say min. max. same) then the dataset will be same too.
+4.	running 8.0 on gpu farm
+	just a test of focal loss + thresholding vs thresholding w/o focal loss
+
