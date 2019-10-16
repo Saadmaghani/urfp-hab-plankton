@@ -35,6 +35,8 @@ class PlanktonDataset(Dataset):
         if len(splits) == 6:
             augments = splits[5] 
             file_name = "_".join(splits[:5])
+            print(augments)
+            print(file_name)
         
         img_name = os.path.join(self.root_dir, year, label, file_name)
         img = io.imread(img_name)
