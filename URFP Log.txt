@@ -284,4 +284,14 @@ accuracies of training/validation/test sets of each class (done)
 
 7/10:
 1.	Data augmentation time.
-	
+2.	meeting with zhiming and friend. came up with following strategies:
+	1.	16 random crops -> 16 outputs, average output
+	2.	16 random crops -> gn output (16, 512, 2, 2) -> make into vector -> fc gives output
+	3.	attention to get weighted average
+	4.	multi-model
+
+
+16/10:
+1.	oof still havent fixed data augmentation. im doing it now. fixed i think. 
+2.	running 7.1 
+3.	one problem is that the test set, though same size, is different every time. i think.

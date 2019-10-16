@@ -25,7 +25,6 @@ class PlanktonDataset(Dataset):
     def __getitem__(self, index):
         file_name = self.file_ids[index]
         splits = file_name.split("_")
-        print(splits)
         year = splits[1]
 
 
@@ -35,9 +34,7 @@ class PlanktonDataset(Dataset):
         aumgents = None
         if len(splits) == 6:
             augments = splits[5] 
-            file_name = "_".join(splits[:5])[0]
-            print(augments)
-            print(file_name)
+            file_name = "_".join(splits[:5])
         
         img_name = os.path.join(self.root_dir, year, label, file_name)
         img = io.imread(img_name)
@@ -190,15 +187,15 @@ class Preprocessor:
         self.test_dataset = PlanktonDataset(partition['test'], labels['test'], onehot_labels['test'],
             Preprocessor.DATA_FOLDER, transform=self.transformations)
 
-
+    # shuffle=False so that the data is trained/validated/tested in exactly the same manner in each run
     def get_loaders(self, lType, batch_size):
         loader = None
         if lType == "train":
-            loader = DataLoader(self.train_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
+            loader = DataLoader(self.train_dataset, batch_size=batch_size, shuffle=False, num_workers=4) 
         elif lType == "validation":
-            loader = DataLoader(self.validation_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
+            loader = DataLoader(self.validation_dataset, batch_size=batch_size, shuffle=False, num_workers=4) 
         elif lType == "test":
-            loader = DataLoader(self.test_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
+            loader = DataLoader(self.test_dataset, batch_size=batch_size, shuffle=False, num_workers=4) 
         else:
             print("no such dataset loader")
         return loader
@@ -232,10 +229,10 @@ class Preprocessor:
                 augmented_fnames = []
                 if class_len <= minimum:
                     for i in range(minimum - class_len):
+                        np.random.seed(self.seed)
                         rand_idx = np.random.choice(class_idx[0], size = 1)
-                        print(np.array(self.fnames)[rand_idx])
-                        input()
-                        augment_fname = str(np.array(self.fnames)[rand_idx]) +"_"+ str(np.random.randint(0,5)) # one of: y flip, x flip, x-y flip, 90 rotation, 270 rotation
+                        np.random.seed(self.seed) # this will give one and only one data augmentation
+                        augment_fname = np.array(self.fnames)[rand_idx][0] +"_"+ str(np.random.randint(0,5)) # one of: y flip, x flip, x-y flip, 90 rotation, 270 rotation
                         augmented_fnames.append(augment_fname)
                     new_fnames.extend(np.array(self.fnames)[class_idx[0]])
                     new_fnames.extend(augmented_fnames)
@@ -243,6 +240,7 @@ class Preprocessor:
 
                 if maximum is not None:
                     if class_len >= maximum: 
+                        np.random.seed(self.seed)
                         rand_idx = np.random.choice(class_idx[0], size = maximum, replace=False)
                         new_fnames.extend(np.array(self.fnames)[rand_idx])
                         new_labels.extend([class_name]* maximum)
@@ -265,9 +263,9 @@ class Preprocessor:
         for class_name in self.include_classes:
             class_idx = np.where(np.array(self.labels) == class_name)
             expected = (len(class_idx[0])*maxN)//n
-            np.random.seed(self.seed)
             if minimum is not None and expected < minimum:
                 expected = min(len(class_idx[0]), minimum)
+            np.random.seed(self.seed)
             random_idx = np.random.choice(class_idx[0], expected, replace=False)
             image_files = list(np.array(self.fnames)[random_idx])
             new_fnames.extend(image_files)
@@ -284,12 +282,12 @@ class Preprocessor:
             for class_name in self.include_classes:
                 data_per_class = og_dpc
                 class_idx = np.where(np.array(self.labels) == class_name)
-                np.random.seed(self.seed)
                 if len(class_idx[0]) <= data_per_class:
                     #print(class_idx[0])
                     random_idx = class_idx[0]
                     data_per_class = len(class_idx[0])
                 else:
+                    np.random.seed(self.seed)
                     random_idx = np.random.choice(class_idx[0], size = data_per_class, replace=False)
                 #print(class_name, len(random_idx))
                 image_files = list(np.array(self.fnames)[random_idx])
