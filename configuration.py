@@ -2,6 +2,8 @@ import torch.optim as optim
 from torch.optim import lr_scheduler
 import torch.nn as nn
 from training import EarlyStopping, FocalLoss
+from torchvision import transforms
+from preprocessing import Rescale, RandomCrop, ToTensor
 
 """
 versions:
@@ -12,6 +14,8 @@ versions:
 5.x - focal loss + proportional reduction of classes
 6.x - focal loss + proportional reduction + minimum 
 7.x - focal loss + data augmentation + thresholding. 
+8.x - focal loss + thresholding (test against 4.x) (rename to 5.3.0)
+8.x - 16 random crops
 
 strategies (preprocessing):
 1.0 - "thresholding" | thresholding
@@ -19,6 +23,12 @@ strategies (preprocessing):
 2.1 - "propReduce_min" | proportional reduction with lower bound 
 3.0 - "augmentation" | data augmentation
 3.1 - "augmentation_max" | data augmentation with upper bound  
+
+strategies (training):
+1.0 - "FocalLoss" | Focal loss
+2.0 - optim.Adam | Adam optimizer
+3.0 - EarlyStopping | Early stopping with Patience = 20
+4.0 - 16 random crops
 
 """
 
@@ -31,7 +41,7 @@ strategies (preprocessing):
 # version 1.2 = 1000 images
 # version 2.0 = lr - 0.0003, optim - adam, 500 images
 # version 3.0 = lr - 0.0003, optim - adam, 500 images, es = Early Stopping w/ patience 10, epochs = 200
-# version 3.1 = minibatch_size = 256, else all same with version 3.0
+# version 3.1 = same as 3.0 except minibatch_size = 256
 # version 3.2 = further training of HP 3.1, model 2.2
 # version 3.3 = further training of HP 3.1, model 2.2, patience = 20
 # version 3.4 = same as 3.1 + lr_scheduler w/ StepLR & step size = 7
@@ -43,6 +53,7 @@ strategies (preprocessing):
 # version 5.0 = same as 3.5 except maxN = 30000, no thresholding, no images/class, loss_fc = FocalLoss
 # version 5.1 = same as 5.0 except maxN = 56000 which is similar N to 4.1 (56111)
 # version 5.2 = same as 5.0 except maxN = 100000
+# version 5.3.0 = same as 4.1 except with focal loss.
 # version 6.0 = same as 5.0 except minimum = 100. this minimum means that if there are less than min images, include all st n = min(N, minimum). This will remove the population dist. bias but accuracies might increase. lets see
 # version 6.1 = same as 6.0 except minimum = 200
 # version 6.2 = same as 6.0 except minimum = 300
@@ -50,10 +61,11 @@ strategies (preprocessing):
 # version 6.4 = same as 6.0 except minimum = 500
 # version 6.5 = same as 6.0 except minimum = 600
 # version 7.0 = thresholding + data augmention Test with "augmentation"=T, "thresholding"=T, "number_of_images_per_class"=200 and "minimum"=100. no MaxN, same as 3.0 
-# version 7.1 = same as 7.0 except minimum = 400. #images/class = 2500.
+# version 7.1 = same as 7.0 except minimum = 400. #images/class = 2500. tests data augmentation and thresholding.
+# version 8.0 = transformations added. can only work with GoogleNet 1.3
 
 class Hyperparameters:
-    version=7.1
+    version=8.0
     learning_rate = 0.0003
     number_of_epochs = 200
     momentum = 0.9
@@ -62,7 +74,8 @@ class Hyperparameters:
     es = EarlyStopping(patience=20)
     batch_size = 256
     scheduler = None
-    pp_strategy = "augmentation_max"
+    pp_strategy = "thresholding"
     maxN = None 
-    minimum = 400
+    minimum = None
     number_of_images_per_class = 2500
+    transformations = transforms.Compose([RandomCrop(16), Rescale((64, 128)), ToTensor()])

@@ -8,6 +8,7 @@ from torchvision import transforms
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from PIL import Image, ImageFile
+from math import sqrt
 
 
 class PlanktonDataset(Dataset):
@@ -57,7 +58,7 @@ class PlanktonDataset(Dataset):
             sample = self.transform(sample)
 
         sample['encoded_label'] = encoded_label
-        sample['image'] = sample['image'].reshape((1,sample['image'].shape[0], sample['image'].shape[1]))
+        sample['image'] = sample['image'].reshape((1, sample['image'].shape[0], sample['image'].shape[1]))
         sample['fname'] = img_name
         return sample
 
@@ -73,64 +74,87 @@ class Rescale(object):
             to output_size keeping aspect ratio the same.
     """
 
-    def __init__(self, output_size):
+    def __init__(self, output_size, multiple=False):
         assert isinstance(output_size, (int, tuple))
         self.output_size = output_size
+        self.multi = multiple
 
     def __call__(self, sample):
         image = sample['image']
-
-        h, w = image.shape[:2]
-        if isinstance(self.output_size, int):
-            if h > w:
-                new_h, new_w = self.output_size * h / w, self.output_size
+        
+        if not self.multi:
+            h, w = image.shape[:2]
+            if isinstance(self.output_size, int):
+                if h > w:
+                    new_h, new_w = self.output_size * h / w, self.output_size
+                else:
+                    new_h, new_w = self.output_size, self.output_size * w / h
             else:
-                new_h, new_w = self.output_size, self.output_size * w / h
+                new_h, new_w = self.output_size
+
+            new_h, new_w = int(new_h), int(new_w)
+
+            img = transform.resize(image, (new_h, new_w))
+
+            return {'image':img, 'label':sample['label']}
         else:
-            new_h, new_w = self.output_size
+            h, w = image[0].shape[:2]
+            images = []
+            no_images = len(image)
+            for i in range(no_images):
+                if isinstance(self.output_size, int):
+                    if h > w:
+                        new_h, new_w = self.output_size * h / w, self.output_size
+                    else:
+                        new_h, new_w = self.output_size, self.output_size * w / h
+                else:
+                    new_h, new_w = self.output_size
 
-        new_h, new_w = int(new_h), int(new_w)
+                new_h, new_w = int(new_h), int(new_w)
 
-        img = transform.resize(image, (new_h, new_w))
+                img = transform.resize(image[0], (new_h, new_w))
+                images.append(img)
 
-        return {'image':img, 'label':sample['label']}
+            return {'image':images, 'label':[sample['label']]*no_images }
+
 
 
 # data augmentation techniques
 class RandomCrop(object):
-    """Crop randomly the image in a sample.
-
-    Args:
-        output_size (tuple or int): Desired output size. If int, square crop
-            is made.
+    """
+    Crop randomly the image in a sample.
     """
 
-    def __init__(self, output_size):
-        assert isinstance(output_size, (int, tuple))
-        if isinstance(output_size, int):
-            self.output_size = (output_size, output_size)
-        else:
-            assert len(output_size) == 2
-            self.output_size = output_size
+    def __init__(self, no_outputs):
+        assert sqrt(no_outputs).is_integer()
+        self.no_outputs = no_outputs
 
     def __call__(self, sample):
         image = sample['image']
 
         h, w = image.shape[:2]
-        new_h, new_w = self.output_size
+        sqrt_OS = sqrt(self.no_outputs)
 
-        top = np.random.randint(0, h - new_h) 
-        left = np.random.randint(0, w - new_w)
+        new_h, new_w = int(h/sqrt_OS), int(w/sqrt_OS)
 
-        image = image[top: top + new_h,
-                      left: left + new_w]
+        images = []
 
-        return {'image':image, 'label':sample['label']}
+        for i in range(self.no_outputs):
+            top = np.random.randint(0, h - new_h) 
+            left = np.random.randint(0, w - new_w)
+
+            image = image[top: top + new_h, left: left + new_w]
+            images.append(image)
+
+        return {'images':images, 'label':sample['label']}
 
 
 # to convert numpy images to torch images
 class ToTensor(object):
     """Convert ndarrays in sample to Tensors."""
+
+    def __init__(self, multiple=False):
+        self.multi = multiple
 
     def __call__(self, sample):
         image = sample['image']
@@ -138,8 +162,16 @@ class ToTensor(object):
         # swap color axis because
         # numpy image: H x W x C
         # torch image: C X H X W
-        image = image.transpose((0, 1))
-        return {'image':torch.from_numpy(image), 'label':sample['label']}
+        if not self.multi:
+            image = image.transpose((0, 1))
+            return {'image':torch.from_numpy(image), 'label':sample['label']}
+        else:
+            no_images = len(image)
+            images = []
+            for i in range(no_images):
+                img = torch.from_numpy(image[i].transpose((0,1)))
+                images.append(img)
+            return {'image':images, 'label':sample['label']}
 
 
 class Preprocessor:
@@ -187,15 +219,15 @@ class Preprocessor:
         self.test_dataset = PlanktonDataset(partition['test'], labels['test'], onehot_labels['test'],
             Preprocessor.DATA_FOLDER, transform=self.transformations)
 
-
+    # shuffle=False so that the data is trained/validated/tested in exactly the same manner in each run
     def get_loaders(self, lType, batch_size):
         loader = None
         if lType == "train":
-            loader = DataLoader(self.train_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
+            loader = DataLoader(self.train_dataset, batch_size=batch_size, shuffle=False, num_workers=4) 
         elif lType == "validation":
-            loader = DataLoader(self.validation_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
+            loader = DataLoader(self.validation_dataset, batch_size=batch_size, shuffle=False, num_workers=4) 
         elif lType == "test":
-            loader = DataLoader(self.test_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
+            loader = DataLoader(self.test_dataset, batch_size=batch_size, shuffle=False, num_workers=4) 
         else:
             print("no such dataset loader")
         return loader
@@ -229,7 +261,9 @@ class Preprocessor:
                 augmented_fnames = []
                 if class_len <= minimum:
                     for i in range(minimum - class_len):
+                        np.random.seed(self.seed)
                         rand_idx = np.random.choice(class_idx[0], size = 1)
+                        np.random.seed(self.seed) # this will give one and only one data augmentation
                         augment_fname = np.array(self.fnames)[rand_idx][0] +"_"+ str(np.random.randint(0,5)) # one of: y flip, x flip, x-y flip, 90 rotation, 270 rotation
                         augmented_fnames.append(augment_fname)
                     new_fnames.extend(np.array(self.fnames)[class_idx[0]])
@@ -238,6 +272,7 @@ class Preprocessor:
 
                 if maximum is not None:
                     if class_len >= maximum: 
+                        np.random.seed(self.seed)
                         rand_idx = np.random.choice(class_idx[0], size = maximum, replace=False)
                         new_fnames.extend(np.array(self.fnames)[rand_idx])
                         new_labels.extend([class_name]* maximum)
@@ -260,9 +295,9 @@ class Preprocessor:
         for class_name in self.include_classes:
             class_idx = np.where(np.array(self.labels) == class_name)
             expected = (len(class_idx[0])*maxN)//n
-            np.random.seed(self.seed)
             if minimum is not None and expected < minimum:
                 expected = min(len(class_idx[0]), minimum)
+            np.random.seed(self.seed)
             random_idx = np.random.choice(class_idx[0], expected, replace=False)
             image_files = list(np.array(self.fnames)[random_idx])
             new_fnames.extend(image_files)
@@ -279,12 +314,12 @@ class Preprocessor:
             for class_name in self.include_classes:
                 data_per_class = og_dpc
                 class_idx = np.where(np.array(self.labels) == class_name)
-                np.random.seed(self.seed)
                 if len(class_idx[0]) <= data_per_class:
                     #print(class_idx[0])
                     random_idx = class_idx[0]
                     data_per_class = len(class_idx[0])
                 else:
+                    np.random.seed(self.seed)
                     random_idx = np.random.choice(class_idx[0], size = data_per_class, replace=False)
                 #print(class_name, len(random_idx))
                 image_files = list(np.array(self.fnames)[random_idx])
