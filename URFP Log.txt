@@ -233,26 +233,26 @@ week of 2/9:
 1. talked to zhiming and need to introduce statistics of each category. lets do that today (8/9)
 2. trained some models:
 	1. GoogleNet 1.2:
-		- 4.0 = 93.95% (7,50 hours)
-		- 4.1 = 94.04% (11,45 hours)
-		- 5.0 = 93.08% (2,30 hours)
-		- 5.1 = 94.00% (13,30 hours)
-		- 5.2 = 94.75% (??) (model file located in czm server)
+		- 4.0 = 93.95 (7,50 hours)
+		- 4.1 = 94.04 (11,45 hours)
+		- 5.0 = 93.08 (2,30 hours)
+		- 5.1 = 94.00 (13,30 hours)
+		- 5.2 = 94.75 (??) (model file located in czm server)
 		- 6.0 = 90.44
 		- 6.1 = 90.59
 		- 6.2 = 89.74
 		- 6.3 = 90.79
 		- 6.4 = 89.57
 		- 6.5 = 90.75
-		- 7.1 = 
+		- 7.1 = 92.76
 
 
 data distribution -> class distribution. maybe we should make a table out of it. okay lol lets do that.
 shape/appearance of classes not consistent
 1.	choose sample of misclassified images
 preprocessing
-1.	resizing
-2. 	noisy images we could use autoencode
+1.	resizing 
+2. 	noisy images we could use autoencode 
 classification tree after googlenet 
 
 accuracies of training/validation/test sets of each class (done)

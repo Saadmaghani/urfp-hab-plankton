@@ -110,8 +110,10 @@ class AlexNet(nn.Module):
 # version 1.0 = googlenet with 3 input channels & 20 outputs
 # version 1.1 = all outputs (94)
 # version 1.2 = 30 outputs
+# version 2.0 = 16 random crops, 16 outputs, average the outputs = answer
+
 class GoogleNet(nn.Module):
-    version = 1.2
+    version = 2.0
 
     def __init__(self, freeze=None, pretrain=True):
         super(GoogleNet, self).__init__()
@@ -128,9 +130,15 @@ class GoogleNet(nn.Module):
         self.softmax = nn.Softmax()
 
     def forward(self, x):
-        x = x.repeat(1, 3, 1, 1)
-        x = self.model(x)
-        x = self.softmax(x)
+
+        for xs in x:
+            print(xs)
+            xs = xs.repeat(1,3,1,1)
+            xs = self.model(xs)
+            xs = self.softmax(xs)
+            print(xs)
+            input()
+            
         return x
 
     def __str__(self):
