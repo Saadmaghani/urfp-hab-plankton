@@ -25,7 +25,6 @@ class PlanktonDataset(Dataset):
     def __getitem__(self, index):
         file_name = self.file_ids[index]
         splits = file_name.split("_")
-        print(splits)
         year = splits[1]
 
 
@@ -35,9 +34,7 @@ class PlanktonDataset(Dataset):
         aumgents = None
         if len(splits) == 6:
             augments = splits[5] 
-            file_name = "_".join(splits[:5])[0]
-            print(augments)
-            print(file_name)
+            file_name = "_".join(splits[:5])
         
         img_name = os.path.join(self.root_dir, year, label, file_name)
         img = io.imread(img_name)
@@ -233,7 +230,7 @@ class Preprocessor:
                 if class_len <= minimum:
                     for i in range(minimum - class_len):
                         rand_idx = np.random.choice(class_idx[0], size = 1)
-                        augment_fname = str(np.array(self.fnames)[rand_idx]) +"_"+ str(np.random.randint(0,5)) # one of: y flip, x flip, x-y flip, 90 rotation, 270 rotation
+                        augment_fname = np.array(self.fnames)[rand_idx][0] +"_"+ str(np.random.randint(0,5)) # one of: y flip, x flip, x-y flip, 90 rotation, 270 rotation
                         augmented_fnames.append(augment_fname)
                     new_fnames.extend(np.array(self.fnames)[class_idx[0]])
                     new_fnames.extend(augmented_fnames)
