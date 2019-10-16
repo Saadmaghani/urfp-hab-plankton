@@ -220,7 +220,7 @@
 	4.	read cvpr iccv eccv conference papers
 	5.	email professors about phd (look at chinese U and UST professors too)
 	6.	email Ping Lou about working as an undergraduate RA and then about PhD
-	7.	include more images (done)
+	7.	include more images (done) 
 	
 
 2/9 - Monday
@@ -238,6 +238,12 @@ week of 2/9:
 		- 5.0 = 93.08% (2,30 hours)
 		- 5.1 = 94.00% (13,30 hours)
 		- 5.2 = 94.75% (??) (model file located in czm server)
+		- 6.0 = 90.44
+		- 6.1 = 90.59
+		- 6.2 = 89.74
+		- 6.3 = 90.79
+		- 6.4 = 89.57
+		- 6.5 = 90.75
 
 
 data distribution -> class distribution. maybe we should make a table out of it. okay lol lets do that.
