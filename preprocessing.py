@@ -58,11 +58,21 @@ class PlanktonDataset(Dataset):
             sample = self.transform(sample)
 
         sample['encoded_label'] = encoded_label
-        sample['image'] = sample['image'].reshape((1, sample['image'].shape[0], sample['image'].shape[1]))
+        if type(sample['image']) is list:
+            for i in range(len(sample['image'])):
+                sample['image'][i] = sample['image'][i].reshape((1, sample['image'][i].shape[0], sample['image'][i].shape[1]))
+        else:
+            sample['image'] = sample['image'].reshape((1, sample['image'].shape[0], sample['image'].shape[1]))
         sample['fname'] = img_name
+        
         return sample
 
 
+class Reshape_3d(object):
+    def __call__(self, sample):
+        image = sample['image']
+        image = image.reshape((1, image.shape[0], image.shape[1]))
+        return {'image':image, 'label':sample['label']}
 
 # image transformations
 class Rescale(object):
@@ -115,7 +125,7 @@ class Rescale(object):
                 img = transform.resize(image[0], (new_h, new_w))
                 images.append(img)
 
-            return {'image':images, 'label':[sample['label']]*no_images }
+            return {'image':images, 'label':sample['label']}
 
 
 
@@ -131,8 +141,8 @@ class RandomCrop(object):
 
     def __call__(self, sample):
         image = sample['image']
-
-        h, w = image.shape[:2]
+        
+        h, w = image.shape[1:3]
         sqrt_OS = sqrt(self.no_outputs)
 
         new_h, new_w = int(h/sqrt_OS), int(w/sqrt_OS)
@@ -143,10 +153,12 @@ class RandomCrop(object):
             top = np.random.randint(0, h - new_h) 
             left = np.random.randint(0, w - new_w)
 
-            image = image[top: top + new_h, left: left + new_w]
-            images.append(image)
-
-        return {'images':images, 'label':sample['label']}
+            crop_image = image[top: top + new_h, left: left + new_w]
+            torch.cat((image, crop_image),0)
+            images.append(crop_image)
+        print(image.shape)
+        input()
+        return {'image':image, 'label':sample['label']}
 
 
 # to convert numpy images to torch images

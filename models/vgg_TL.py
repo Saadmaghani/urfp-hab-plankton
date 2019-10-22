@@ -130,13 +130,14 @@ class GoogleNet(nn.Module):
         self.softmax = nn.Softmax()
 
     def forward(self, x):
-
+        
         for xs in x:
-            print(xs)
+            print(len(x))
+            print(xs.size())
             xs = xs.repeat(1,3,1,1)
             xs = self.model(xs)
             xs = self.softmax(xs)
-            print(xs)
+            print(xs.size())
             input()
             
         return x

@@ -56,14 +56,29 @@ class Trainer:
 
             for i, data in enumerate(trainLoader, 0):
                 #get the unputs; data is a list of [inputs, labels]
-                inputs, labels = data['image'].to(self.device), data['encoded_label'].to(self.device).float()
+                print("!@#!@#!@#")
+                print(type(data))
+                print(data.keys())
+                print(type(data['image']))
+                print(len(data['image']))
+                print(data['image'][0].shape)
+                
+                input()
+                
+                
+                inputs, labels = data['image'], data['encoded_label'].to(self.device).float()
+                if type(inputs) is list:
+                    for i in range(len(inputs)):
+                        inputs[i] = inputs[i].to(self.device).float()
+                else:
+                     inputs = inputs.to(self.device).float()
 
                 
                 #zero the param gradients
                 optimizer.zero_grad()
                 
                 #forward + backward + optimize
-                outputs = model(inputs.float())
+                outputs = model(inputs)
                 
                 loss = self.criterion(outputs, labels)
                 loss.backward()

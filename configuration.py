@@ -3,7 +3,7 @@ from torch.optim import lr_scheduler
 import torch.nn as nn
 from training import EarlyStopping, FocalLoss
 from torchvision import transforms
-from preprocessing import Rescale, RandomCrop, ToTensor
+from preprocessing import Reshape_3d, Rescale, RandomCrop, ToTensor
 
 """
 versions:
@@ -78,4 +78,4 @@ class Hyperparameters:
     maxN = None 
     minimum = None
     number_of_images_per_class = 2500
-    transformations = transforms.Compose([RandomCrop(16), Rescale((64, 128)), ToTensor()])
+    transformations = transforms.Compose([Reshape_3d(), RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
