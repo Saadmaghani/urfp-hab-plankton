@@ -3,7 +3,7 @@ from torch.optim import lr_scheduler
 import torch.nn as nn
 from training import EarlyStopping, FocalLoss
 from torchvision import transforms
-from preprocessing import Reshape_3d, Rescale, RandomCrop, ToTensor
+from preprocessing import Rescale, RandomCrop, ToTensor
 
 """
 versions:
@@ -62,7 +62,7 @@ strategies (training):
 # version 6.5 = same as 6.0 except minimum = 600
 # version 7.0 = thresholding + data augmention Test with "augmentation"=T, "thresholding"=T, "number_of_images_per_class"=200 and "minimum"=100. no MaxN, same as 3.0 
 # version 7.1 = same as 7.0 except minimum = 400. #images/class = 2500. tests data augmentation and thresholding.
-# version 8.0 = transformations added. can only work with GoogleNet 1.3
+# version 8.0 = transformations added. can only work with GoogleNet 1.3, minibatch size = 64
 
 class Hyperparameters:
     version=8.0
@@ -72,10 +72,10 @@ class Hyperparameters:
     optimizer = optim.Adam
     loss_function = FocalLoss
     es = EarlyStopping(patience=20)
-    batch_size = 256
+    batch_size = 64
     scheduler = None
     pp_strategy = "thresholding"
     maxN = None 
     minimum = None
     number_of_images_per_class = 2500
-    transformations = transforms.Compose([Reshape_3d(), RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
+    transformations = transforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])

@@ -1,5 +1,6 @@
 from torchvision import models
 import torch.nn as nn
+import torch
 
 # version 1.0 = vgg16
 # version 1.1 = vgg16_bn
@@ -130,7 +131,20 @@ class GoogleNet(nn.Module):
         self.softmax = nn.Softmax()
 
     def forward(self, x):
+        x = x.repeat(1,1,3,1,1)
+        sums = None
+        for i in range(x.shape[1]):
+            xs = x[:,i:i+1].squeeze(1)
+            xs = self.model(xs)
+            xs = self.softmax(xs)
+            if sums is None:
+                sums = xs
+            else:
+                sums = torch.add(sums, xs)
+        x = torch.div(sums, x.shape[1])
+
         
+        """
         for xs in x:
             print(len(x))
             print(xs.size())
@@ -139,7 +153,7 @@ class GoogleNet(nn.Module):
             xs = self.softmax(xs)
             print(xs.size())
             input()
-            
+        """    
         return x
 
     def __str__(self):

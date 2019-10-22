@@ -56,23 +56,12 @@ class Trainer:
 
             for i, data in enumerate(trainLoader, 0):
                 #get the unputs; data is a list of [inputs, labels]
-                print("!@#!@#!@#")
-                print(type(data))
-                print(data.keys())
-                print(type(data['image']))
-                print(len(data['image']))
-                print(data['image'][0].shape)
-                
-                input()
-                
-                
                 inputs, labels = data['image'], data['encoded_label'].to(self.device).float()
                 if type(inputs) is list:
                     for i in range(len(inputs)):
                         inputs[i] = inputs[i].to(self.device).float()
                 else:
                      inputs = inputs.to(self.device).float()
-
                 
                 #zero the param gradients
                 optimizer.zero_grad()
@@ -88,7 +77,7 @@ class Trainer:
                 running_loss += loss.item()
                 
                 if i % 10 == 0:
-                    #every batch print - loss, training acc, validation acc
+                    #every 10 batches print - loss, training acc, validation acc
                     train_pred, train_target, _ = self.test(model, trainLoader)
                     valid_pred, valid_target, _ = self.test(model, validLoader)
                     train_acc = accuracy_score(train_target.cpu(), train_pred.cpu())
