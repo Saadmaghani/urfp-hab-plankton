@@ -54,15 +54,17 @@ trainAcc = []
 validAcc = [] 
 epochs = 0 
 
-#trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
+trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
 
 # - or -
+"""
 path_to_statedict = "models/GoogleNet_2.0-8.0.tar"
 
 if ".tar" in path_to_statedict:
     model = trainer.load_partial_model(model, path_to_statedict)
 else:
     model = trainer.load_full_model(model, path_to_statedict)
+"""
 
 test_pred, test_target, test_fnames = trainer.test(model, testLoader)
 valid_pred, valid_target, valid_fnames = trainer.test(model, validLoader)
