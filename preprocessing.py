@@ -58,11 +58,9 @@ class PlanktonDataset(Dataset):
             sample = self.transform(sample)
 
         sample['encoded_label'] = encoded_label
-        sample['image'] = sample['image'].reshape((1, sample['image'].shape[0], sample['image'].shape[1]))
         sample['fname'] = img_name
+        
         return sample
-
-
 
 # image transformations
 class Rescale(object):
@@ -115,7 +113,7 @@ class Rescale(object):
                 img = transform.resize(image[0], (new_h, new_w))
                 images.append(img)
 
-            return {'image':images, 'label':[sample['label']]*no_images }
+            return {'image':images, 'label':sample['label']}
 
 
 
@@ -131,7 +129,7 @@ class RandomCrop(object):
 
     def __call__(self, sample):
         image = sample['image']
-
+        
         h, w = image.shape[:2]
         sqrt_OS = sqrt(self.no_outputs)
 
@@ -143,10 +141,10 @@ class RandomCrop(object):
             top = np.random.randint(0, h - new_h) 
             left = np.random.randint(0, w - new_w)
 
-            image = image[top: top + new_h, left: left + new_w]
-            images.append(image)
+            crop_image = image[top: top + new_h, left: left + new_w]
+            images.append(crop_image)
 
-        return {'images':images, 'label':sample['label']}
+        return {'image':images, 'label':sample['label']}
 
 
 # to convert numpy images to torch images
@@ -163,14 +161,14 @@ class ToTensor(object):
         # numpy image: H x W x C
         # torch image: C X H X W
         if not self.multi:
-            image = image.transpose((0, 1))
+            image = image.reshape((1,image.shape[0], image.shape[1]))
             return {'image':torch.from_numpy(image), 'label':sample['label']}
         else:
             no_images = len(image)
-            images = []
-            for i in range(no_images):
-                img = torch.from_numpy(image[i].transpose((0,1)))
-                images.append(img)
+            images = torch.from_numpy(image[0].reshape((1, 1, image[0].shape[0], image[0].shape[1])))
+            for i in range(1, no_images):
+                img = torch.from_numpy(image[i].reshape((1, 1, image[i].shape[0], image[i].shape[1])))
+                images = torch.cat((images, img), 0)
             return {'image':images, 'label':sample['label']}
 
 
