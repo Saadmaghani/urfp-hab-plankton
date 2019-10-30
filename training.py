@@ -144,6 +144,16 @@ class Trainer:
         model.train()
         
         return model, optimizer, epoch
+    
+    def load_partial_model(self, model, path_to_statedict):
+        checkpoint = torch.load(path_to_statedict)
+        model.load_state_dict(checkpoint['model_state_dict'])
+        model.eval()
+        # - or -
+        #model.train()
+        return model
+    
+    
 
     def _save_full_model(self, model):
         # saving model

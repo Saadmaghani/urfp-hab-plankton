@@ -12,9 +12,9 @@ versions:
 3.x - early stopping
 4.x - thresholding
 5.x - focal loss + proportional reduction of classes
+5.3.0 - focal loss + thresholding (test against 4.x) (rename to 5.3.0)
 6.x - focal loss + proportional reduction + minimum 
 7.x - focal loss + data augmentation + thresholding. 
-8.x - focal loss + thresholding (test against 4.x) (rename to 5.3.0)
 8.x - 16 random crops
 
 strategies (preprocessing):
@@ -62,10 +62,12 @@ strategies (training):
 # version 6.5 = same as 6.0 except minimum = 600
 # version 7.0 = thresholding + data augmention Test with "augmentation"=T, "thresholding"=T, "number_of_images_per_class"=200 and "minimum"=100. no MaxN, same as 3.0 
 # version 7.1 = same as 7.0 except minimum = 400. #images/class = 2500. tests data augmentation and thresholding.
-# version 8.0 = transformations added. can only work with GoogleNet 1.3, minibatch size = 64
+# version 8.0 = transformations added. can only work with GoogleNet 2.0, minibatch size = 64
+# version 8.1 = to test the above methods lets keep a standard of 1000 images per class.
+
 
 class Hyperparameters:
-    version=8.0
+    version=8.1
     learning_rate = 0.0003
     number_of_epochs = 200
     momentum = 0.9
@@ -77,5 +79,5 @@ class Hyperparameters:
     pp_strategy = "thresholding"
     maxN = None 
     minimum = None
-    number_of_images_per_class = 2500
+    number_of_images_per_class = 1000
     transformations = transforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
