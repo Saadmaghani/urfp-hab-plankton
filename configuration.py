@@ -53,7 +53,7 @@ strategies (training):
 # version 5.0 = same as 3.5 except maxN = 30000, no thresholding, no images/class, loss_fc = FocalLoss
 # version 5.1 = same as 5.0 except maxN = 56000 which is similar N to 4.1 (56111)
 # version 5.2 = same as 5.0 except maxN = 100000
-# version 5.3.0 = same as 4.1 except with focal loss.
+# version 5.3.0 = same as 4.1 except with focal loss. to test against threshold w/o focal loss.
 # version 6.0 = same as 5.0 except minimum = 100. this minimum means that if there are less than min images, include all st n = min(N, minimum). This will remove the population dist. bias but accuracies might increase. lets see
 # version 6.1 = same as 6.0 except minimum = 200
 # version 6.2 = same as 6.0 except minimum = 300
