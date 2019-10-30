@@ -53,7 +53,7 @@ strategies (training):
 # version 5.0 = same as 3.5 except maxN = 30000, no thresholding, no images/class, loss_fc = FocalLoss
 # version 5.1 = same as 5.0 except maxN = 56000 which is similar N to 4.1 (56111)
 # version 5.2 = same as 5.0 except maxN = 100000
-# version 5.3.0 = same as 4.1 except with focal loss.
+# version 5.3.0 = same as 4.1 except with focal loss. to test against threshold w/o focal loss.
 # version 6.0 = same as 5.0 except minimum = 100. this minimum means that if there are less than min images, include all st n = min(N, minimum). This will remove the population dist. bias but accuracies might increase. lets see
 # version 6.1 = same as 6.0 except minimum = 200
 # version 6.2 = same as 6.0 except minimum = 300
@@ -64,17 +64,17 @@ strategies (training):
 # version 7.1 = same as 7.0 except minimum = 400. #images/class = 2500. tests data augmentation and thresholding.
 # version 8.0 = transformations added. can only work with GoogleNet 2.0, minibatch size = 64
 # version 8.1 = to test the above methods lets keep a standard of 1000 images per class.
-
+# version 9.0 = transformations but batch_size = 1 and 16 random crops work as minibatch. only work with GoogleNet 3.0
 
 class Hyperparameters:
-    version=8.1
+    version=9.0
     learning_rate = 0.0003
     number_of_epochs = 200
     momentum = 0.9
     optimizer = optim.Adam
     loss_function = FocalLoss
     es = EarlyStopping(patience=20)
-    batch_size = 64
+    batch_size = 1
     scheduler = None
     pp_strategy = "thresholding"
     maxN = None 

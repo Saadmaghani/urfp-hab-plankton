@@ -238,6 +238,7 @@ week of 2/9:
 		- 5.0 = 93.08 (2,30 hours)
 		- 5.1 = 94.00 (13,30 hours)
 		- 5.2 = 94.75 (??) (model file located in czm server)
+		- 5.3.0 = 90.83
 		- 6.0 = 90.44
 		- 6.1 = 90.59
 		- 6.2 = 89.74
@@ -245,8 +246,7 @@ week of 2/9:
 		- 6.4 = 89.57
 		- 6.5 = 90.75
 		- 7.1 = 92.76
-
-
+ 
 data distribution -> class distribution. maybe we should make a table out of it. okay lol lets do that.
 shape/appearance of classes not consistent
 1.	choose sample of misclassified images
@@ -286,10 +286,11 @@ accuracies of training/validation/test sets of each class (done)
 7/10:
 1.	Data augmentation time.
 2.	meeting with zhiming and friend. came up with following strategies:
-	1.	16 random crops -> 16 outputs, average output
+	1.	16 random crops -> 16 outputs, average output (done. pretty bad. why?)
 	2.	16 random crops -> gn output (16, 512, 2, 2) -> make into vector -> fc gives output
 	3.	attention to get weighted average
 	4.	multi-model
+	5.	SENET
 
 
 16/10:
@@ -299,4 +300,13 @@ accuracies of training/validation/test sets of each class (done)
 	1.	solved. now everything is exactly the same given #images. so if #images same (say min. max. same) then the dataset will be same too.
 4.	running 8.0 on gpu farm
 	just a test of focal loss + thresholding vs thresholding w/o focal loss
+
+25/10:
+1.	GN 2.0/8.0 took 3 days + and is only at 53% valid accuracy. so im quitting it. taking less data. i need to meet with zhiming too.
+
+26/10:
+1. models:
+	1. GN_2.0/8.0 = 54.0%
+	2. GN_2.0/8.0 
+
 
