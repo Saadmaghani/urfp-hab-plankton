@@ -50,7 +50,7 @@ strategies (training):
 # version 3.7 = same as 3.5 except 1000 images ***
 # version 4.0 = same as 3.5 except 2000 images and thresholding
 # version 4.1 = same as 4.0 except 2500 images
-# version 4.2 = same as 4.0 except batch_size = 128
+# version 4.2 = same as 4.0 except batch_size = 50, 100 images
 # version 5.0 = same as 3.5 except maxN = 30000, no thresholding, no images/class, loss_fc = FocalLoss
 # version 5.1 = same as 5.0 except maxN = 56000 which is similar N to 4.1 (56111)
 # version 5.2 = same as 5.0 except maxN = 100000
@@ -75,10 +75,10 @@ class Hyperparameters:
     optimizer = optim.Adam
     loss_function = nn.MSELoss
     es = EarlyStopping(patience=20)
-    batch_size = 128
+    batch_size = 64
     scheduler = None
     pp_strategy = "thresholding"
     maxN = None 
     minimum = None
-    number_of_images_per_class = 2000
+    number_of_images_per_class = 100
     transformations = None #transforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
