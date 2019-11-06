@@ -3,7 +3,8 @@ from training import Trainer
 from metrics import Metrics
 import torch.nn as nn
 import torch.optim as optim
-from models.vgg_TL import VGG, GoogleNet, ResNet
+from models.vgg_TL import GoogleNet
+from models.autoencoders import Simple_AE
 from configuration import Hyperparameters as HP
 import torch
 import json
@@ -48,7 +49,7 @@ testLoader = pp.get_loaders('test', HP.batch_size)
 trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn = HP.loss_function, 
 	optimizer = HP.optimizer, scheduler = HP.scheduler, lr = HP.learning_rate, momentum = HP.momentum, useCuda=True)
 
-model = GoogleNet()
+model = Simple_AE()
 
 trainAcc = []
 validAcc = [] 
