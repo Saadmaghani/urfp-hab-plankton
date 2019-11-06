@@ -69,7 +69,11 @@ class Trainer:
                 #forward + backward + optimize
                 outputs = model(inputs)
                 
-                loss = self.criterion(outputs, labels)
+                #loss = self.criterion(outputs, labels)
+                
+                # training autoencoder:
+                loss = self.criterion(outputs, inputs)
+
                 loss.backward()
                 optimizer.step()
                 
