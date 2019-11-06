@@ -318,6 +318,7 @@ accuracies of training/validation/test sets of each class (done)
 		1.	depth of 1, 2 and 3 (for both encoding and decoding) and then using least dimension vector, i will push it to the Google Net
 	2.	variable autoencoders. 
 3.	right now i will make a simple autoencoder
+4.	the autoencoder will go from (128, 264) -> (64, 128) -> (128, 264)
 
 
 
