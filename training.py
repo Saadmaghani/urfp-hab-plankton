@@ -91,8 +91,8 @@ class Trainer:
                         train_acc = accuracy_score(train_target.cpu(), train_pred.cpu())
                         valid_acc = accuracy_score(valid_target.cpu(), valid_pred.cpu())
                     else:
-                        train_acc = torch.mean((train_pred - train_target)**2)
-                        valid_acc = torch.mean((valid_pred - valid_target)**2)
+                        train_acc = torch.mean((train_pred - train_target)**2).tolist()
+                        valid_acc = torch.mean((valid_pred - valid_target)**2).tolist()
 
                     print('Training Loss:', running_loss)
                     print('Training Accuracy:', train_acc)
