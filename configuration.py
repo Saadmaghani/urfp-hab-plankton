@@ -67,8 +67,9 @@ strategies (training):
 # version 8.1 = to test the above methods lets keep a standard of 1000 images per class.
 # version 9.0 = transformations but batch_size = 1 and 16 random crops work as minibatch. only work with GoogleNet 3.0
 # version 10.0 = same as 4.0 except batch_size = 50, 100 images and training the autoencoder. so transforms is with rescale to (128, 264)
+# version 10.1 = same as 10.0 except batch_Size = 65, 1000 images.
 class Hyperparameters:
-    version=10.0
+    version=10.1
     learning_rate = 0.0003
     number_of_epochs = 200
     momentum = 0.9
