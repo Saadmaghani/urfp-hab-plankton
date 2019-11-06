@@ -109,7 +109,6 @@ class AlexNet(nn.Module):
         return type(self).__name__ + "_" + str(self.version)
 
 
-class 
 
 # version 1.0 = googlenet with 3 input channels & 20 outputs
 # version 1.1 = all outputs (94)
@@ -119,10 +118,10 @@ class
 class GoogleNet(nn.Module):
     version = 3.0
 
-    #used with version 3.0
+    # used with version 3.0
     class ReshapeLayer(nn.Module):
         def __init__(self, tup):
-            super(ReshapeLayer, self).__init__()
+            super(GoogleNet.ReshapeLayer, self).__init__()
             self.reshape_tup = tup
 
         def forward(self, x):
@@ -141,7 +140,7 @@ class GoogleNet(nn.Module):
 
         if self.version == 3.0:
             self.model.fc = nn.Linear(1024*16, 30)
-            self.model.avgpool = nn.Sequential(self.model.avgpool, ReshapeLayer(1,-1))
+            self.model.avgpool = nn.Sequential(self.model.avgpool, GoogleNet.ReshapeLayer((1,-1)))
         else:
             self.model.fc = nn.Linear(1024, 30)
 
@@ -161,6 +160,11 @@ class GoogleNet(nn.Module):
                 else:
                     sums = torch.add(sums, xs)
             x = torch.div(sums, x.shape[1])
+        elif self.version == 3.0:
+            x = x.reshape(x.shape[1], x.shape[2], x.shape[3], x.shape[4])
+            x = x.repeat(1,3,1,1)
+            x = self.model(x)
+            x = self.softmax(x)
         else:
             x = x.repeat(1, 3, 1, 1)
             x = self.model(x)
@@ -197,3 +201,4 @@ class ResNet(nn.Module):
 
     def __str__(self):
         return type(self).__name__ + "_" + str(self.version)
+
