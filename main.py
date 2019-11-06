@@ -67,24 +67,37 @@ else:
     model = trainer.load_full_model(model, path_to_statedict)
 """
 
-test_pred, test_target, test_fnames = trainer.test(model, testLoader)
-valid_pred, valid_target, valid_fnames = trainer.test(model, validLoader)
-train_pred, train_target, train_fnames = trainer.test(model, trainLoader)
 
-test_met = Metrics(test_target, test_pred)
+
+test_pred, test_target, test_fnames = trainer.test(model, testLoader)
+
+test_acc = torch.mean((test_pred - test_target)**2)
+
+#valid_pred, valid_target, valid_fnames = trainer.test(model, validLoader)
+#train_pred, train_target, train_fnames = trainer.test(model, trainLoader)
+
+
+#test_met = Metrics(test_target, test_pred)
 #valid_met = Metrics(valid_target, valid_pred)
 #train_met = Metrics(train_target, train_pred)
 
-print(test_met.accuracy())
+
+#print(test_met.accuracy())
+print(test_acc)
+
 #time = trainer.getTime()
 time = "xx:xx:xx"
 print(time)
 
 f = open("./stats/stats-"+str(model)+"-"+str(HP.version)+".json","w+")
-str_to_write = "{\"Time\": \""+ time +"\",\n \"Epochs\": "+str(epochs)+ ",\n \"TrainAcc\": "+ str(trainAcc)+",\n \"ValidAcc\": "+str(validAcc)+",\n \"TestAcc\": "+str(test_met.accuracy()) + \
+
+#str(test_met.accuracy()) + \
+
+str_to_write = "{\"Time\": \""+ time +"\",\n \"Epochs\": "+str(epochs)+ ",\n \"TrainAcc\": "+ str(trainAcc)+",\n \"ValidAcc\": "+str(validAcc)+",\n \"TestAcc\": "+ str(test_acc) + \
 ",\n \"Train_Pred\": " + str(list(train_pred.cpu().numpy())) + ",\n \"Train_Target\": " + str(list(train_target.cpu().numpy())) + ",\n \"Train_fnames\": " + json.dumps(train_fnames) + \
 ",\n \"Valid_Pred\": " + str(list(valid_pred.cpu().numpy())) + ",\n \"Valid_Target\": " + str(list(valid_target.cpu().numpy())) + ",\n \"Valid_fnames\": " + json.dumps(valid_fnames) + \
-",\n \"Test_Pred\": " + str(list(test_pred.cpu().numpy())) + ",\n \"Test_Target\": " + str(list(test_target.cpu().numpy())) + ",\n \"Test_fnames\": " + json.dumps(test_fnames) +"}"
+",\n \"Test_Pred\": " + str(list(test_pred.cpu().numpy())) + ",\n \"Test_Target\": " + str(list(test_target.cpu().numpy())) + ",\n \"Test_fnames\": " + json.dumps(test_fnames) + \
+"}"
 f.write(str_to_write)
 f.close()
 
