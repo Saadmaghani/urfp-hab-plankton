@@ -50,6 +50,7 @@ strategies (training):
 # version 3.7 = same as 3.5 except 1000 images ***
 # version 4.0 = same as 3.5 except 2000 images and thresholding
 # version 4.1 = same as 4.0 except 2500 images
+# version 4.2 = same as 4.0 except batch_size = 128
 # version 5.0 = same as 3.5 except maxN = 30000, no thresholding, no images/class, loss_fc = FocalLoss
 # version 5.1 = same as 5.0 except maxN = 56000 which is similar N to 4.1 (56111)
 # version 5.2 = same as 5.0 except maxN = 100000
@@ -67,17 +68,17 @@ strategies (training):
 # version 9.0 = transformations but batch_size = 1 and 16 random crops work as minibatch. only work with GoogleNet 3.0
 
 class Hyperparameters:
-    version=4.1
+    version=4.2
     learning_rate = 0.0003
     number_of_epochs = 200
     momentum = 0.9
     optimizer = optim.Adam
     loss_function = nn.MSELoss
     es = EarlyStopping(patience=20)
-    batch_size = 256
+    batch_size = 128
     scheduler = None
     pp_strategy = "thresholding"
     maxN = None 
     minimum = None
-    number_of_images_per_class = 2500
+    number_of_images_per_class = 2000
     transformations = None #transforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
