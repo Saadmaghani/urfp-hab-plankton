@@ -33,6 +33,7 @@ class Simple_AE(nn.Module):
             nn.Sigmoid())
 
     def forward(self, x):
+        x = x.repeat((1,3,1,1))
         x = self.encoder(x)
         x = self.decoder(x)
         return x
