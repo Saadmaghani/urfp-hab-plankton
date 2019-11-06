@@ -81,7 +81,7 @@ class Hyperparameters:
     maxN = None 
     minimum = None
     number_of_images_per_class = 100
-    transformations = transoforms.Compose([Rescale((128, 264)), ToTensor()]) #transforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
+    transformations = transforms.Compose([Rescale((128, 264)), ToTensor()]) #transforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
 
 
 
