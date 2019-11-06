@@ -71,7 +71,7 @@ else:
 
 test_pred, test_target, test_fnames = trainer.test(model, testLoader)
 
-test_acc = torch.mean((test_pred - test_target)**2)
+test_acc = torch.mean((test_pred - test_target)**2).tolist()
 
 #valid_pred, valid_target, valid_fnames = trainer.test(model, validLoader)
 #train_pred, train_target, train_fnames = trainer.test(model, trainLoader)
