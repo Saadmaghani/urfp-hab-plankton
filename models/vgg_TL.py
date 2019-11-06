@@ -115,8 +115,9 @@ class AlexNet(nn.Module):
 # version 1.2 = 30 outputs
 # version 2.0 = 16 random crops, 16 outputs, average the outputs = answer
 # version 3.0 = 16 random crops as minibatch, reshape into 1 minibatch 16*1024 as input into FC
+# version 4.0 = same as 1.2 except with auto encoder
 class GoogleNet(nn.Module):
-    version = 3.0
+    version = 4.0
 
     # used with version 3.0
     class ReshapeLayer(nn.Module):
@@ -139,8 +140,8 @@ class GoogleNet(nn.Module):
                 param.requires_grad = False
 
         if self.version == 3.0:
-            self.model.fc = nn.Linear(1024*16, 30)
             self.model.avgpool = nn.Sequential(self.model.avgpool, GoogleNet.ReshapeLayer((1,-1)))
+            self.model.fc = nn.Linear(1024*16, 30)
         else:
             self.model.fc = nn.Linear(1024, 30)
 
@@ -163,6 +164,11 @@ class GoogleNet(nn.Module):
         elif self.version == 3.0:
             x = x.reshape(x.shape[1], x.shape[2], x.shape[3], x.shape[4])
             x = x.repeat(1,3,1,1)
+            x = self.model(x)
+            x = self.softmax(x)
+        elif self.version == 4.0:
+            
+            x = x.repeat(1, 3, 1, 1)
             x = self.model(x)
             x = self.softmax(x)
         else:

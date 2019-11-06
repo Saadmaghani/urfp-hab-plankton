@@ -305,9 +305,19 @@ accuracies of training/validation/test sets of each class (done)
 1.	GN 2.0/8.0 took 3 days + and is only at 53% valid accuracy. so im quitting it. taking less data. i need to meet with zhiming too.
 
 26/10:
-1. models:
+1. 	models:
 	1. GN_2.0/8.0 = 54.00%
 	2. GN_2.0/8.1 = 48.47%
 	3. GN_3.0/9.0 = very bad. almost a week since training and has not finished. valid acc = 0.033 ie. 3%
+
+
+6/11:
+1. 	the above models show that it leads to very bad results if you use random cropping.
+2. 	to introduce variability, lets try to use autoencoders. there are 2 autoencoders i will look at:
+	1.	simple autoencoders:
+		1.	depth of 1, 2 and 3 (for both encoding and decoding) and then using least dimension vector, i will push it to the Google Net
+	2.	variable autoencoders. 
+3.	right now i will make a simple autoencoder
+
 
 
