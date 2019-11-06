@@ -8,6 +8,7 @@ from models.autoencoders import Simple_AE
 from configuration import Hyperparameters as HP
 import torch
 import json
+import math
 
 years = [str(y) for y in range(2006, 2015)]
 
@@ -71,7 +72,7 @@ else:
 
 test_pred, test_target, test_fnames = trainer.test(model, testLoader)
 
-test_acc = torch.mean((test_pred - test_target)**2).tolist()
+test_acc = math.exp(-1*torch.mean((test_pred - test_target)**2).tolist())
 
 #valid_pred, valid_target, valid_fnames = trainer.test(model, validLoader)
 #train_pred, train_target, train_fnames = trainer.test(model, trainLoader)

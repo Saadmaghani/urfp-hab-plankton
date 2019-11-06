@@ -3,6 +3,7 @@ import time
 import copy
 from sklearn.metrics import accuracy_score
 import numpy as np
+import math
 
 class Trainer:
     def __init__(self, HP_version, epochs, loss_fn, optimizer, scheduler = None, lr = 0.01, momentum=0.9, useCuda = False, autoencoder=False):
@@ -91,8 +92,8 @@ class Trainer:
                         train_acc = accuracy_score(train_target.cpu(), train_pred.cpu())
                         valid_acc = accuracy_score(valid_target.cpu(), valid_pred.cpu())
                     else:
-                        train_acc = torch.mean((train_pred - train_target)**2).tolist()
-                        valid_acc = torch.mean((valid_pred - valid_target)**2).tolist()
+                        train_acc = math.exp(-1*torch.mean((train_pred - train_target)**2).tolist())
+                        valid_acc = math.exp(-1*torch.mean((valid_pred - valid_target)**2).tolist())
 
                     print('Training Loss:', running_loss)
                     print('Training Accuracy:', train_acc)
