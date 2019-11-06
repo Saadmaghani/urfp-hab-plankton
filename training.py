@@ -5,7 +5,7 @@ from sklearn.metrics import accuracy_score
 import numpy as np
 
 class Trainer:
-    def __init__(self, HP_version, epochs, loss_fn, optimizer, scheduler = None, lr = 0.01, momentum=0.9, useCuda = False):
+    def __init__(self, HP_version, epochs, loss_fn, optimizer, scheduler = None, lr = 0.01, momentum=0.9, useCuda = False, autoencoder=False):
         self.epochs = epochs
         self.hp_version = HP_version
         self.criterion = loss_fn()
@@ -18,6 +18,7 @@ class Trainer:
             self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         else:
             self.device = torch.device("cpu")
+        self.autoencoder = autoencoder
 
         
     def train(self, model, trainLoader, validLoader, earlyStopping = None, partialModelFile = None, save = True):
@@ -69,10 +70,12 @@ class Trainer:
                 #forward + backward + optimize
                 outputs = model(inputs)
                 
-                #loss = self.criterion(outputs, labels)
-                
+                if self.autoencoder:
                 # training autoencoder:
-                loss = self.criterion(outputs, inputs)
+                    loss = self.criterion(outputs, inputs)
+                else:
+                    loss = self.criterion(outputs, labels)
+
 
                 loss.backward()
                 optimizer.step()
@@ -179,18 +182,26 @@ class Trainer:
 
             for data in testloader:
                 inputs, labels = data['image'].to(self.device), data['encoded_label'].to(self.device).float()
-                _, labels = torch.max(labels, 1)
+                
+                if not self.autoencoder:
+                    _, labels = torch.max(labels, 1)
 
-                outputs = model(inputs.float())
-                _, predicted = torch.max(outputs.data, 1)
-                #print("labels:", labels)
-                #print("predicted:", predicted)
-                #print("~~~~~~~~~~~~~~~~")
-                all_preds = torch.cat((all_preds, predicted), 0)
-                all_targets = torch.cat((all_targets, labels), 0) 
+                    outputs = model(inputs.float())
+                    _, predicted = torch.max(outputs.data, 1)
+                    #print("labels:", labels)
+                    #print("predicted:", predicted)
+                    #print("~~~~~~~~~~~~~~~~")
+                    all_preds = torch.cat((all_preds, predicted), 0)
+                    all_targets = torch.cat((all_targets, labels), 0) 
+                    
+                    #if total >=10:
+                    #   break
+                else:
+                    outputs = model(inputs.float())
+                    all_preds = torch.cat((all_preds, outputs), 0)
+                    all_targets = torch.cat((all_targets, inputs.float()), 0)
+
                 all_fnames.extend(data['fname'])
-                #if total >=10:
-                #   break
 
         return all_preds, all_targets, all_fnames
 
