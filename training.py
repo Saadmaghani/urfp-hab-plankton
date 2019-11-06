@@ -173,8 +173,13 @@ class Trainer:
         return model
 
     def test(self, model, testloader): #stats finder
-        all_preds = torch.LongTensor().to(self.device)
-        all_targets = torch.LongTensor().to(self.device)
+        if self.autoencoder: 
+            all_preds = torch.FloatTensor().to(self.device)
+            all_targets = torch.FloatTensor().to(self.device)
+        else:
+            all_preds = torch.LongTensor().to(self.device)
+            all_targets = torch.LongTensor().to(self.device)
+
         all_fnames = []
         model.to(self.device)
         
