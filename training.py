@@ -16,7 +16,7 @@ class Trainer:
         self.momentum = momentum
         self.device = torch.device("cpu")
         if useCuda:
-            self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+            self.device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
         else:
             self.device = torch.device("cpu")
         self.autoencoder = autoencoder
@@ -84,6 +84,7 @@ class Trainer:
                 #print statistics - have to get more of these
                 running_loss += loss.item()
                 print(type(running_loss))
+                
                 if i % 10 == 0:
                     #every 10 batches print - loss, training acc, validation acc
                     train_pred, train_target, _ = self.test(model, trainLoader)
@@ -104,7 +105,7 @@ class Trainer:
                     if valid_acc > best_acc:
                         best_acc = valid_acc
                         best_model_weights = copy.deepcopy(model.state_dict())
-
+                    del train_pred, train_target, valid_pred, valid_target
                     all_train_acc.append(train_acc)
                     all_valid_acc.append(valid_acc)
                 
