@@ -76,12 +76,12 @@ class Hyperparameters:
     optimizer = optim.Adam
     loss_function = nn.MSELoss
     es = EarlyStopping(patience=20)
-    batch_size = 64
+    batch_size = 8
     scheduler = None
     pp_strategy = "thresholding"
     maxN = None 
     minimum = None
-    number_of_images_per_class = 100
+    number_of_images_per_class = 500
     transformations = transforms.Compose([Rescale((128, 264)), ToTensor()]) #transforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
 
 
