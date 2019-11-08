@@ -3,9 +3,10 @@ import time
 import copy
 from sklearn.metrics import accuracy_score
 import numpy as np
+import math
 
 class Trainer:
-    def __init__(self, HP_version, epochs, loss_fn, optimizer, scheduler = None, lr = 0.01, momentum=0.9, useCuda = False):
+    def __init__(self, HP_version, epochs, loss_fn, optimizer, scheduler = None, lr = 0.01, momentum=0.9, useCuda = False, autoencoder=False):
         self.epochs = epochs
         self.hp_version = HP_version
         self.criterion = loss_fn()
@@ -18,6 +19,7 @@ class Trainer:
             self.device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
         else:
             self.device = torch.device("cpu")
+        self.autoencoder = autoencoder
 
         
     def train(self, model, trainLoader, validLoader, earlyStopping = None, partialModelFile = None, save = True):
@@ -56,16 +58,26 @@ class Trainer:
 
             for i, data in enumerate(trainLoader, 0):
                 #get the unputs; data is a list of [inputs, labels]
-                inputs, labels = data['image'].to(self.device), data['encoded_label'].to(self.device).float()
-
+                inputs, labels = data['image'], data['encoded_label'].to(self.device).float()
+                if type(inputs) is list:
+                    for i in range(len(inputs)):
+                        inputs[i] = inputs[i].to(self.device).float()
+                else:
+                     inputs = inputs.to(self.device).float()
                 
                 #zero the param gradients
                 optimizer.zero_grad()
                 
                 #forward + backward + optimize
-                outputs = model(inputs.float())
+                outputs = model(inputs)
                 
-                loss = self.criterion(outputs, labels)
+                if self.autoencoder:
+                # training autoencoder:
+                    loss = self.criterion(outputs, inputs)
+                else:
+                    loss = self.criterion(outputs, labels)
+
+
                 loss.backward()
                 optimizer.step()
                 
@@ -73,22 +85,33 @@ class Trainer:
                 running_loss += loss.item()
                 
                 if i % 10 == 0:
-                    #every batch print - loss, training acc, validation acc
-                    train_pred, train_target, _ = self.test(model, trainLoader)
-                    valid_pred, valid_target, _ = self.test(model, validLoader)
-                    train_acc = accuracy_score(train_target.cpu(), train_pred.cpu())
-                    valid_acc = accuracy_score(valid_target.cpu(), valid_pred.cpu())
-                    
+                    #every 10 batches print - loss, training acc, validation acc
+                    if self.autoencoder:
+                        train_sumSquares, _ = self.test_autoencoder(model, trainLoader)
+                        valid_sumSquares, _ = self.test_autoencoder(model, validLoader)
+                        train_acc = torch.mean(train_sumSquares).tolist()
+                        valid_acc = torch.mean(valid_sumSquares).tolist()
+                        print('Running Training Loss:', running_loss)
+                        print('Training Loss:', train_acc)
+                        print('Valid Loss:', valid_acc)
+                        if valid_loss < best_acc:
+                            best_acc = valid_acc
+                            best_model_weights = copy.deepcopy(model.state_dict())
+                    else:
+                        train_pred, train_target, _ = self.test(model, trainLoader)
+                        valid_pred, valid_target, _ = self.test(model, validLoader)
+                        train_acc = accuracy_score(train_target.cpu(), train_pred.cpu())
+                        valid_acc = accuracy_score(valid_target.cpu(), valid_pred.cpu())      
 
-                    print('Training Loss:', running_loss)
-                    print('Training Accuracy:', train_acc)
-                    print('Valid Accuracy:', valid_acc)
+                        print('Running Training Loss:', running_loss)
+                        print('Training Accuracy:', train_acc)
+                        print('Valid Accuracy:', valid_acc)
+                        if valid_acc > best_acc:
+                            best_acc = valid_acc
+                            best_model_weights = copy.deepcopy(model.state_dict())
+
                     print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
                     running_loss = 0.0
-                    
-                    if valid_acc > best_acc:
-                        best_acc = valid_acc
-                        best_model_weights = copy.deepcopy(model.state_dict())
 
                     all_train_acc.append(train_acc)
                     all_valid_acc.append(valid_acc)
@@ -140,6 +163,16 @@ class Trainer:
         model.train()
         
         return model, optimizer, epoch
+    
+    def load_partial_model(self, model, path_to_statedict):
+        checkpoint = torch.load(path_to_statedict)
+        model.load_state_dict(checkpoint['model_state_dict'])
+        model.eval()
+        # - or -
+        #model.train()
+        return model
+    
+    
 
     def _save_full_model(self, model):
         # saving model
@@ -151,28 +184,51 @@ class Trainer:
         model.eval()
         return model
 
-    def test(self, model, testloader): #stats finder
-        all_preds = torch.LongTensor().to(self.device)
-        all_targets = torch.LongTensor().to(self.device)
+    def test_autoencoder(self, model, testloader):
+        if not self.autoencoder:
+            return
+        all_sumSquares = torch.FloatTensor().to(self.device)  
+
         all_fnames = []
         model.to(self.device)
         
         with torch.no_grad():
 
             for data in testloader:
-                inputs, labels = data['image'].to(self.device), data['encoded_label'].to(self.device).float()
+                inputs, _ = data['image'].to(self.device).float(), data['encoded_label'].to(self.device).float()
+                outputs = model(inputs)
+                sumsquare = torch.sum((outputs - inputs)**2)
+                all_sumSquares = torch.cat((all_sumSquares, sumsquare.view(1)), 0)
+                all_fnames.extend(data['fname'])
+
+        return all_sumSquares, all_fnames
+
+    def test(self, model, testloader): #stats finder
+        all_preds = torch.LongTensor().to(self.device)
+        all_targets = torch.LongTensor().to(self.device)
+
+        all_fnames = []
+        model.to(self.device)
+        
+        with torch.no_grad():
+
+            for data in testloader:
+                inputs, labels = data['image'].to(self.device).float(), data['encoded_label'].to(self.device).float()
+                
                 _, labels = torch.max(labels, 1)
 
-                outputs = model(inputs.float())
+                outputs = model(inputs)
                 _, predicted = torch.max(outputs.data, 1)
                 #print("labels:", labels)
                 #print("predicted:", predicted)
                 #print("~~~~~~~~~~~~~~~~")
                 all_preds = torch.cat((all_preds, predicted), 0)
                 all_targets = torch.cat((all_targets, labels), 0) 
-                all_fnames.extend(data['fname'])
+                
                 #if total >=10:
                 #   break
+                
+                all_fnames.extend(data['fname'])
 
         return all_preds, all_targets, all_fnames
 

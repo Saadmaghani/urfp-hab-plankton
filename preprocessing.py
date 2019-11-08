@@ -8,6 +8,7 @@ from torchvision import transforms
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from PIL import Image, ImageFile
+from math import sqrt
 
 
 class PlanktonDataset(Dataset):
@@ -57,11 +58,9 @@ class PlanktonDataset(Dataset):
             sample = self.transform(sample)
 
         sample['encoded_label'] = encoded_label
-        sample['image'] = sample['image'].reshape((1,sample['image'].shape[0], sample['image'].shape[1]))
         sample['fname'] = img_name
+        
         return sample
-
-
 
 # image transformations
 class Rescale(object):
@@ -73,64 +72,87 @@ class Rescale(object):
             to output_size keeping aspect ratio the same.
     """
 
-    def __init__(self, output_size):
+    def __init__(self, output_size, multiple=False):
         assert isinstance(output_size, (int, tuple))
         self.output_size = output_size
+        self.multi = multiple
 
     def __call__(self, sample):
         image = sample['image']
-
-        h, w = image.shape[:2]
-        if isinstance(self.output_size, int):
-            if h > w:
-                new_h, new_w = self.output_size * h / w, self.output_size
+        
+        if not self.multi:
+            h, w = image.shape[:2]
+            if isinstance(self.output_size, int):
+                if h > w:
+                    new_h, new_w = self.output_size * h / w, self.output_size
+                else:
+                    new_h, new_w = self.output_size, self.output_size * w / h
             else:
-                new_h, new_w = self.output_size, self.output_size * w / h
+                new_h, new_w = self.output_size
+
+            new_h, new_w = int(new_h), int(new_w)
+
+            img = transform.resize(image, (new_h, new_w))
+
+            return {'image':img, 'label':sample['label']}
         else:
-            new_h, new_w = self.output_size
+            h, w = image[0].shape[:2]
+            images = []
+            no_images = len(image)
+            for i in range(no_images):
+                if isinstance(self.output_size, int):
+                    if h > w:
+                        new_h, new_w = self.output_size * h / w, self.output_size
+                    else:
+                        new_h, new_w = self.output_size, self.output_size * w / h
+                else:
+                    new_h, new_w = self.output_size
 
-        new_h, new_w = int(new_h), int(new_w)
+                new_h, new_w = int(new_h), int(new_w)
 
-        img = transform.resize(image, (new_h, new_w))
+                img = transform.resize(image[0], (new_h, new_w))
+                images.append(img)
 
-        return {'image':img, 'label':sample['label']}
+            return {'image':images, 'label':sample['label']}
+
 
 
 # data augmentation techniques
 class RandomCrop(object):
-    """Crop randomly the image in a sample.
-
-    Args:
-        output_size (tuple or int): Desired output size. If int, square crop
-            is made.
+    """
+    Crop randomly the image in a sample.
     """
 
-    def __init__(self, output_size):
-        assert isinstance(output_size, (int, tuple))
-        if isinstance(output_size, int):
-            self.output_size = (output_size, output_size)
-        else:
-            assert len(output_size) == 2
-            self.output_size = output_size
+    def __init__(self, no_outputs):
+        assert sqrt(no_outputs).is_integer()
+        self.no_outputs = no_outputs
 
     def __call__(self, sample):
         image = sample['image']
-
+        
         h, w = image.shape[:2]
-        new_h, new_w = self.output_size
+        sqrt_OS = sqrt(self.no_outputs)
 
-        top = np.random.randint(0, h - new_h) 
-        left = np.random.randint(0, w - new_w)
+        new_h, new_w = int(h/sqrt_OS), int(w/sqrt_OS)
 
-        image = image[top: top + new_h,
-                      left: left + new_w]
+        images = []
 
-        return {'image':image, 'label':sample['label']}
+        for i in range(self.no_outputs):
+            top = np.random.randint(0, h - new_h) 
+            left = np.random.randint(0, w - new_w)
+
+            crop_image = image[top: top + new_h, left: left + new_w]
+            images.append(crop_image)
+
+        return {'image':images, 'label':sample['label']}
 
 
 # to convert numpy images to torch images
 class ToTensor(object):
     """Convert ndarrays in sample to Tensors."""
+
+    def __init__(self, multiple=False):
+        self.multi = multiple
 
     def __call__(self, sample):
         image = sample['image']
@@ -138,8 +160,16 @@ class ToTensor(object):
         # swap color axis because
         # numpy image: H x W x C
         # torch image: C X H X W
-        image = image.transpose((0, 1))
-        return {'image':torch.from_numpy(image), 'label':sample['label']}
+        if not self.multi:
+            image = image.reshape((1,image.shape[0], image.shape[1]))
+            return {'image':torch.from_numpy(image), 'label':sample['label']}
+        else:
+            no_images = len(image)
+            images = torch.from_numpy(image[0].reshape((1, 1, image[0].shape[0], image[0].shape[1])))
+            for i in range(1, no_images):
+                img = torch.from_numpy(image[i].reshape((1, 1, image[i].shape[0], image[i].shape[1])))
+                images = torch.cat((images, img), 0)
+            return {'image':images, 'label':sample['label']}
 
 
 class Preprocessor:

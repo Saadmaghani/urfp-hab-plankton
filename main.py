@@ -3,10 +3,12 @@ from training import Trainer
 from metrics import Metrics
 import torch.nn as nn
 import torch.optim as optim
-from models.vgg_TL import VGG, GoogleNet, ResNet
+from models.vgg_TL import GoogleNet
+from models.autoencoders import Simple_AE
 from configuration import Hyperparameters as HP
 import torch
 import json
+import math
 
 years = [str(y) for y in range(2006, 2015)]
 
@@ -35,7 +37,7 @@ print(len(classes_30))
 
 #pp = Preprocessor(years, include_classes=classes, train_eg_per_class=HP.number_of_images_per_class)
 #pp = Preprocessor(years, include_classes=all_classes, train_eg_per_class=HP.number_of_images_per_class, thresholding=HP.thresholding)
-pp = Preprocessor(years, include_classes=classes_30, strategy = HP.pp_strategy, train_eg_per_class=HP.number_of_images_per_class, maxN = HP.maxN, minimum = HP.minimum)
+pp = Preprocessor(years, include_classes=classes_30, strategy = HP.pp_strategy, train_eg_per_class=HP.number_of_images_per_class, maxN = HP.maxN, minimum = HP.minimum, transformations = HP.transformations)
 
 
 pp.create_datasets([0.6,0.2,0.2])
@@ -46,38 +48,57 @@ testLoader = pp.get_loaders('test', HP.batch_size)
 
 
 trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn = HP.loss_function, 
-	optimizer = HP.optimizer, scheduler = HP.scheduler, lr = HP.learning_rate, momentum = HP.momentum, useCuda=True)
+	optimizer = HP.optimizer, scheduler = HP.scheduler, lr = HP.learning_rate, momentum = HP.momentum, useCuda=True, autoencoder=True)
 
-model = GoogleNet()
+model = Simple_AE()
 
 trainAcc = []
 validAcc = [] 
 epochs = 0 
+
 trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
 
 # - or -
-#path_to_statedict = "../GoogleNet_1.2-6.0.pth"
+"""
+path_to_statedict = "models/GoogleNet_2.0-8.0.tar"
 
-#model = trainer.load_full_model(model, path_to_statedict)
+if ".tar" in path_to_statedict:
+    model = trainer.load_partial_model(model, path_to_statedict)
+else:
+    model = trainer.load_full_model(model, path_to_statedict)
+"""
+
+
 
 test_pred, test_target, test_fnames = trainer.test(model, testLoader)
-valid_pred, valid_target, valid_fnames = trainer.test(model, validLoader)
-train_pred, train_target, train_fnames = trainer.test(model, trainLoader)
 
-test_met = Metrics(test_target, test_pred)
+test_acc = math.exp(-1*torch.mean((test_pred - test_target)**2).tolist())
+
+#valid_pred, valid_target, valid_fnames = trainer.test(model, validLoader)
+#train_pred, train_target, train_fnames = trainer.test(model, trainLoader)
+
+
+#test_met = Metrics(test_target, test_pred)
 #valid_met = Metrics(valid_target, valid_pred)
 #train_met = Metrics(train_target, train_pred)
 
-print(test_met.accuracy())
+
+#print(test_met.accuracy())
+print(test_acc)
+
 #time = trainer.getTime()
 time = "xx:xx:xx"
 print(time)
 
 f = open("./stats/stats-"+str(model)+"-"+str(HP.version)+".json","w+")
-str_to_write = "{\"Time\": \""+ time +"\",\n \"Epochs\": "+str(epochs)+ ",\n \"TrainAcc\": "+ str(trainAcc)+",\n \"ValidAcc\": "+str(validAcc)+",\n \"TestAcc\": "+str(test_met.accuracy()) + \
-",\n \"Train_Pred\": " + str(list(train_pred.cpu().numpy())) + ",\n \"Train_Target\": " + str(list(train_target.cpu().numpy())) + ",\n \"Train_fnames\": " + json.dumps(train_fnames) + \
-",\n \"Valid_Pred\": " + str(list(valid_pred.cpu().numpy())) + ",\n \"Valid_Target\": " + str(list(valid_target.cpu().numpy())) + ",\n \"Valid_fnames\": " + json.dumps(valid_fnames) + \
-",\n \"Test_Pred\": " + str(list(test_pred.cpu().numpy())) + ",\n \"Test_Target\": " + str(list(test_target.cpu().numpy())) + ",\n \"Test_fnames\": " + json.dumps(test_fnames) +"}"
+
+#str(test_met.accuracy()) + \
+
+str_to_write = "{\"Time\": \""+ time +"\",\n \"Epochs\": "+str(epochs)+ ",\n \"TrainAcc\": "+ str(trainAcc)+",\n \"ValidAcc\": "+str(validAcc)+",\n \"TestAcc\": "+ str(test_acc) + "}"
+#",\n \"Train_Pred\": " + str(list(train_pred.cpu().numpy())) + ",\n \"Train_Target\": " + str(list(train_target.cpu().numpy())) + ",\n \"Train_fnames\": " + json.dumps(train_fnames) + \
+#",\n \"Valid_Pred\": " + str(list(valid_pred.cpu().numpy())) + ",\n \"Valid_Target\": " + str(list(valid_target.cpu().numpy())) + ",\n \"Valid_fnames\": " + json.dumps(valid_fnames) + \
+#",\n \"Test_Pred\": " + str(list(test_pred.cpu().numpy())) + ",\n \"Test_Target\": " + str(list(test_target.cpu().numpy())) + ",\n \"Test_fnames\": " + json.dumps(test_fnames) + \
+#"}"
 f.write(str_to_write)
 f.close()
 
