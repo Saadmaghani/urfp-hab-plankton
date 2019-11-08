@@ -87,14 +87,16 @@ class Trainer:
                 
                 if i % 10 == 0:
                     #every 10 batches print - loss, training acc, validation acc
-                    train_pred, train_target, _ = self.test(model, trainLoader)
-                    valid_pred, valid_target, _ = self.test(model, validLoader)
-                    if not self.autoencoder:
-                        train_acc = accuracy_score(train_target.cpu(), train_pred.cpu())
-                        valid_acc = accuracy_score(valid_target.cpu(), valid_pred.cpu())
+                    if self.autoencoder:
+                        train_sumSquares, _ = self.test_autoencoder(model, trainLoader)
+                        valid_sumSquares, _ = self.test_autoencoder(model, validLoader)
+                        train_acc = math.exp(-1*torch.mean(train_sumSquares))
+                        valid_acc = math.exp(-1*torch.mean(valid_sumSquares))
                     else:
-                        train_acc = math.exp(-1*torch.mean((train_pred - train_target)**2).tolist())
-                        valid_acc = math.exp(-1*torch.mean((valid_pred - valid_target)**2).tolist())
+                        train_pred, train_target, _ = self.test(model, trainLoader)
+                        valid_pred, valid_target, _ = self.test(model, validLoader)
+                        train_acc = accuracy_score(train_target.cpu(), train_pred.cpu())
+                        valid_acc = accuracy_score(valid_target.cpu(), valid_pred.cpu())      
 
                     print('Training Loss:', running_loss)
                     print('Training Accuracy:', train_acc)
@@ -177,13 +179,29 @@ class Trainer:
         model.eval()
         return model
 
+    def test_autoencoder(self, model, testloader):
+        if not self.autoencoder:
+            return
+        all_sumSquares = torch.FloatTensor().to(self.device)  
+
+        all_fnames = []
+        model.to(self.device)
+        
+        with torch.no_grad():
+
+            for data in testloader:
+                inputs, _ = data['image'].to(self.device), data['encoded_label'].to(self.device).float()
+                outputs = model(inputs.float())
+                sumsquare = torch.sum((outputs - inputs)**2).tolist()
+
+                all_sumSquares = torch.cat((all_sumSquares, sumsquare), 0)
+                all_fnames.extend(data['fname'])
+
+        return all_sumSquares, all_fnames
+
     def test(self, model, testloader): #stats finder
-        if self.autoencoder: 
-            all_preds = torch.FloatTensor().to(self.device)
-            all_targets = torch.FloatTensor().to(self.device)
-        else:
-            all_preds = torch.LongTensor().to(self.device)
-            all_targets = torch.LongTensor().to(self.device)
+        all_preds = torch.LongTensor().to(self.device)
+        all_targets = torch.LongTensor().to(self.device)
 
         all_fnames = []
         model.to(self.device)
@@ -193,24 +211,19 @@ class Trainer:
             for data in testloader:
                 inputs, labels = data['image'].to(self.device), data['encoded_label'].to(self.device).float()
                 
-                if not self.autoencoder:
-                    _, labels = torch.max(labels, 1)
+                _, labels = torch.max(labels, 1)
 
-                    outputs = model(inputs.float())
-                    _, predicted = torch.max(outputs.data, 1)
-                    #print("labels:", labels)
-                    #print("predicted:", predicted)
-                    #print("~~~~~~~~~~~~~~~~")
-                    all_preds = torch.cat((all_preds, predicted), 0)
-                    all_targets = torch.cat((all_targets, labels), 0) 
-                    
-                    #if total >=10:
-                    #   break
-                else:
-                    outputs = model(inputs.float())
-                    all_preds = torch.cat((all_preds, outputs), 0)
-                    all_targets = torch.cat((all_targets, inputs.float()), 0)
-
+                outputs = model(inputs.float())
+                _, predicted = torch.max(outputs.data, 1)
+                #print("labels:", labels)
+                #print("predicted:", predicted)
+                #print("~~~~~~~~~~~~~~~~")
+                all_preds = torch.cat((all_preds, predicted), 0)
+                all_targets = torch.cat((all_targets, labels), 0) 
+                
+                #if total >=10:
+                #   break
+                
                 all_fnames.extend(data['fname'])
 
         return all_preds, all_targets, all_fnames
