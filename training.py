@@ -83,7 +83,6 @@ class Trainer:
                 
                 #print statistics - have to get more of these
                 running_loss += loss.item()
-                print(type(running_loss))
                 
                 if i % 10 == 0:
                     #every 10 batches print - loss, training acc, validation acc
@@ -190,8 +189,8 @@ class Trainer:
         with torch.no_grad():
 
             for data in testloader:
-                inputs, _ = data['image'].to(self.device), data['encoded_label'].to(self.device).float()
-                outputs = model(inputs.float())
+                inputs, _ = data['image'].to(self.device).float(), data['encoded_label'].to(self.device).float()
+                outputs = model(inputs)
                 sumsquare = torch.sum((outputs - inputs)**2).tolist()
 
                 all_sumSquares = torch.cat((all_sumSquares, sumsquare), 0)
@@ -209,11 +208,11 @@ class Trainer:
         with torch.no_grad():
 
             for data in testloader:
-                inputs, labels = data['image'].to(self.device), data['encoded_label'].to(self.device).float()
+                inputs, labels = data['image'].to(self.device).float(), data['encoded_label'].to(self.device).float()
                 
                 _, labels = torch.max(labels, 1)
 
-                outputs = model(inputs.float())
+                outputs = model(inputs)
                 _, predicted = torch.max(outputs.data, 1)
                 #print("labels:", labels)
                 #print("predicted:", predicted)
