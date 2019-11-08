@@ -13,8 +13,9 @@ class PrintLayer(nn.Module):
 
 # version 1.0 = 2 convolutional layer
 # version 1.1 = 2 conv. layers with powers of 3.
+# version 1.2 = 3 conv. layers with powers of 3.
 class Simple_AE(nn.Module):
-    version = 1.1
+    version = 1.2
 
     def __init__(self):
         super(Simple_AE, self).__init__()
@@ -25,9 +26,14 @@ class Simple_AE(nn.Module):
             nn.MaxPool2d(2),
             nn.Conv2d(27, 9, 3, padding = 1),
             nn.ReLU(True),
+            nn.MaxPool2d(2),
+            nn.Conv2d(9, 3, 3, padding = 1),
+            nn.ReLU(True),
             nn.MaxPool2d(2))
 
-        self.decoder = nn.Sequential(             
+        self.decoder = nn.Sequential(
+            nn.ConvTranspose2d(3, 9, 2, stride = 2),
+            nn.ReLU(True),             
             nn.ConvTranspose2d(9, 27, 2, stride = 2),
             nn.ReLU(True),
             nn.ConvTranspose2d(27, 3, 2, stride = 2),
