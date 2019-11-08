@@ -89,8 +89,8 @@ class Trainer:
                     if self.autoencoder:
                         train_sumSquares, _ = self.test_autoencoder(model, trainLoader)
                         valid_sumSquares, _ = self.test_autoencoder(model, validLoader)
-                        train_acc = math.exp(-1*torch.mean(train_sumSquares))
-                        valid_acc = math.exp(-1*torch.mean(valid_sumSquares))
+                        train_acc = math.exp(-1*(torch.mean(train_sumSquares).tolist()))
+                        valid_acc = math.exp(-1*(torch.mean(valid_sumSquares).tolist()))
                     else:
                         train_pred, train_target, _ = self.test(model, trainLoader)
                         valid_pred, valid_target, _ = self.test(model, validLoader)
@@ -191,7 +191,7 @@ class Trainer:
             for data in testloader:
                 inputs, _ = data['image'].to(self.device).float(), data['encoded_label'].to(self.device).float()
                 outputs = model(inputs)
-                sumsquare = torch.sum((outputs - inputs)**2).tolist()
+                sumsquare = torch.sum((outputs - inputs)**2)
 
                 all_sumSquares = torch.cat((all_sumSquares, sumsquare), 0)
                 all_fnames.extend(data['fname'])
