@@ -89,23 +89,29 @@ class Trainer:
                     if self.autoencoder:
                         train_sumSquares, _ = self.test_autoencoder(model, trainLoader)
                         valid_sumSquares, _ = self.test_autoencoder(model, validLoader)
-                        train_acc = math.exp(-1*(torch.mean(train_sumSquares).tolist()))
-                        valid_acc = math.exp(-1*(torch.mean(valid_sumSquares).tolist()))
+                        train_acc = torch.mean(train_sumSquares).tolist()
+                        valid_acc = torch.mean(valid_sumSquares).tolist()
+                        print('Running Training Loss:', running_loss)
+                        print('Training Loss:', train_acc)
+                        print('Valid Loss:', valid_acc)
+                        if valid_loss < best_acc:
+                            best_acc = valid_acc
+                            best_model_weights = copy.deepcopy(model.state_dict())
                     else:
                         train_pred, train_target, _ = self.test(model, trainLoader)
                         valid_pred, valid_target, _ = self.test(model, validLoader)
                         train_acc = accuracy_score(train_target.cpu(), train_pred.cpu())
                         valid_acc = accuracy_score(valid_target.cpu(), valid_pred.cpu())      
 
-                    print('Training Loss:', running_loss)
-                    print('Training Accuracy:', train_acc)
-                    print('Valid Accuracy:', valid_acc)
+                        print('Running Training Loss:', running_loss)
+                        print('Training Accuracy:', train_acc)
+                        print('Valid Accuracy:', valid_acc)
+                        if valid_acc > best_acc:
+                            best_acc = valid_acc
+                            best_model_weights = copy.deepcopy(model.state_dict())
+
                     print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
                     running_loss = 0.0
-                    
-                    if valid_acc > best_acc:
-                        best_acc = valid_acc
-                        best_model_weights = copy.deepcopy(model.state_dict())
 
                     all_train_acc.append(train_acc)
                     all_valid_acc.append(valid_acc)
