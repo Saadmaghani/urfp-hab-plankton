@@ -106,7 +106,7 @@ class Trainer:
                     if valid_acc > best_acc:
                         best_acc = valid_acc
                         best_model_weights = copy.deepcopy(model.state_dict())
-                    del train_pred, train_target, valid_pred, valid_target
+
                     all_train_acc.append(train_acc)
                     all_valid_acc.append(valid_acc)
                 
