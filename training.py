@@ -181,7 +181,7 @@ class Trainer:
     def test_autoencoder(self, model, testloader):
         if not self.autoencoder:
             return
-        all_sumSquares = torch.FloatTensor().to(self.device)  
+        all_sumSquares = None  
 
         all_fnames = []
         model.to(self.device)
@@ -192,8 +192,10 @@ class Trainer:
                 inputs, _ = data['image'].to(self.device).float(), data['encoded_label'].to(self.device).float()
                 outputs = model(inputs)
                 sumsquare = torch.sum((outputs - inputs)**2)
-
-                all_sumSquares = torch.cat((all_sumSquares, sumsquare), 0)
+                if all_sumSquares is None:
+                    all_sumSquares = sumsquare
+                else:
+                    all_sumSquares = torch.stack((all_sumSquares, sumsquare))
                 all_fnames.extend(data['fname'])
 
         return all_sumSquares, all_fnames
