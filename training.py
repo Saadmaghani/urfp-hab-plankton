@@ -4,6 +4,7 @@ import copy
 from sklearn.metrics import accuracy_score
 import numpy as np
 import math
+import sys
 
 class Trainer:
     def __init__(self, HP_version, epochs, loss_fn, optimizer, scheduler = None, lr = 0.01, momentum=0.9, useCuda = False, autoencoder=False):
@@ -49,7 +50,10 @@ class Trainer:
         train_acc = None
 
         best_model_weights = copy.deepcopy(model.state_dict())
-        best_acc = 0.0
+        if self.autoencoder:
+            best_acc = sys.float_info.max
+        else:
+            best_acc = 0.0
 
         while epoch < self.epochs:
             running_loss = 0.0
