@@ -11,34 +11,30 @@ class PrintLayer(nn.Module):
         print(x.shape)
         return x
 
-# version 1.0 = 2 convolutional layer
-# version 1.1 = 2 conv. layers with powers of 3.
-# version 1.2 = 3 conv. layers with powers of 3.
-# version 1.3 = 2 conv. layers with powers of 3. but input channel is 1
-# version 1.4 = same as 1.3 except 3 conv. layers
+# version 1.0 = 3 <-> 32 <-> 8
+# version 2.0 = 3 <-> 09 <-> 3 
+# version 2.1 = 3 <-> 27 <-> 9 <-> 3
+# version 3.0 = 1 <-> 09 <-> 3 
+# version 3.1 = 1 <-> 27 <-> 9 <-> 3
+
 class Simple_AE(nn.Module):
-    version = 1.4
+    version = 1.5
 
     def __init__(self):
         super(Simple_AE, self).__init__()
 
         self.encoder = nn.Sequential(
-            nn.Conv2d(1, 27, 3, padding = 1),
-            nn.ReLU(True),
-            nn.MaxPool2d(2),
-            nn.Conv2d(27, 9, 3, padding = 1),
+            nn.Conv2d(1, 9, 3, padding = 1),
             nn.ReLU(True),
             nn.MaxPool2d(2),
             nn.Conv2d(9, 3, 3, padding = 1),
             nn.ReLU(True),
             nn.MaxPool2d(2))
 
-        self.decoder = nn.Sequential(
+        self.decoder = nn.Sequential(          
             nn.ConvTranspose2d(3, 9, 2, stride = 2),
-            nn.ReLU(True),            
-            nn.ConvTranspose2d(9, 27, 2, stride = 2),
             nn.ReLU(True),
-            nn.ConvTranspose2d(27, 1, 2, stride = 2),
+            nn.ConvTranspose2d(9, 1, 2, stride = 2),
             nn.Sigmoid())
 
     def forward(self, x):
