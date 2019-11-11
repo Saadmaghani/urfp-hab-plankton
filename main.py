@@ -70,9 +70,10 @@ else:
 
 
 
-test_pred, test_target, test_fnames = trainer.test(model, testLoader)
+#test_pred, test_target, test_fnames = trainer.test(model, testLoader)
 
-test_acc = math.exp(-1*torch.mean((test_pred - test_target)**2).tolist())
+test_sumsqs, test_fnames = trainer.test_autoencoder(model, testLoader)
+test_acc = math.exp(-1*torch.mean(test_sumsqs).tolist())
 
 #valid_pred, valid_target, valid_fnames = trainer.test(model, validLoader)
 #train_pred, train_target, train_fnames = trainer.test(model, trainLoader)
