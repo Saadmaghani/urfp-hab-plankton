@@ -5,6 +5,8 @@ import cv2
 # version 1.0 = vgg19_bn
 
 
+"""  ABANDONED  """
+
 class TripleArch(nn.Module):
     version = 1.0
 

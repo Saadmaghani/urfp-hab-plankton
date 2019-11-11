@@ -25,10 +25,12 @@ strategies (preprocessing):
 3.1 - "augmentation_max" | data augmentation with upper bound  
 
 strategies (training):
+0.0 - Transfer Learning
 1.0 - "FocalLoss" | Focal loss
 2.0 - optim.Adam | Adam optimizer
 3.0 - EarlyStopping | Early stopping with Patience = 20
-4.0 - 16 random crops
+4.0 - 16 random crops and averaging the output
+4.1 - 16 random crops, not averaging output, making into one layer and then feeding into FC
 5.0 - autoencoder
 
 """
@@ -63,8 +65,8 @@ strategies (training):
 # version 6.5 = same as 6.0 except minimum = 600
 # version 7.0 = thresholding + data augmention Test with "augmentation"=T, "thresholding"=T, "number_of_images_per_class"=200 and "minimum"=100. no MaxN, same as 3.0 
 # version 7.1 = same as 7.0 except minimum = 400. #images/class = 2500. tests data augmentation and thresholding.
-# version 8.0 = transformations added. can only work with GoogleNet 2.0, minibatch size = 64
-# version 8.1 = to test the above methods lets keep a standard of 1000 images per class.
+# version 8.0 = same as 7.1 transformations added. can only work with GoogleNet 2.0, minibatch size = 64
+# version 8.1 = same as 8.0 to test the above methods lets keep a standard of 1000 images per class.
 # version 9.0 = transformations but batch_size = 1 and 16 random crops work as minibatch. only work with GoogleNet 3.0
 # version 10.0 = same as 4.0 except batch_size = 50, 100 images and training the autoencoder. so transforms is with rescale to (128, 264)
 # version 10.1 = same as 10.0 except batch_Size = 128, 1000 images.
