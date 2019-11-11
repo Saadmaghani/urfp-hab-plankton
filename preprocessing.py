@@ -366,3 +366,4 @@ class Preprocessor:
                         labels.extend([class_name]*len(image_files))
 
         return fnames, labels
+

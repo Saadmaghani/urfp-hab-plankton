@@ -245,7 +245,7 @@ week of 2/9:
 		- 6.3 = 90.79
 		- 6.4 = 89.57
 		- 6.5 = 90.75
-		- 7.1 = 92.76
+		- 7.1 = 92.62
  
 data distribution -> class distribution. maybe we should make a table out of it. okay lol lets do that.
 shape/appearance of classes not consistent
@@ -261,7 +261,7 @@ accuracies of training/validation/test sets of each class (done)
 24/9:
 1. 	had meeting with wenping, twas goood. he liked my passion "want to publish paper", "bigger goal of impact"
 2.	zheming - augment classes with less than threshold amount. lets do it but first lets see the training accuracies
-3.	we should apply transfer learning from GN -> WHOI -> ST database
+3.	we should apply transfer learning from GN -> WHOI -> HKUST database
 
 
 26/9:
@@ -316,6 +316,7 @@ accuracies of training/validation/test sets of each class (done)
 2. 	to introduce variability, lets try to use autoencoders. there are 2 autoencoders i will look at:
 	1.	simple autoencoders:
 		1.	depth of 1, 2 and 3 (for both encoding and decoding) and then using least dimension vector, i will push it to the Google Net
+		2.	with powers of 3 because the input channel is 3 channels. so 3 <-> 27 <-> 9 <-> 3 . if add more then 3 <-> 81 <-> 27 -> ...
 	2.	variable autoencoders. 
 3.	right now i will make a simple autoencoder
 4.	the autoencoder will go from (128, 264) -> (64, 128) -> (128, 264)

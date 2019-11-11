@@ -1,0 +1,60 @@
+1.	Research activities and research findings (about one page in length):
+activities (its what i did):
+
+(NEVERMIND)
+- log
+- database finding
+- creation of a pipeline using pytorch
+	- preprocessing
+	- training
+	- metrics
+- made many models and compared them very meticuously 
+- lots of changes to hyperparameters 
+- trying to think of other ways to improve system
+	- talking to Zhiming (phd scholar)
+	- 
+
+findings (conclusion of research paper):
+- Transfer Learning best GoogleNet.
+- definite class imbalance problem
+- focal loss better when theres an imbalance, otherwise MSE is better
+- using a TL model with 3 input channels (RGB, as its meant to be used) is better than 1 input channel (Greyscale)
+- Adam better than SGD
+- patience 20 is best, tried 40 and 10.
+- tested different sampling techniques under different conditions
+
+
+2.	Research knowledge and skills acquired (about one page in length):
+research knowledge (knowledge):
+- variational autoencoders 
+- transfer learning
+- 
+
+research skills (practical skills):
+- logging (URFP Log)
+- literature review
+- methodologival approach in testing, evaluating and logging different ideas/variables against each other
+	- spreadsheet
+	- configurations.py
+	- stats
+	- URFP log
+- learnt pytorch
+	- transfer learning
+	- preprocessing
+		- getting the data
+		- augmentation
+		- transforming
+		- sampling techniques
+	- model building
+	- model testing and evaluation
+
+4.	Benefits gained from the internship in preparing for future studies/career developments:
+Benefits:
+- in the process of learning how to write research papers
+- know what to expect in the future of an academic career
+- the skills learnt because of the topic will be used in my career as its a topic which interests me (computer vision)
+- 
+
+
+to test/make better:
+- 

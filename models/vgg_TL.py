@@ -181,7 +181,7 @@ class GoogleNet(nn.Module):
         return type(self).__name__ + "_" + str(self.version)
 
 # version 1.0 = resnet18 with 20 outputs
-# version 1.0 = resnet50 with 20 outputs
+# version 1.1 = resnet50 with 20 outputs
 class ResNet(nn.Module):
     version = 1.1
 
