@@ -77,6 +77,8 @@ class Trainer:
                 
                 if self.autoencoder:
                 # training autoencoder:
+                    if outputs.shape[1] == 3:
+                        inputs = inputs.repeat(1,3,1,1)
                     loss = self.criterion(outputs, inputs)
                 else:
                     loss = self.criterion(outputs, labels)
@@ -168,7 +170,7 @@ class Trainer:
         
         return model, optimizer, epoch
     
-    def load_partial_model(self, model, path_to_statedict):
+    def load_partial_model_eval(self, model, path_to_statedict):
         checkpoint = torch.load(path_to_statedict)
         model.load_state_dict(checkpoint['model_state_dict'])
         model.eval()
@@ -192,8 +194,7 @@ class Trainer:
         if not self.autoencoder:
             return
         all_sumSquares = torch.FloatTensor().to(self.device)  
-
-        all_fnames = []
+		
         model.to(self.device)
         
         with torch.no_grad():
@@ -203,9 +204,8 @@ class Trainer:
                 outputs = model(inputs)
                 sumsquare = torch.sum((outputs - inputs)**2)
                 all_sumSquares = torch.cat((all_sumSquares, sumsquare.view(1)), 0)
-                all_fnames.extend(data['fname'])
 
-        return all_sumSquares, all_fnames
+        return all_sumSquares
 
     def test(self, model, testloader): #stats finder
         all_preds = torch.LongTensor().to(self.device)
