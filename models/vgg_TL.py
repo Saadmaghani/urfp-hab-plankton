@@ -129,7 +129,7 @@ class GoogleNet(nn.Module):
             x = torch.reshape(x, self.reshape_tup)
             return x
 
-    def __init__(self, freeze=None, pretrain=True):
+    def __init__(self, freeze=None, pretrain=True, autoencoder=None):
         super(GoogleNet, self).__init__()
 
         self.model = models.googlenet(pretrained=pretrain)
@@ -145,6 +145,8 @@ class GoogleNet(nn.Module):
         else:
             self.model.fc = nn.Linear(1024, 30)
 
+        if self.version == 4.0:
+            self.autoencoder = autoencoder
         self.softmax = nn.Softmax()
 
     def forward(self, x):
@@ -167,8 +169,8 @@ class GoogleNet(nn.Module):
             x = self.model(x)
             x = self.softmax(x)
         elif self.version == 4.0:
-            
-            x = x.repeat(1, 3, 1, 1)
+            with torch.no_grad():
+                x = self.autoencoder.get_latent(x)
             x = self.model(x)
             x = self.softmax(x)
         else:

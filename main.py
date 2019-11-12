@@ -50,7 +50,18 @@ testLoader = pp.get_loaders('test', HP.batch_size)
 trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn = HP.loss_function, 
 	optimizer = HP.optimizer, scheduler = HP.scheduler, lr = HP.learning_rate, momentum = HP.momentum, useCuda=True, autoencoder=True)
 
-model = Simple_AE()
+
+# using autoencoder
+ae = Simple_AE()
+path_to_ae = "models/GoogleNet_2.0-8.0.tar"
+
+if ".tar" in path_to_ae:
+    model = trainer.load_partial_model(model, path_to_ae)
+else:
+    model = trainer.load_full_model(model, path_to_ae)
+
+model = GoogleNet(autoencoder = ae)
+
 
 trainAcc = []
 validAcc = [] 
