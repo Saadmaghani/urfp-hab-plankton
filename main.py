@@ -47,8 +47,8 @@ validLoader = pp.get_loaders('validation', HP.batch_size)
 testLoader = pp.get_loaders('test', HP.batch_size)
 
 
-trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn = HP.loss_function, 
-	optimizer = HP.optimizer, scheduler = HP.scheduler, lr = HP.learning_rate, momentum = HP.momentum, useCuda=True, autoencoder=True)
+trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn = HP.loss_function, optimizer = HP.optimizer, 
+	scheduler = HP.scheduler, lr = HP.learning_rate, momentum = HP.momentum, useCuda=True, autoencoder=HP.train_AE)
 
 
 # using autoencoder
@@ -81,21 +81,24 @@ else:
 
 
 
-#test_pred, test_target, test_fnames = trainer.test(model, testLoader)
-
+# autoencoder stuff:
+"""
 test_sumsqs, test_fnames = trainer.test_autoencoder(model, testLoader)
 test_acc = torch.mean(test_sumsqs).tolist()
+"""
 
+test_pred, test_target, test_fnames = trainer.test(model, testLoader)
 #valid_pred, valid_target, valid_fnames = trainer.test(model, validLoader)
 #train_pred, train_target, train_fnames = trainer.test(model, trainLoader)
 
 
-#test_met = Metrics(test_target, test_pred)
+test_met = Metrics(test_target, test_pred)
 #valid_met = Metrics(valid_target, valid_pred)
 #train_met = Metrics(train_target, train_pred)
 
+test_acc = test_met.accuracy()
+print(test_met.accuracy())
 
-#print(test_met.accuracy())
 print(test_acc)
 
 #time = trainer.getTime()
