@@ -186,8 +186,12 @@ class Trainer:
         torch.save(model.state_dict(), path_to_statedict)
 
     def load_full_model(self, model, path_to_statedict):
-        model.load_state_dict(torch.load(path_to_statedict))
+        state_dict = torch.load(path_to_statedict, map_location=lambda storage, loc: storage)
+        model.load_state_dict(state_dict)
         model.eval()
+
+        del state_dict
+        
         return model
 
     def test_autoencoder(self, model, testloader):
