@@ -246,6 +246,8 @@ week of 2/9:
 		- 6.4 = 89.57
 		- 6.5 = 90.75
 		- 7.1 = 92.62
+	2. GoogleNet 4.0
+		- 11.0 (Autoencoder 3.0) = 85
  
 data distribution -> class distribution. maybe we should make a table out of it. okay lol lets do that.
 shape/appearance of classes not consistent
@@ -322,4 +324,11 @@ accuracies of training/validation/test sets of each class (done)
 4.	the autoencoder will go from (128, 264) -> (64, 128) -> (128, 264)
 
 
-
+7/12:
+1.	after a long ass break its time to get bakc on the road. HYPERPARAMETER TUNING OPTIMIZATION. i should have done this a long time ago.
+	1. looking at TUNE - https://towardsdatascience.com/fast-hyperparameter-tuning-at-scale-d428223b081c
+	
+12/12:
+1.	oof where does the time fly by
+2.	further training of Autoencoder 3.0-10.1 for another 200 epochs. 
+3.	training 5.3.0 finally. 

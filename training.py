@@ -17,7 +17,7 @@ class Trainer:
         self.momentum = momentum
         self.device = torch.device("cpu")
         if useCuda:
-            self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+            self.device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
         else:
             self.device = torch.device("cpu")
         self.autoencoder = autoencoder
@@ -139,12 +139,16 @@ class Trainer:
     
         
     def getTime(self):
-        time_delta = self.timeEnd - self.timeStart
-        secs = time_delta % 60
-        mins = time_delta // 60
-        hours = mins // 60
-        mins = mins % 60
-        hms = str(hours) + ":" + str(mins) + ":" + str(secs)
+
+        if hasattr(self, "timeEnd") and hasattr(self, "timeStart"):
+            time_delta = self.timeEnd - self.timeStart
+            secs = time_delta % 60
+            mins = time_delta // 60
+            hours = mins // 60
+            mins = mins % 60
+            hms = str(hours) + ":" + str(mins) + ":" + str(secs)
+        else:
+            hms = "xx:xx:xx"
         return hms
 
 
@@ -186,8 +190,12 @@ class Trainer:
         torch.save(model.state_dict(), path_to_statedict)
 
     def load_full_model(self, model, path_to_statedict):
-        model.load_state_dict(torch.load(path_to_statedict))
+        state_dict = torch.load(path_to_statedict, map_location=lambda storage, loc: storage)
+        model.load_state_dict(state_dict)
         model.eval()
+
+        del state_dict
+
         return model
 
     def test_autoencoder(self, model, testloader):
