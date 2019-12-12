@@ -12,10 +12,10 @@ class PrintLayer(nn.Module):
         return x
 
 # version 1.0 = 3 <-> 32 <-> 8 
-# version 2.0 = 3 <-> 09 <-> 3  => 32, 64 => 23337
+# version 2.0 = 3 <-> 09 <-> 3 => 32, 64 => 23337
 # version 2.1 = 3 <-> 27 <-> 9 <-> 3  => 16, 32 => 80322
-# version 3.0 = 1 <-> 09 <-> 3 => 8805
-# version 3.1 = 1 <-> 27 <-> 9 <-> 3
+# version 3.0 = 1 <-> 09 <-> 3 => (32, 64) => 8805
+# version 3.1 = 1 <-> 27 <-> 9 <-> 3 => 13492
 class Simple_AE(nn.Module):
     version = 3.1
 
