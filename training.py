@@ -139,12 +139,16 @@ class Trainer:
     
         
     def getTime(self):
-        time_delta = self.timeEnd - self.timeStart
-        secs = time_delta % 60
-        mins = time_delta // 60
-        hours = mins // 60
-        mins = mins % 60
-        hms = str(hours) + ":" + str(mins) + ":" + str(secs)
+
+        if hasattr(self, "timeEnd") and hasattr(self, "timeStart"):
+            time_delta = self.timeEnd - self.timeStart
+            secs = time_delta % 60
+            mins = time_delta // 60
+            hours = mins // 60
+            mins = mins % 60
+            hms = str(hours) + ":" + str(mins) + ":" + str(secs)
+        else:
+            hms = "xx:xx:xx"
         return hms
 
 
