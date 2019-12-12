@@ -72,7 +72,7 @@ trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earl
 # - or -
 
 model = Simple_AE()
-path_to_statedict = "models/Simple_AE_3.1-10.1.pth"
+path_to_statedict = "models/Simple_AE_3.0-10.1.pth"
 
 if ".tar" in path_to_statedict:
     model = trainer.load_partial_model(model, path_to_statedict)
