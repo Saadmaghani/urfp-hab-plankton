@@ -53,12 +53,12 @@ trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn
 
 # using autoencoder
 ae = Simple_AE()
-path_to_ae = "models/GoogleNet_2.0-8.0.tar"
+path_to_ae = "../Simple_AE_3.0-10.1.pth"
 
 if ".tar" in path_to_ae:
-    model = trainer.load_partial_model(model, path_to_ae)
+    ae = trainer.load_partial_model(ae, path_to_ae)
 else:
-    model = trainer.load_full_model(model, path_to_ae)
+    ae = trainer.load_full_model(ae, path_to_ae)
 
 model = GoogleNet(autoencoder = ae)
 

@@ -10,3 +10,6 @@ testing/*
 .idea/*
 
 .DS_STORE
+
+models/*.tar
+models/*.pth
