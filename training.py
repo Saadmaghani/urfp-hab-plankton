@@ -17,7 +17,7 @@ class Trainer:
         self.momentum = momentum
         self.device = torch.device("cpu")
         if useCuda:
-            self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+            self.device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
         else:
             self.device = torch.device("cpu")
         self.autoencoder = autoencoder
@@ -191,7 +191,7 @@ class Trainer:
         model.eval()
 
         del state_dict
-        
+
         return model
 
     def test_autoencoder(self, model, testloader):
