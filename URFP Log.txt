@@ -331,3 +331,4 @@ accuracies of training/validation/test sets of each class (done)
 12/12:
 1.	oof where does the time fly by
 2.	further training of Autoencoder 3.0-10.1 for another 200 epochs. 
+3.	training 5.3.0 finally. 

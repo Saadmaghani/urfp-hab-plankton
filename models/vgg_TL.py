@@ -117,7 +117,7 @@ class AlexNet(nn.Module):
 # version 3.0 = 16 random crops as minibatch, reshape into 1 minibatch 16*1024 as input into FC
 # version 4.0 = same as 1.2 except with auto encoder
 class GoogleNet(nn.Module):
-    version = 4.0
+    version = 1.2
 
     # used with version 3.0
     class ReshapeLayer(nn.Module):
