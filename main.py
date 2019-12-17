@@ -51,8 +51,21 @@ trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn
 	scheduler = HP.scheduler, lr = HP.learning_rate, momentum = HP.momentum, useCuda=True, autoencoder=HP.train_AE)
 
 
-# using autoencoder
-"""
+# training autoencoder
+
+model = Simple_AE()
+trainAcc = []
+validAcc = [] 
+epochs = 0 
+
+trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
+
+
+
+# training normal model
+
+# training autoencoder + model
+
 ae = Simple_AE()
 path_to_ae = "../Simple_AE_3.0-10.1.pth"
 
@@ -60,15 +73,26 @@ if ".tar" in path_to_ae:
     ae = trainer.load_partial_model(ae, path_to_ae)
 else:
     ae = trainer.load_full_model(ae, path_to_ae)
-"""
 
-model = GoogleNet()
 
-trainAcc = []
-validAcc = [] 
-epochs = 0 
+model = GoogleNet(autoencoder = ae)
+
+
 
 trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
+
+
+
+# testing autoencoder
+test_sumsqs, test_fnames = trainer.test_autoencoder(model, testLoader)
+test_acc = torch.mean(test_sumsqs).tolist()
+
+
+# testing normal model
+
+# testing autoencoder + model
+
+
 
 # - or -
 """
@@ -85,21 +109,21 @@ trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earl
 """
 
 # autoencoder stuff:
-"""
+
 test_sumsqs, test_fnames = trainer.test_autoencoder(model, testLoader)
 test_acc = torch.mean(test_sumsqs).tolist()
-"""
 
-test_pred, test_target, test_fnames = trainer.test(model, testLoader)
+
+#test_pred, test_target, test_fnames = trainer.test(model, testLoader)
 #valid_pred, valid_target, valid_fnames = trainer.test(model, validLoader)
 #train_pred, train_target, train_fnames = trainer.test(model, trainLoader)
 
 
-test_met = Metrics(test_target, test_pred)
+#test_met = Metrics(test_target, test_pred)
 #valid_met = Metrics(valid_target, valid_pred)
 #train_met = Metrics(train_target, train_pred)
 
-test_acc = test_met.accuracy()
+#test_acc = test_met.accuracy()
 
 print(test_acc)
 
