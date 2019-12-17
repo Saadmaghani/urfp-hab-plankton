@@ -342,3 +342,7 @@ accuracies of training/validation/test sets of each class (done)
 1.	so I tried to do a really simple test on GN for teh image sizes but it didnt work out. therefore a test is to take 200 of each so 6000 images 
 	in total and train GN based on all the different tests. tests of (32, 64), (64,128), (128, 256), (256, 256). then take highest acc.
 	done on gpu farm
+	(32, 64) - 78.15%, 36 mins
+	(64, 128) - 85.79%, 16 mins
+	(128, 256) -
+2.	going to train different models and take average. 

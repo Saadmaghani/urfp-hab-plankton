@@ -113,7 +113,6 @@ trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earl
 
 
 
-
 print(test_acc)
 
 time = trainer.getTime()

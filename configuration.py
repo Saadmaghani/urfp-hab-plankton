@@ -53,11 +53,12 @@ strategies (training):
 # version 3.7 = same as 3.5 except 1000 images ***
 # version 4.0 = same as 3.5 except 2000 images and thresholding. 20 classes changed to 30 classes
 # version 4.1 = same as 4.0 except 2500 images
-# version 4.2 = same as 4.0 except 1000 images   
+# version 4.2 = same as 4.0 except 1000 images 
+# version 4.3 = to test different models and avg. same as 4.0 except 500 images. (old 4.3 idk what it was)
 # version 5.0 = same as 3.5 except maxN = 30000, no thresholding, no images/class, loss_fc = FocalLoss
 # version 5.1 = same as 5.0 except maxN = 56000 which is similar N to 4.1 (56111)
 # version 5.2 = same as 5.0 except maxN = 100000
-# version 5.30 = same as 4.1 except with focal loss. to test against threshold w/ focal loss. 
+# version 5.3 = same as 4.1 except with focal loss. to test against threshold w/ focal loss. 
 # version 6.0 = same as 5.0 except minimum = 100. this minimum means that if there are less than min images, include all st n = min(N, minimum). This will remove the population dist. bias but accuracies might increase. lets see
 # version 6.1 = same as 6.0 except minimum = 200
 # version 6.2 = same as 6.0 except minimum = 300
@@ -74,7 +75,7 @@ strategies (training):
 # version 10.2 = same as 10.1 except 800 epochs
 # version 11.0 = to test GoogleNet image size. same as 4.0 except 200 images, Rescale(32,64)
 class Hyperparameters:
-    version=11.0
+    version=4.3
     learning_rate = 0.0003
     number_of_epochs = 200
     momentum = 0.9
@@ -87,8 +88,8 @@ class Hyperparameters:
     maxN = None 
     minimum = None
     train_AE = False
-    number_of_images_per_class = 200
-    transformations = transforms.Compose([Rescale((32, 64)), ToTensor()]) # normal: transforms.Compose([Rescale((64, 128)), ToTensor()]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
+    number_of_images_per_class = 500
+    transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) # normal: transforms.Compose([Rescale((64, 128)), ToTensor()]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
 
 
 
