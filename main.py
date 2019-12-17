@@ -35,6 +35,8 @@ classes_30 = ["Asterionellopsis", "bad", "Chaetoceros", "Chaetoceros_flagellate"
 
 print(len(classes_30))
 
+
+
 #pp = Preprocessor(years, include_classes=classes, train_eg_per_class=HP.number_of_images_per_class)
 #pp = Preprocessor(years, include_classes=all_classes, train_eg_per_class=HP.number_of_images_per_class, thresholding=HP.thresholding)
 pp = Preprocessor(years, include_classes=classes_30, strategy = HP.pp_strategy, train_eg_per_class=HP.number_of_images_per_class, maxN = HP.maxN, minimum = HP.minimum, transformations = HP.transformations)
@@ -46,31 +48,56 @@ trainLoader = pp.get_loaders('train', HP.batch_size)
 validLoader = pp.get_loaders('validation', HP.batch_size)
 testLoader = pp.get_loaders('test', HP.batch_size)
 
-
 trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn = HP.loss_function, optimizer = HP.optimizer, 
 	scheduler = HP.scheduler, lr = HP.learning_rate, momentum = HP.momentum, useCuda=True, autoencoder=HP.train_AE)
 
 
-# using autoencoder
+# training autoencoder
+#ae_model = Simple_AE()
+
+# training normal model
+model = GoogleNet()
+
+# training autoencoder + model
 """
-ae = Simple_AE()
+ae_model = Simple_AE()
 path_to_ae = "../Simple_AE_3.0-10.1.pth"
 
 if ".tar" in path_to_ae:
-    ae = trainer.load_partial_model(ae, path_to_ae)
+    ae_model = trainer.load_partial_model(ae_model, path_to_ae)
 else:
-    ae = trainer.load_full_model(ae, path_to_ae)
+    ae_model = trainer.load_full_model(ae_model, path_to_ae)
+model = GoogleNet(autoencoder = ae_model)
 """
 
-model = GoogleNet()
-
+# training
 trainAcc = []
 validAcc = [] 
 epochs = 0 
-
 trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
 
-# - or -
+
+
+# testing autoencoder
+"""
+test_sumsqs, test_fnames = trainer.test_autoencoder(ae_model, testLoader)
+test_acc = torch.mean(test_sumsqs).tolist()
+"""
+
+# testing normal model
+test_pred, test_target, test_fnames = trainer.test(model, testLoader)
+#valid_pred, valid_target, valid_fnames = trainer.test(model, validLoader)
+#train_pred, train_target, train_fnames = trainer.test(model, trainLoader)
+
+
+test_met = Metrics(test_target, test_pred)
+#valid_met = Metrics(valid_target, valid_pred)
+#train_met = Metrics(train_target, train_pred)
+
+test_acc = test_met.accuracy()
+
+
+# Just Testing
 """
 model = Simple_AE()
 path_to_statedict = "models/Simple_AE_3.0-10.1.pth"
@@ -84,22 +111,8 @@ else:
 trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
 """
 
-# autoencoder stuff:
-"""
-test_sumsqs, test_fnames = trainer.test_autoencoder(model, testLoader)
-test_acc = torch.mean(test_sumsqs).tolist()
-"""
-
-test_pred, test_target, test_fnames = trainer.test(model, testLoader)
-#valid_pred, valid_target, valid_fnames = trainer.test(model, validLoader)
-#train_pred, train_target, train_fnames = trainer.test(model, trainLoader)
 
 
-test_met = Metrics(test_target, test_pred)
-#valid_met = Metrics(valid_target, valid_pred)
-#train_met = Metrics(train_target, train_pred)
-
-test_acc = test_met.accuracy()
 
 print(test_acc)
 

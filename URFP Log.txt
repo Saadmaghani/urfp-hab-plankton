@@ -238,7 +238,7 @@ week of 2/9:
 		- 5.0 = 93.08 (2,30 hours)
 		- 5.1 = 94.00 (13,30 hours)
 		- 5.2 = 94.75 (??) (model file located in czm server)
-		- 5.3.0 = 90.83
+		- 5.30 = 90.83, 91.32% (12/12 test)
 		- 6.0 = 90.44
 		- 6.1 = 90.59
 		- 6.2 = 89.74
@@ -321,7 +321,7 @@ accuracies of training/validation/test sets of each class (done)
 		2.	with powers of 3 because the input channel is 3 channels. so 3 <-> 27 <-> 9 <-> 3 . if add more then 3 <-> 81 <-> 27 -> ...
 	2.	variable autoencoders. 
 3.	right now i will make a simple autoencoder
-4.	the autoencoder will go from (128, 264) -> (64, 128) -> (128, 264)
+4.	the autoencoder will go from (128, 256) -> (64, 128) -> (128, 256)
 
 
 7/12:
@@ -330,5 +330,15 @@ accuracies of training/validation/test sets of each class (done)
 	
 12/12:
 1.	oof where does the time fly by
-2.	further training of Autoencoder 3.0-10.1 for another 200 epochs. 
-3.	training 5.3.0 finally. 
+2.	further training of Autoencoder 3.0-10.1 for another 200 epochs. => 7474.27 (loss). really good but it was trained incorrectly (:
+3.	training 5.3.0 finally. => 91.32%
+
+16/12:
+1.	so lets first start training the autoencoder properly. Another thing to consider is whether we should rescale to (128, 256) or (256, 512) cuz 
+	reductions will be (32, 64) vs (64, 128) and our GoogleNet works on (64,128). lets do a simple test what does GN do best on. 
+2. 	secondly we should make our VAE.
+
+17/12:
+1.	so I tried to do a really simple test on GN for teh image sizes but it didnt work out. therefore a test is to take 200 of each so 6000 images 
+	in total and train GN based on all the different tests. tests of (32, 64), (64,128), (128, 256), (256, 256). then take highest acc.
+	done on gpu farm

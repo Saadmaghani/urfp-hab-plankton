@@ -69,15 +69,17 @@ strategies (training):
 # version 8.0 = same as 7.1 transformations added. can only work with GoogleNet 2.0, minibatch size = 64
 # version 8.1 = same as 8.0 to test the above methods lets keep a standard of 1000 images per class.
 # version 9.0 = transformations but batch_size = 1 and 16 random crops work as minibatch. only work with GoogleNet 3.0
-# version 10.0 = same as 4.0 except batch_size = 50, 100 images and train_AE = True (training the autoencoder). so transforms is with rescale to (128, 264)
+# version 10.0 = same as 4.0 except batch_size = 50, 100 images and train_AE = True (training the autoencoder). so transforms is with rescale to (128, 256)
 # version 10.1 = same as 10.0 except batch_Size = 256, 1000 images, EarlyStopping(patience=20, mode='min')
+# version 10.2 = same as 10.1 except 800 epochs
+# version 11.0 = to test GoogleNet image size. same as 4.0 except 200 images, Rescale(32,64)
 class Hyperparameters:
-    version=5.30
+    version=11.0
     learning_rate = 0.0003
     number_of_epochs = 200
     momentum = 0.9
     optimizer = optim.Adam
-    loss_function = FocalLoss
+    loss_function = nn.MSELoss
     es = EarlyStopping(patience=20)
     batch_size = 256
     scheduler = None
@@ -85,7 +87,10 @@ class Hyperparameters:
     maxN = None 
     minimum = None
     train_AE = False
-    number_of_images_per_class = 2500
-    transformations = transforms.Compose([Rescale((128, 256)), ToTensor()]) # AE: transforms.Compose([Rescale((128, 264)), ToTensor()]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
-	
+    number_of_images_per_class = 200
+    transformations = transforms.Compose([Rescale((32, 64)), ToTensor()]) # normal: transforms.Compose([Rescale((64, 128)), ToTensor()]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
+
+
+
+
 
