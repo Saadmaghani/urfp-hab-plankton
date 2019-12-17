@@ -344,5 +344,8 @@ accuracies of training/validation/test sets of each class (done)
 	done on gpu farm
 	(32, 64) - 78.15%, 36 mins
 	(64, 128) - 85.79%, 16 mins
-	(128, 256) -
-2.	going to train different models and take average. 
+	(128, 256) - 88.99%, 39 mins
+	(256, 256) - 87.14%, 44 mins 
+2.	going to train different models and take average. config v 4.3
+	googleNet-1.2 - 87.51
+	vgg-2.0 - 

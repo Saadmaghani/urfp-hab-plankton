@@ -12,13 +12,14 @@ import torch
 # version 1.7 = vgg19_bn with 3 input channels ****
 # version 1.8 = vgg19_bn with 3 input channels & output of all 96 classes
 # version 1.9 = vgg19_bn, 3 input channels, 20 classes, iteratively find out to how many layers we should randomly initializes
+# version 2.0 = vgg19_bn with 3 input channels & 30 classes
 class VGG(nn.Module):
-    version = 1.9
+    version = 2.0
 
     def __init__(self, randomInitLayers = 1, freeze=None, pretrain = True):
         super(VGG, self).__init__()
 
-        self.version = str(self.version) + "." + str(randomInitLayers)
+        self.version = str(self.version) #+ "." + str(randomInitLayers)
 
         self.model = models.vgg19_bn(pretrained=pretrain)
         # self.model.features[0] = nn.Conv2d(1, 64, 3, padding = 1)
@@ -27,18 +28,18 @@ class VGG(nn.Module):
                 param.requires_grad = False
 
         num_ftrs = self.model.classifier[6].in_features
-        self.model.classifier[6] = nn.Linear(num_ftrs, 20)
+        self.model.classifier[6] = nn.Linear(num_ftrs, 30)
 
-
-        layer = 0
-        for p in reversed(list(self.model.parameters())):
-            if len(p.shape) == 1:
-                nn.init.zeros_(p)
-            else:
-                nn.init.xavier_uniform_(p) 
-            layer += 0.5
-            if layer >= randomInitLayers:
-                break
+        if self.version == 1.9:
+            layer = 0
+            for p in reversed(list(self.model.parameters())):
+                if len(p.shape) == 1:
+                    nn.init.zeros_(p)
+                else:
+                    nn.init.xavier_uniform_(p) 
+                layer += 0.5
+                if layer >= randomInitLayers:
+                    break
 
 
         self.softmax = nn.Softmax()
