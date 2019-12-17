@@ -68,7 +68,7 @@ trainAcc = []
 validAcc = [] 
 epochs = 0 
 
-trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es, partialModelFile = "models/Simple_AE_2.0-10.1.tar")
+trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
 
 # - or -
 """
