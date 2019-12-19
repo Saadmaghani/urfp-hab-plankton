@@ -81,6 +81,7 @@ class WideNet(nn.Module):
     def __str__(self):
         return type(self).__name__ + "_" + str(self.version)
 
+
 # version 1.0 = alexnet with 3 input channels & 20 outputs
 class AlexNet(nn.Module):
     version = 1.0
@@ -108,7 +109,6 @@ class AlexNet(nn.Module):
 
     def __str__(self):
         return type(self).__name__ + "_" + str(self.version)
-
 
 
 # version 1.0 = googlenet with 3 input channels & 20 outputs
@@ -182,6 +182,7 @@ class GoogleNet(nn.Module):
 
     def __str__(self):
         return type(self).__name__ + "_" + str(self.version)
+
 
 # version 1.0 = resnet18 with 20 outputs
 # version 1.1 = resnet50 with 20 outputs
