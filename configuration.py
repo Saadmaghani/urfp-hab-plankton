@@ -73,22 +73,25 @@ strategies (training):
 # version 10.1 = same as 10.0 except batch_Size = 256, 1000 images, EarlyStopping(patience=20, mode='min')
 # version 10.2 = same as 10.1 except 800 epochs
 # version 11.0 = to test GoogleNet image size. same as 4.0 except 200 images, Rescale(32,64)
+# version 11.1 = same as 11.0 except Rescale(64, 128)
+# version 11.2 = same as 11.0 except Rescale(128, 256)
+# version 11.3 = same as 11.0 except Rescale(256, 256) out of memory so decreasing batch size to 128
 class Hyperparameters:
-    version=11.0
+    version=11.3
     learning_rate = 0.0003
     number_of_epochs = 200
     momentum = 0.9
     optimizer = optim.Adam
     loss_function = nn.MSELoss
     es = EarlyStopping(patience=20)
-    batch_size = 256
+    batch_size = 128
     scheduler = None
     pp_strategy = "thresholding"
     maxN = None 
     minimum = None
     train_AE = False
     number_of_images_per_class = 200
-    transformations = transforms.Compose([Rescale((32, 64)), ToTensor()]) # normal: transforms.Compose([Rescale((64, 128)), ToTensor()]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
+    transformations = transforms.Compose([Rescale((256, 256)), ToTensor()]) # normal: transforms.Compose([Rescale((64, 128)), ToTensor()]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
 
 
 
