@@ -348,4 +348,5 @@ accuracies of training/validation/test sets of each class (done)
 	(256, 256) - 87.14%, 44 mins 
 2.	going to train different models and take average. config v 4.3
 	googleNet-1.2 - 87.51
-	vgg-2.0 - 
+	vgg-2.0 - 85.49%
+	resnet-2.0 -
