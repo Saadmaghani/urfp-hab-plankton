@@ -349,8 +349,9 @@ accuracies of training/validation/test sets of each class (done)
 2.	going to train different models and take average. config v 4.3
 	googleNet-1.2 - 87.51
 	vgg-2.0 - 85.49%
-	resnet-2.0 -
+	resnet-2.0 - 86.72%
 
 19/12:
 1.	training resnet2.0.
 2.	Properly train autoencoder in gpu farm.
+3.	testing the three models trained. 
