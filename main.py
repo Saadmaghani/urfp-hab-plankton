@@ -3,7 +3,7 @@ from training import Trainer
 from metrics import Metrics
 import torch.nn as nn
 import torch.optim as optim
-from models.vgg_TL import VGG
+from models.vgg_TL import ResNet
 from models.autoencoders import Simple_AE
 from configuration import Hyperparameters as HP
 import torch
@@ -56,7 +56,7 @@ trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn
 #ae_model = Simple_AE()
 
 # training normal model
-model = VGG()
+model = ResNet()
 
 # training autoencoder + model
 """

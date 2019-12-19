@@ -185,8 +185,9 @@ class GoogleNet(nn.Module):
 
 # version 1.0 = resnet18 with 20 outputs
 # version 1.1 = resnet50 with 20 outputs
+# version 2.0 = resnet50 with 30 outputs
 class ResNet(nn.Module):
-    version = 1.1
+    version = 2.0
 
     def __init__(self, freeze=None, pretrain=True):
         super(ResNet, self).__init__()
@@ -198,7 +199,7 @@ class ResNet(nn.Module):
             for param in self.model.parameters():
                 param.requires_grad = False
 
-        self.model.fc = nn.Linear(2048, 20)
+        self.model.fc = nn.Linear(2048, 30)
 
         self.softmax = nn.Softmax()
 
