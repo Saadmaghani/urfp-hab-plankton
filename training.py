@@ -200,6 +200,7 @@ class Trainer:
 
     def test_autoencoder(self, model, testloader):
         if not self.autoencoder:
+            print("error. self.autoencoder = ", str(self.autoencoder))
             return
         all_sumSquares = torch.FloatTensor().to(self.device)  
 

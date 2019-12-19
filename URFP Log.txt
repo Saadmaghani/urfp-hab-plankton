@@ -335,7 +335,7 @@ accuracies of training/validation/test sets of each class (done)
 
 16/12:
 1.	so lets first start training the autoencoder properly. Another thing to consider is whether we should rescale to (128, 256) or (256, 512) cuz 
-	reductions will be (32, 64) vs (64, 128) and our GoogleNet works on (64,128). lets do a simple test what does GN do best on. 
+	reductions will be (32, 64) vs (64, 128) and our GoogleNet works on (64, 128). lets do a simple test what does GN do best on. 
 2. 	secondly we should make our VAE.
 
 17/12:
@@ -349,4 +349,9 @@ accuracies of training/validation/test sets of each class (done)
 2.	going to train different models and take average. config v 4.3
 	googleNet-1.2 - 87.51
 	vgg-2.0 - 85.49%
-	resnet-2.0 -
+	resnet-2.0 - 86.72%
+
+19/12:
+1.	training resnet2.0.
+2.	Properly train autoencoder in gpu farm.
+3.	testing the three models trained. 
