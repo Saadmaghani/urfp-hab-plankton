@@ -1,7 +1,7 @@
 import torch.optim as optim
 from torch.optim import lr_scheduler
 import torch.nn as nn
-from training import EarlyStopping, FocalLoss
+from training import EarlyStopping, FocalLoss, VAE_Criterion
 from torchvision import transforms
 from preprocessing import Rescale, RandomCrop, ToTensor
 
@@ -74,14 +74,16 @@ strategies (training):
 # version 10.1 = same as 10.0 except batch_Size = 256, 1000 images, EarlyStopping(patience=20, mode='min')
 # version 10.2 = same as 10.1 except 800 epochs
 # version 11.0 = to test GoogleNet image size. same as 4.0 except 200 images, Rescale(32,64)
+# version 12.0 = to train variational autoencoder. same as 10.0 for testing purposes.
+# version 12.1 = same as 12.0 except batch_size = 256, 1000 images
 class Hyperparameters:
-    version=10.2
+    version=12.0
     learning_rate = 0.0003
     number_of_epochs = 800
     momentum = 0.9
     optimizer = optim.Adam
-    loss_function = nn.MSELoss
-    es = EarlyStopping(patience=20, mode='min')
+    loss_function = VAE_Criterion
+    es = EarlyStopping(patience=20)
     batch_size = 256
     scheduler = None
     pp_strategy = "thresholding"
