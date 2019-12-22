@@ -71,14 +71,16 @@ class Trainer:
                 
                 #zero the param gradients
                 optimizer.zero_grad()
-                
+
                 #forward + backward + optimize
                 outputs = model(inputs)
+
                 
-                if self.autoencoder:
                 # training autoencoder:
-                    if outputs.shape[1] == 3:
-                        inputs = inputs.repeat(1,3,1,1)
+                if self.autoencoder:
+                    # for normal AE, uncomment the two lines below
+                    #if outputs.shape[1] == 3:
+                    #    inputs = inputs.repeat(1,3,1,1)
                     loss = self.criterion(outputs, inputs)
                 else:
                     loss = self.criterion(outputs, labels)
@@ -139,7 +141,6 @@ class Trainer:
     
         
     def getTime(self):
-
         if hasattr(self, "timeEnd") and hasattr(self, "timeStart"):
             time_delta = self.timeEnd - self.timeStart
             secs = time_delta % 60
@@ -151,8 +152,7 @@ class Trainer:
             hms = "xx:xx:xx"
         return hms
 
-
-        
+     
     def _save_partial_model(self, model, epoch, loss, optimizer):
         path_to_statedict = './models/'+str(model)+"-"+str(self.hp_version)+'.tar' 
         torch.save({
@@ -160,6 +160,12 @@ class Trainer:
             'model_state_dict': model.state_dict(),
             'optimizer_state_dict': optimizer.state_dict()
             }, path_to_statedict)
+
+    def _save_full_model(self, model):
+        # saving model
+        path_to_statedict = './models/'+str(model)+"-"+str(self.hp_version)+'.pth' 
+        torch.save(model.state_dict(), path_to_statedict)
+
 
     def load_partial_model(self, model, optimizer, path_to_statedict):
         checkpoint = torch.load(path_to_statedict)
@@ -182,13 +188,7 @@ class Trainer:
         #model.train()
         return model
     
-    
-
-    def _save_full_model(self, model):
-        # saving model
-        path_to_statedict = './models/'+str(model)+"-"+str(self.hp_version)+'.pth' 
-        torch.save(model.state_dict(), path_to_statedict)
-
+  
     def load_full_model(self, model, path_to_statedict):
         state_dict = torch.load(path_to_statedict, map_location=lambda storage, loc: storage)
         model.load_state_dict(state_dict)
@@ -197,6 +197,7 @@ class Trainer:
         del state_dict
 
         return model
+
 
     def test_autoencoder(self, model, testloader):
         if not self.autoencoder:
@@ -212,13 +213,18 @@ class Trainer:
             for data in testloader:
                 inputs, _ = data['image'].to(self.device).float(), data['encoded_label'].to(self.device).float()
                 outputs = model(inputs)
+
+                # VAE: next two lines
+                outputs = outputs[0]
+                outputs = outputs.view(-1, 1, 128, 256)
+
                 sumsquare = torch.sum((outputs - inputs)**2)
                 all_sumSquares = torch.cat((all_sumSquares, sumsquare.view(1)), 0)
                 all_fnames.extend(data['fname'])
 
         return all_sumSquares, all_fnames
 
-    def test(self, model, testloader): #stats finder
+    def test(self, model, testloader):
         all_preds = torch.LongTensor().to(self.device)
         all_targets = torch.LongTensor().to(self.device)
 
@@ -298,13 +304,35 @@ class EarlyStopping(object):
                 self.is_better = lambda a, best: a > best + (
                             best * min_delta / 100)
 
+import torch.nn as nn
+import torch.nn.functional as F
+from torch.autograd import Variable
+
+# script copied from https://graviraja.github.io/vanillavae/#
+# author: graviraja
+class VAE_Criterion(nn.Module):
+    def __init__(self):
+        super(VAE_Criterion, self).__init__()
+
+    def forward(self, output_from_model, input_to_model):
+        # forward pass
+        x_sample, z_mu, z_var = output_from_model
+
+        # reconstruction loss
+        recon_loss = F.binary_cross_entropy(x_sample, input_to_model, size_average=False)
+
+        # kl divergence loss
+        kl_loss = 0.5 * torch.sum(torch.exp(z_var) + z_mu**2 - 1.0 - z_var)
+
+        # total loss
+        loss = recon_loss + kl_loss
+        return loss
+
 
 
 # script copied from https://www.kaggle.com/c/tgs-salt-identification-challenge/discussion/65938
 # author: Allen Qin, Github: qinfubiao
-import torch.nn as nn
-import torch.nn.functional as F
-from torch.autograd import Variable
+
 
 class FocalLoss(nn.Module):
     def __init__(self, alpha=1, gamma=2, logits=False, reduce=True):

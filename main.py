@@ -4,7 +4,7 @@ from metrics import Metrics
 import torch.nn as nn
 import torch.optim as optim
 from models.vgg_TL import ResNet
-from models.autoencoders import Simple_AE
+from models.autoencoders import Simple_AE, VAE
 from configuration import Hyperparameters as HP
 import torch
 import json
@@ -53,7 +53,7 @@ trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn
 
 
 # training autoencoder
-ae_model = Simple_AE()
+model = VAE()
 
 # training normal model
 #model = ResNet()
@@ -80,7 +80,7 @@ trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earl
 
 # testing autoencoder
 
-test_sumsqs, test_fnames = trainer.test_autoencoder(ae_model, testLoader)
+test_sumsqs, test_fnames = trainer.test_autoencoder(model, testLoader)
 test_acc = torch.mean(test_sumsqs).tolist()
 
 
