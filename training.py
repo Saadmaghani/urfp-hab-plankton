@@ -204,6 +204,7 @@ class Trainer:
             return
         all_sumSquares = torch.FloatTensor().to(self.device)  
 		
+        all_fnames = []
         model.to(self.device)
         
         with torch.no_grad():
@@ -213,8 +214,9 @@ class Trainer:
                 outputs = model(inputs)
                 sumsquare = torch.sum((outputs - inputs)**2)
                 all_sumSquares = torch.cat((all_sumSquares, sumsquare.view(1)), 0)
+                all_fnames.extend(data['fname'])
 
-        return all_sumSquares
+        return all_sumSquares, all_fnames
 
     def test(self, model, testloader): #stats finder
         all_preds = torch.LongTensor().to(self.device)

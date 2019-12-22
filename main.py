@@ -74,7 +74,7 @@ model = GoogleNet(autoencoder = ae_model)
 trainAcc = []
 validAcc = [] 
 epochs = 0 
-trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
+trainAcc, validAcc, epochs = trainer.train(ae_model, trainLoader, validLoader, earlyStopping = HP.es)
 
 
 

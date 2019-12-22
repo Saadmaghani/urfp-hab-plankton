@@ -23,7 +23,7 @@ class Simple_AE(nn.Module):
         super(Simple_AE, self).__init__()
 
         self.encoder = nn.Sequential(
-            nn.Conv2d(3, 9, 3, padding = 1),
+            nn.Conv2d(1, 9, 3, padding = 1),
             nn.ReLU(True),
             nn.MaxPool2d(2),
             nn.Conv2d(9, 3, 3, padding = 1),
@@ -33,7 +33,7 @@ class Simple_AE(nn.Module):
         self.decoder = nn.Sequential(
             nn.ConvTranspose2d(3, 9, 2, stride = 2),
             nn.ReLU(True),
-            nn.ConvTranspose2d(9, 3, 2, stride = 2),
+            nn.ConvTranspose2d(9, 1, 2, stride = 2),
             nn.Sigmoid())
 
     def forward(self, x):
