@@ -106,10 +106,11 @@ class VAE_Decoder(nn.Module):
         return predicted
 
 # version 1.0 = as gotten from source. input_dim = 128*256, latent_dim = 128
+# version 1.1 = same as 1,0 except latent_dim = 256 
 class VAE(nn.Module):
-    version = 1.0
+    version = 1.1
     
-    def __init__(self, input_dim = 128*256, latent_dim = 128):
+    def __init__(self, input_dim = 128*256, latent_dim = 256):
         super().__init__()
         hidden_dim = 256
 
