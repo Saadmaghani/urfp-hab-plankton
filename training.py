@@ -97,8 +97,8 @@ class Trainer:
                     if self.autoencoder:
                         train_sumSquares, _ = self.test_autoencoder(model, trainLoader)
                         valid_sumSquares, _ = self.test_autoencoder(model, validLoader)
-                        train_acc = torch.mean(train_sumSquares).tolist()
-                        valid_acc = torch.mean(valid_sumSquares).tolist()
+                        train_acc = train_sumSquares #simple ae torch.mean(train_sumSquares).tolist()
+                        valid_acc = valid_sumSquares #simple ae torch.mean(valid_sumSquares).tolist()
                         print('Running Training Loss:', running_loss)
                         print('Training Loss:', train_acc)
                         print('Valid Loss:', valid_acc)
@@ -203,7 +203,7 @@ class Trainer:
         if not self.autoencoder:
             print("error. self.autoencoder = ", str(self.autoencoder))
             return
-        all_sumSquares = torch.FloatTensor().to(self.device)  
+        all_sumSquares = 0 # vae: 0  # simple AEtorch.FloatTensor().to(self.device)  
 
         all_fnames = []
         model.to(self.device)
@@ -214,17 +214,16 @@ class Trainer:
                 inputs, _ = data['image'].to(self.device).float(), data['encoded_label'].to(self.device).float()
                 outputs = model(inputs)
 
-                # VAE: lines
+                # VAE: 
                 x_sample, z_mu, z_var = outputs
                 recon_loss = F.binary_cross_entropy(x_sample, inputs, size_average=False)
                 kl_loss = 0.5 * torch.sum(torch.exp(z_var) + z_mu**2 - 1.0 - z_var)
                 loss = recon_loss + kl_loss
 
                 #Simple AE: sumsquare = torch.sum((outputs - inputs)**2) 
-                sumsquare = loss #VAE
 
 
-                all_sumSquares = torch.cat((all_sumSquares, sumsquare.view(1)), 0)
+                all_sumSquares += loss #Simple AE: torch.cat((all_sumSquares, sumsquare.view(1)), 0)
                 all_fnames.extend(data['fname'])
 
         return all_sumSquares, all_fnames
