@@ -84,13 +84,13 @@ class Hyperparameters:
     optimizer = optim.Adam
     loss_function = VAE_Criterion
     es = EarlyStopping(patience=20)
-    batch_size = 256
+    batch_size = 50
     scheduler = None
     pp_strategy = "thresholding"
     maxN = None 
     minimum = None
     train_AE = True
-    number_of_images_per_class = 1000
+    number_of_images_per_class = 100
     transformations = transforms.Compose([Rescale((128, 256)), ToTensor()]) # normal: transforms.Compose([Rescale((64, 128)), ToTensor()]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
 
 

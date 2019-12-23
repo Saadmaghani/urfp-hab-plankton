@@ -214,11 +214,16 @@ class Trainer:
                 inputs, _ = data['image'].to(self.device).float(), data['encoded_label'].to(self.device).float()
                 outputs = model(inputs)
 
-                # VAE: next two lines
-                outputs = outputs[0]
-                outputs = outputs.view(-1, 1, 128, 256)
+                # VAE: lines
+                x_sample, z_mu, z_var = outputs
+                recon_loss = F.binary_cross_entropy(x_sample, inputs, size_average=False)
+                kl_loss = 0.5 * torch.sum(torch.exp(z_var) + z_mu**2 - 1.0 - z_var)
+                loss = recon_loss + kl_loss
 
-                sumsquare = torch.sum((outputs - inputs)**2)
+                #Simple AE: sumsquare = torch.sum((outputs - inputs)**2) 
+                sumsquare = loss #VAE
+
+
                 all_sumSquares = torch.cat((all_sumSquares, sumsquare.view(1)), 0)
                 all_fnames.extend(data['fname'])
 
