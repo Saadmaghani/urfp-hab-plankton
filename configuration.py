@@ -78,19 +78,19 @@ strategies (training):
 # version 11.2 = same as 11.0 except Rescale(128, 256)
 # version 11.3 = same as 11.0 except Rescale(256, 256) out of memory so decreasing batch size to 128
 class Hyperparameters:
-    version=10.2
+    version=4.2
     learning_rate = 0.0003
-    number_of_epochs = 800
+    number_of_epochs = 200
     momentum = 0.9
     optimizer = optim.Adam
     loss_function = nn.MSELoss
-    es = EarlyStopping(patience=20, mode='min')
+    es = EarlyStopping(patience=20)
     batch_size = 256
     scheduler = None
     pp_strategy = "thresholding"
     maxN = None 
     minimum = None
-    train_AE = True
+    train_AE = False 
     number_of_images_per_class = 1000
     transformations = transforms.Compose([Rescale((128, 256)), ToTensor()]) # normal: transforms.Compose([Rescale((64, 128)), ToTensor()]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
 

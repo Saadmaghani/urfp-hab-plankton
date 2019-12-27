@@ -3,7 +3,7 @@ from training import Trainer
 from metrics import Metrics
 import torch.nn as nn
 import torch.optim as optim
-from models.vgg_TL import ResNet
+from models.vgg_TL import GoogleNet, ResNet
 from models.autoencoders import Simple_AE
 from configuration import Hyperparameters as HP
 import torch
@@ -53,39 +53,37 @@ trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn
 
 
 # training autoencoder
-ae_model = Simple_AE()
+#model = Simple_AE()
 
 # training normal model
 #model = ResNet()
 
 # training autoencoder + model
-"""
 ae_model = Simple_AE()
-path_to_ae = "../Simple_AE_3.0-10.1.pth"
+path_to_ae = "models/Simple_AE_3.0-10.2.pth"
 
 if ".tar" in path_to_ae:
     ae_model = trainer.load_partial_model(ae_model, path_to_ae)
 else:
     ae_model = trainer.load_full_model(ae_model, path_to_ae)
 model = GoogleNet(autoencoder = ae_model)
-"""
 
 # training
 trainAcc = []
 validAcc = [] 
 epochs = 0 
-trainAcc, validAcc, epochs = trainer.train(ae_model, trainLoader, validLoader, earlyStopping = HP.es)
+trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
 
 
 
 # testing autoencoder
 
-test_sumsqs, test_fnames = trainer.test_autoencoder(ae_model, testLoader)
-test_acc = torch.mean(test_sumsqs).tolist()
+#test_sumsqs, test_fnames = trainer.test_autoencoder(model, testLoader)
+#test_acc = torch.mean(test_sumsqs).tolist()
 
 
 # testing normal model
-#test_pred, test_target, test_fnames = trainer.test(model, testLoader)
+test_pred, test_target, test_fnames = trainer.test(model, testLoader)
 #valid_pred, valid_target, valid_fnames = trainer.test(model, validLoader)
 #train_pred, train_target, train_fnames = trainer.test(model, trainLoader)
 
@@ -94,7 +92,7 @@ test_acc = torch.mean(test_sumsqs).tolist()
 #valid_met = Metrics(valid_target, valid_pred)
 #train_met = Metrics(train_target, train_pred)
 
-#test_acc = test_met.accuracy()
+test_acc = test_met.accuracy()
 
 
 # Just Testing
