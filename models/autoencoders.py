@@ -106,9 +106,10 @@ class VAE_Decoder(nn.Module):
         return predicted
 
 # version 1.0 = as gotten from source. input_dim = 128*256, latent_dim = 128
-# version 1.1 = same as 1,0 except latent_dim = 256 
+# version 1.1 = same as 1.0 except latent_dim = 256 
+# version 2.x = same as 1.x versions except with less classes. in this case 149 boi (chaetoceros flagellete)
 class VAE(nn.Module):
-    version = 1.0
+    version = 2.0
     
     def __init__(self, input_dim = 128*256, latent_dim = 128):
         super().__init__()

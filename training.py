@@ -203,7 +203,7 @@ class Trainer:
         if not self.autoencoder:
             print("error. self.autoencoder = ", str(self.autoencoder))
             return
-        all_sumSquares = 0 # vae: 0  # simple AEtorch.FloatTensor().to(self.device)  
+        all_sumSquares = 0 # vae: 0  # simple AE: torch.FloatTensor().to(self.device)  
 
         all_fnames = []
         model.to(self.device)

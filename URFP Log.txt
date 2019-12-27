@@ -366,4 +366,5 @@ accuracies of training/validation/test sets of each class (done)
 27/12:
 1.	training 17/12 (224,224) w/ normalization.
 2.	made triple architecture. need to train it on gpu farm.
+3.	training VAE only on chaetoceros flagellete (149 one)
 
