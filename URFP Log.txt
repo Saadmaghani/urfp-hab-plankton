@@ -346,7 +346,7 @@ accuracies of training/validation/test sets of each class (done)
 	(64, 128) - 85.79%, 16 mins
 	(128, 256) - 88.99%, 39 mins
 	(256, 256) - 87.14%, 44 mins 
-	(224, 224) w/ normalization 
+	(224, 224) w/ normalization - 86.97%, 21 mins. so what does this mean 
 
 2.	going to train different models and take average. config v 4.3
 	googleNet-1.2 - 87.51
@@ -365,4 +365,5 @@ accuracies of training/validation/test sets of each class (done)
 
 27/12:
 1.	training 17/12 (224,224) w/ normalization.
-2.	
+2.	made triple architecture. need to train it on gpu farm.
+
