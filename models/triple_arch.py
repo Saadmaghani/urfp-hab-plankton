@@ -54,7 +54,7 @@ class ModelsConnector(nn.Module):
         )
 
 
-# version 1.0 = 3 models - GoogleNet, vgg19_bn, resnet
+# version 1.0 = 3 models - GoogleNet, vgg19_bn, resnet. each with output 2048 -> 4096 -> 30
 class N_Parallel_Models(nn.Module):
     version = 1.0
 
