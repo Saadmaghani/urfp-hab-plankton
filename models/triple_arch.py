@@ -58,16 +58,20 @@ class ModelsConnector(nn.Module):
 class N_Parallel_Models(nn.Module):
     version = 1.0
 
+    # tl_models is just for reference
     def __init__(self, tl_models=[], freeze=None, pretrain=False, autoencoder=None):
         super(N_Parallel_Models, self).__init__()
 
-        tl_models = [models.googlenet, models.resnet50, models.vgg19_bn]
-        self.models = {m.__name__: m(pretrained=pretrain) for m in tl_models}
+        tl_models = [models.googlenet, models.resnet50, models.vgg19_bn] if len(tl_models) == 0 else tl_models
+        
+        self.googlenet = models.googlenet(pretrained=pretrain)
+        self.resnet50 = models.resnet50(pretrained=pretrain)
+        self.vgg19_bn = models.vgg19_bn(pretrained=pretrain)
 
-        self.models['googlenet'].fc = nn.Linear(1024, 2048) #googlenet
-        self.models['resnet50'].fc = nn.Linear(2048, 2048) #resnet
-        self.models['vgg19_bn'].classifier = nn.Sequential(nn.Linear(25088, 2048), nn.ReLU(inplace=True), nn.Dropout(p=0.5, inplace=False))
-    
+        self.googlenet.fc = nn.Linear(1024, 2048)
+        self.resnet50.fc = nn.Linear(2048, 2048)
+        self.vgg19_bn.classifier = nn.Sequential(nn.Linear(25088, 2048), nn.ReLU(inplace=True), nn.Dropout(p=0.5, inplace=False))
+
         self.connector = nn.Sequential(ModelsConnector(3, 2048, 4096), nn.Dropout(p=0.5, inplace=False))
         self.fc = nn.Linear(4096, 30)
         #self.pyramid_layers = nn.Sequential(Pyramid(3, 2048, 2048), Pyramid(2, 2048, 30))
@@ -77,11 +81,17 @@ class N_Parallel_Models(nn.Module):
     def forward(self, x):
         x = x.repeat(1,3,1,1)
         xs = []
-        for model in self.models:
-            temp = model(x)
-            if not isinstance(temp, torch.Tensor):
-                temp = temp.logits
-            xs.append(temp)
+
+        temp = self.googlenet(x)
+        if not isinstance(temp, torch.Tensor):
+            temp = temp.logits
+        xs.append(temp)
+
+        temp = self.resnet50(x)
+        xs.append(temp)
+
+        temp = self.vgg19_bn(x)
+        xs.append(temp)
 
         out = self.connector(xs)
         out = self.fc(out)
