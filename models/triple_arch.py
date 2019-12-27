@@ -6,20 +6,23 @@ from torch.nn import init
 from torch.nn.parameter import Parameter
 import math
 
-class Pyramid(nn.Module):
+class ModelsConnector(nn.Module):
 
     def __init__(self, n_sets_of_inputs, in_features, out_features, bias=True):
-        super(Pyramid, self).__init__()
+        super(ModelsConnector, self).__init__()
 
         self.n = n_sets_of_inputs
 
         self.in_features = in_features
         self.out_features = out_features
     
-        self.weight = Parameter(torch.Tensor(2*(self.n-1), out_features, in_features))
-        #self.weight = [Parameter(torch.Tensor(out_features, in_features)) for x in range(2*(n_sets_of_inputs-1))]
+
+        self.weight = Parameter(torch.Tensor(self.n, out_features, in_features))
+        #self.weight = Parameter(torch.Tensor(2*(self.n-1), out_features, in_features))
+
         if bias:
-            self.bias = Parameter(torch.Tensor(self.n-1, out_features))
+            self.bias = Parameter(torch.Tensor(out_features))   
+            #self.bias = Parameter(torch.Tensor(self.n-1, out_features))
             #self.bias = [Parameter(torch.Tensor(out_features)) for x in range(n_sets_of_inputs-1)]
         else:
             self.register_parameter('bias', None)
@@ -32,24 +35,18 @@ class Pyramid(nn.Module):
             bound = 1 / math.sqrt(fan_in)
             init.uniform_(self.bias, -bound, bound)
 
-    def _linear_mult(self, x1, x2, w1, w2, b):
-        out = x1.matmul(w1.t()).add(x2.matmul(w2.t()))
-        out += b
-        return out
+   
 
     def forward(self, inputs):
 
-        outputs = []
-        for i in range(self.n-1):
-            x0 = 0
-            x1 = 1
-            out = self._linear_mult(inputs[x0], inputs[x1], self.weight[x0*2], self.weight[(x1*2)-1], self.bias[i])
-            x0 += 1
-            x1 += 1
-            outputs.append(F.relu(out))
+        outs = torch.zeros(inputs[0].shape[0], self.out_features)
 
-        return outputs 
-
+        for i in range(self.n):
+            outs += inputs[i].matmul(self.weight[i].t())
+        
+        outs += self.bias
+        return F.relu(outs)
+       
 
     def extra_repr(self):
         return 'in_features={}, out_features={}, bias={}'.format(
@@ -71,7 +68,9 @@ class N_Parallel_Models(nn.Module):
         self.models[1].fc = nn.Linear(2048, 2048) #resnet
         self.models[2].classifier = nn.Sequential(nn.Linear(25088, 2048), nn.ReLU(inplace=True), nn.Dropout(p=0.5, inplace=False))
     
-        self.pyramid_layers = nn.Sequential(Pyramid(3, 2048, 2048), Pyramid(2, 2048, 30))
+        self.connector = nn.Sequential(ModelsConnector(3, 2048, 4096), nn.Dropout(p=0.5, inplace=False))
+        self.fc = nn.Linear(4096, 30)
+        #self.pyramid_layers = nn.Sequential(Pyramid(3, 2048, 2048), Pyramid(2, 2048, 30))
 
         self.softmax = nn.Softmax()
 
@@ -84,9 +83,11 @@ class N_Parallel_Models(nn.Module):
                 temp = temp.logits
             xs.append(temp)
 
-        xs = self.pyramid_layers(xs)
+        out = self.connector(xs)
+        out = self.fc(out)
+        out = self.softmax(out)
 
-        return self.softmax(xs[0])
+        return out
 
     def __str__(self):
         return type(self).__name__ + "_" + str(self.version)
