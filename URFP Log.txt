@@ -346,6 +346,8 @@ accuracies of training/validation/test sets of each class (done)
 	(64, 128) - 85.79%, 16 mins
 	(128, 256) - 88.99%, 39 mins
 	(256, 256) - 87.14%, 44 mins 
+	(224, 224) w/ normalization - 86.97%, 21 mins. so what does this mean 
+
 2.	going to train different models and take average. config v 4.3
 	googleNet-1.2 - 87.51
 	vgg-2.0 - 85.49%
@@ -360,4 +362,8 @@ accuracies of training/validation/test sets of each class (done)
 1.	so results of three models and avg is 49.77%. really bad. but i wanna see if we can combine them in certain ways. lets use the method in that paper
 2.	autoencoder trained too. lets train a model to take inputs for that. lets do this first because its easier. 
 3.	going to make and train a VAE
+
+27/12:
+1.	training 17/12 (224,224) w/ normalization.
+2.	made triple architecture. need to train it on gpu farm.
 

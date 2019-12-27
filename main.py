@@ -3,7 +3,7 @@ from training import Trainer
 from metrics import Metrics
 import torch.nn as nn
 import torch.optim as optim
-from models.vgg_TL import ResNet
+from models.triple_arch import N_Parallel_Models
 from models.autoencoders import Simple_AE, VAE
 from configuration import Hyperparameters as HP
 import torch
@@ -53,10 +53,10 @@ trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn
 
 
 # training autoencoder
-model = VAE()
+#model = VAE()
 
 # training normal model
-#model = ResNet()
+model = N_Parallel_Models()
 
 # training autoencoder + model
 """
@@ -80,21 +80,21 @@ trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earl
 
 # testing autoencoder
 
-test_sumsqs, test_fnames = trainer.test_autoencoder(model, testLoader)
-test_acc = torch.mean(test_sumsqs).tolist()
+#test_sumsqs, test_fnames = trainer.test_autoencoder(model, testLoader)
+#test_acc = torch.mean(test_sumsqs).tolist()
 
 
 # testing normal model
-#test_pred, test_target, test_fnames = trainer.test(model, testLoader)
+test_pred, test_target, test_fnames = trainer.test(model, testLoader)
 #valid_pred, valid_target, valid_fnames = trainer.test(model, validLoader)
 #train_pred, train_target, train_fnames = trainer.test(model, trainLoader)
 
 
-#test_met = Metrics(test_target, test_pred)
+test_met = Metrics(test_target, test_pred)
 #valid_met = Metrics(valid_target, valid_pred)
 #train_met = Metrics(train_target, train_pred)
 
-#test_acc = test_met.accuracy()
+test_acc = test_met.accuracy()
 
 
 # Just Testing
