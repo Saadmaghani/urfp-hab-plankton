@@ -172,6 +172,22 @@ class ToTensor(object):
             return {'image':images, 'label':sample['label']}
 
 
+# performs img[channel] = (img[channel] - mean[channel])/std[channel]
+class Normalize(object):
+    # mean: list of mean values channels have to be normalized by
+    # std: list of std values channels have to be normalized by
+    def __init__(self, mean, std):
+        self.mean = mean
+        self.std = std
+
+    def __call__(self, sample):
+        img = sample['image']
+        for i in range(len(self.mean)):
+            img[i] = (img[i]-mean[i])/std[i]
+
+        return {'image': img, 'label':sample['label']}
+
+
 class Preprocessor:
     DATA_FOLDER = "./data"
 
