@@ -97,8 +97,8 @@ class Trainer:
                     if self.autoencoder:
                         train_sumSquares, _ = self.test_autoencoder(model, trainLoader)
                         valid_sumSquares, _ = self.test_autoencoder(model, validLoader)
-                        train_acc = train_sumSquares #simple ae torch.mean(train_sumSquares).tolist()
-                        valid_acc = valid_sumSquares #simple ae torch.mean(valid_sumSquares).tolist()
+                        train_acc = train_sumSquares.tolist() #simple ae torch.mean(train_sumSquares).tolist()
+                        valid_acc = valid_sumSquares.tolist() #simple ae torch.mean(valid_sumSquares).tolist()
                         print('Running Training Loss:', running_loss)
                         print('Training Loss:', train_acc)
                         print('Valid Loss:', valid_acc)
