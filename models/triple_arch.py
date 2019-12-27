@@ -62,11 +62,11 @@ class N_Parallel_Models(nn.Module):
         super(N_Parallel_Models, self).__init__()
 
         tl_models = [models.googlenet, models.resnet50, models.vgg19_bn]
-        self.models = [m(pretrained=pretrain) for m in tl_models]
+        self.models = {m.__name__: m(pretrained=pretrain) for m in tl_models}
 
-        self.models[0].fc = nn.Linear(1024, 2048) #googlenet
-        self.models[1].fc = nn.Linear(2048, 2048) #resnet
-        self.models[2].classifier = nn.Sequential(nn.Linear(25088, 2048), nn.ReLU(inplace=True), nn.Dropout(p=0.5, inplace=False))
+        self.models['googlenet'].fc = nn.Linear(1024, 2048) #googlenet
+        self.models['resnet50'].fc = nn.Linear(2048, 2048) #resnet
+        self.models['vgg19_bn'].classifier = nn.Sequential(nn.Linear(25088, 2048), nn.ReLU(inplace=True), nn.Dropout(p=0.5, inplace=False))
     
         self.connector = nn.Sequential(ModelsConnector(3, 2048, 4096), nn.Dropout(p=0.5, inplace=False))
         self.fc = nn.Linear(4096, 30)
