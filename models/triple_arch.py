@@ -1,12 +1,101 @@
+import torch
 from torchvision import models
 import torch.nn as nn
-import cv2
+from torch.nn import functional as F
+from torch.nn import init
+from torch.nn.parameter import Parameter
+import math
 
-# version 1.0 = vgg19_bn
+class Pyramid(nn.Module):
+
+    def __init__(self, n_sets_of_inputs, in_features, out_features, bias=True):
+        super(Pyramid, self).__init__()
+
+        self.n = n_sets_of_inputs
+
+        self.in_features = in_features
+        self.out_features = out_features
+    
+        self.weight = Parameter(torch.Tensor(2*(self.n-1), out_features, in_features))
+        #self.weight = [Parameter(torch.Tensor(out_features, in_features)) for x in range(2*(n_sets_of_inputs-1))]
+        if bias:
+            self.bias = Parameter(torch.Tensor(self.n-1, out_features))
+            #self.bias = [Parameter(torch.Tensor(out_features)) for x in range(n_sets_of_inputs-1)]
+        else:
+            self.register_parameter('bias', None)
+        self.reset_parameters()
+
+    def reset_parameters(self):
+        init.kaiming_uniform_(self.weight, a=math.sqrt(5))
+        if self.bias is not None:
+            fan_in, _ = init._calculate_fan_in_and_fan_out(self.weight)
+            bound = 1 / math.sqrt(fan_in)
+            init.uniform_(self.bias, -bound, bound)
+
+    def _linear_mult(self, x1, x2, w1, w2, b):
+        out = x1.matmul(w1.t()).add(x2.matmul(w2.t()))
+        out += b
+        return out
+
+    def forward(self, inputs):
+
+        outputs = []
+        for i in range(self.n-1):
+            x0 = 0
+            x1 = 1
+            out = self._linear_mult(inputs[x0], inputs[x1], self.weight[x0*2], self.weight[(x1*2)-1], self.bias[i])
+            x0 += 1
+            x1 += 1
+            outputs.append(F.relu(out))
+
+        return outputs 
+
+
+    def extra_repr(self):
+        return 'in_features={}, out_features={}, bias={}'.format(
+            self.in_features, self.out_features, self.bias is not None
+        )
+
+
+# version 1.0 = 3 models - GoogleNet, vgg19_bn, resnet
+class N_Parallel_Models(nn.Module):
+    version = 1.0
+
+    def __init__(self, tl_models=[], freeze=None, pretrain=False, autoencoder=None):
+        super(N_Parallel_Models, self).__init__()
+
+        tl_models = [models.googlenet, models.resnet50, models.vgg19_bn]
+        self.models = [m(pretrained=pretrain) for m in tl_models]
+
+        self.models[0].fc = nn.Linear(1024, 2048) #googlenet
+        self.models[1].fc = nn.Linear(2048, 2048) #resnet
+        self.models[2].classifier = nn.Sequential(nn.Linear(25088, 2048), nn.ReLU(inplace=True), nn.Dropout(p=0.5, inplace=False))
+    
+        self.pyramid_layers = nn.Sequential(Pyramid(3, 2048, 2048), Pyramid(2, 2048, 30))
+
+        self.softmax = nn.Softmax()
+
+    def forward(self, x):
+        x = x.repeat(1,3,1,1)
+        xs = []
+        for model in self.models:
+            temp = model(x)
+            if not isinstance(temp, torch.Tensor):
+                temp = temp.logits
+            xs.append(temp)
+
+        xs = self.pyramid_layers(xs)
+
+        return self.softmax(xs[0])
+
+    def __str__(self):
+        return type(self).__name__ + "_" + str(self.version)
+
+
 
 
 """  ABANDONED  """
-
+# version 1.0 = vgg19_bn
 class TripleArch(nn.Module):
     version = 1.0
 
