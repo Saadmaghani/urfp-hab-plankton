@@ -1,7 +1,7 @@
 import torch.optim as optim
 from torch.optim import lr_scheduler
 import torch.nn as nn
-from training import EarlyStopping, FocalLoss
+from training import EarlyStopping, FocalLoss, VAE_Criterion
 from torchvision import transforms
 from preprocessing import Rescale, RandomCrop, ToTensor
 
@@ -52,6 +52,7 @@ strategies (training):
 # version 3.6 = same as 3.5 except patience = 40
 # version 3.7 = same as 3.5 except 1000 images ***
 # version 4.0 = same as 3.5 except 2000 images and thresholding. 20 classes changed to 30 classes
+# version 4.01 = same as 4.0 except 100 images, batch size 50. for testing purposes. not for Autoencoders. img size (64,128)
 # version 4.1 = same as 4.0 except 2500 images
 # version 4.2 = same as 4.0 except 1000 images 
 # version 4.3 = to test different models and avg. same as 4.0 except 500 images. (old 4.3 idk what it was)
@@ -77,22 +78,24 @@ strategies (training):
 # version 11.1 = same as 11.0 except Rescale(64, 128)
 # version 11.2 = same as 11.0 except Rescale(128, 256)
 # version 11.3 = same as 11.0 except Rescale(256, 256) out of memory so decreasing batch size to 128
+# version 12.0 = to train variational autoencoder. same as 10.0 for testing purposes.
+# version 12.1 = same as 12.0 except batch_size = 256, 1000 images
 class Hyperparameters:
-    version=4.2
+    version=4.01
     learning_rate = 0.0003
     number_of_epochs = 200
     momentum = 0.9
     optimizer = optim.Adam
     loss_function = nn.MSELoss
     es = EarlyStopping(patience=20)
-    batch_size = 256
+    batch_size = 50
     scheduler = None
     pp_strategy = "thresholding"
     maxN = None 
     minimum = None
     train_AE = False 
-    number_of_images_per_class = 1000
-    transformations = transforms.Compose([Rescale((128, 256)), ToTensor()]) # normal: transforms.Compose([Rescale((64, 128)), ToTensor()]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
+    number_of_images_per_class = 100
+    transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) # normal: transforms.Compose([Rescale((64, 128)), ToTensor()]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
 
 
 
