@@ -78,24 +78,25 @@ strategies (training):
 # version 11.1 = same as 11.0 except Rescale(64, 128)
 # version 11.2 = same as 11.0 except Rescale(128, 256)
 # version 11.3 = same as 11.0 except Rescale(256, 256) out of memory so decreasing batch size to 128
+# version 11.4 = same as 11.0 except Rescale(224, 224) and normalization. transforms.Normalize(mean=[0.449], std=[0.226]) added after toTensor.
 # version 12.0 = to train variational autoencoder. same as 10.0 for testing purposes.
 # version 12.1 = same as 12.0 except batch_size = 256, 1000 images
 class Hyperparameters:
-    version=4.01
+    version=11.4
     learning_rate = 0.0003
     number_of_epochs = 200
     momentum = 0.9
     optimizer = optim.Adam
     loss_function = nn.MSELoss
     es = EarlyStopping(patience=20)
-    batch_size = 50
+    batch_size = 256
     scheduler = None
     pp_strategy = "thresholding"
     maxN = None 
     minimum = None
     train_AE = False 
-    number_of_images_per_class = 100
-    transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) # normal: transforms.Compose([Rescale((64, 128)), ToTensor()]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
+    number_of_images_per_class = 200
+    transformations = transforms.Compose([transforms.Resize((224, 224)), transforms.ToTensor(), transforms.Normalize(mean=[0.449], std=[0.226])]) # normal: transforms.Compose([Rescale((64, 128)), ToTensor()]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
 
 
 

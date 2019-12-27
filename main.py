@@ -3,7 +3,8 @@ from training import Trainer
 from metrics import Metrics
 import torch.nn as nn
 import torch.optim as optim
-from models.triple_arch import N_Parallel_Models
+#from models.triple_arch import N_Parallel_Models
+from models.vgg_TL import GoogleNet
 from models.autoencoders import Simple_AE
 from configuration import Hyperparameters as HP
 import torch
@@ -57,18 +58,18 @@ trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn
 #model = VAE()
 
 # training normal model
-model = N_Parallel_Models()
+model = GoogleNet()
 
 # training autoencoder + model
+"""
 ae_model = Simple_AE()
 path_to_ae = "models/Simple_AE_3.0-10.2.pth"
-
 if ".tar" in path_to_ae:
     ae_model = trainer.load_partial_model(ae_model, path_to_ae)
 else:
     ae_model = trainer.load_full_model(ae_model, path_to_ae)
 model = GoogleNet(autoencoder = ae_model)
-
+"""
 # training
 trainAcc = []
 validAcc = [] 
