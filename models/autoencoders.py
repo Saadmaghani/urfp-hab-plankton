@@ -115,8 +115,8 @@ class VAE(nn.Module):
         super().__init__()
         self.hidden_dim = 128
 
-        self.enc = VAE_Encoder(input_dim, hidden_dim, latent_dim)
-        self.dec = VAE_Decoder(latent_dim, hidden_dim, input_dim)
+        self.enc = VAE_Encoder(input_dim, self.hidden_dim, latent_dim)
+        self.dec = VAE_Decoder(latent_dim, self.hidden_dim, input_dim)
 
     def forward(self, x):
         
