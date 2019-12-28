@@ -111,9 +111,10 @@ class VAE_Decoder(nn.Module):
 class VAE(nn.Module):
     version = 2.0
     
-    def __init__(self, input_dim = 128*256, latent_dim = 256):
+    def __init__(self, input_dim = 128*256, latent_dim = 128):
         super().__init__()
-        self.hidden_dim = 128
+        hidden_dim = 128
+        self.latent_dim = latent_dim
 
         self.enc = VAE_Encoder(input_dim, self.hidden_dim, latent_dim)
         self.dec = VAE_Decoder(latent_dim, self.hidden_dim, input_dim)
@@ -136,11 +137,10 @@ class VAE(nn.Module):
         return predicted, z_mu, z_var
 
     def get_sample(self):
-        z = torch.randn(1, self.hidden_dim).to(device)
-        # run only the decoder
-        reconstructed_img = self.dec(z)
+        z = torch.randn(1, self.latent_dim).to(device)
+        sample = self.dec(z)
 
-        return reconstructed_img
+        return sample
 
 
     def __str__(self): 
