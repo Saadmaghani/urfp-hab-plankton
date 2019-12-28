@@ -44,7 +44,7 @@ print(len(classes_30))
 pp = Preprocessor(years, include_classes=classes_vae, strategy = HP.pp_strategy, train_eg_per_class=HP.number_of_images_per_class, maxN = HP.maxN, minimum = HP.minimum, transformations = HP.transformations)
 
 
-pp.create_datasets([0.6,0.2,0.2])
+pp.create_datasets(HP.data_splits)
 
 trainLoader = pp.get_loaders('train', HP.batch_size)
 validLoader = pp.get_loaders('validation', HP.batch_size)

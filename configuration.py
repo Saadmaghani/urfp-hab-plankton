@@ -76,9 +76,10 @@ strategies (training):
 # version 10.2 = same as 10.1 except 800 epochs
 # version 11.0 = to test GoogleNet image size. same as 4.0 except 200 images, Rescale(32,64)
 # version 12.0 = to train variational autoencoder. same as 10.0 for testing purposes. loss_function = VAE_Criterion
-# version 12.1 = same as 12.0 except batch_size = 256, 1000 images, 800 epochs
+# version 12.1 = same as 12.0 except batch_size = 256, 1000 images, 800 epochs, split [0.8,0.1,0.1]
+# version 12.2 = same as 12.1 except updated loss function
 class Hyperparameters:
-    version=12.1
+    version=12.2
     learning_rate = 0.0003
     number_of_epochs = 800
     momentum = 0.9
@@ -88,6 +89,7 @@ class Hyperparameters:
     batch_size = 256
     scheduler = None
     pp_strategy = "thresholding"
+    data_splits = [0.8,0.1,0.1] #normally [0.6, 0.2, 0.2]
     maxN = None 
     minimum = None
     train_AE = True

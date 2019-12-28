@@ -326,7 +326,8 @@ class VAE_Criterion(nn.Module):
         recon_loss = F.binary_cross_entropy(x_sample, input_to_model, size_average=False)
 
         # kl divergence loss
-        kl_loss = 0.5 * torch.sum(torch.exp(z_var) + z_mu**2 - 1.0 - z_var)
+        #kl_loss = 0.5 * torch.sum(torch.exp(z_var) + z_mu**2 - 1.0 - z_var)  # error in Loss function
+        kl_loss = 0.5 * torch.sum(-torch.log(z_var) + z_mu**2 - 1.0 - z_var)
 
         # total loss
         loss = recon_loss + kl_loss
