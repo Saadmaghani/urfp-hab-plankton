@@ -83,20 +83,20 @@ strategies (training):
 # version 12.0 = to train variational autoencoder. same as 10.0 for testing purposes.
 # version 12.1 = same as 12.0 except batch_size = 256, 1000 images
 class Hyperparameters:
-    version=4.2
+    version=4.3
     learning_rate = 0.0003
     number_of_epochs = 200
     momentum = 0.9
     optimizer = optim.Adam
     loss_function = nn.MSELoss
     es = EarlyStopping(patience=20)
-    batch_size = 128
+    batch_size = 256
     scheduler = None
     pp_strategy = "thresholding"
     maxN = None 
     minimum = None
     train_AE = False 
-    number_of_images_per_class = 1000
+    number_of_images_per_class = 500
     transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) #transforms.Compose([Rescale((224, 224)),ToTensor(), Normalize(mean=[0.449], std=[0.226])]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
 
 
