@@ -39,13 +39,14 @@ class ModelsConnector(nn.Module):
 
     def forward(self, inputs):
 
-        outs = torch.zeros(inputs[0].shape[0], self.out_features)
+        #outs = torch.zeros(inputs[0].shape[0], self.out_features)
 
-        for i in range(self.n):
-            outs += inputs[i].matmul(self.weight[i].t())
+        inputs[0] = inputs[0].matmul(self.weight[0].t())
+        for i in range(1, self.n):
+            inputs[0] += inputs[i].matmul(self.weight[i].t())
         
-        outs += self.bias
-        return F.relu(outs)
+        inputs[0] += self.bias
+        return F.relu(inputs[0])
        
 
     def extra_repr(self):
@@ -54,12 +55,12 @@ class ModelsConnector(nn.Module):
         )
 
 
-# version 1.0 = 3 models - GoogleNet, vgg19_bn, resnet
+# version 1.0 = 3 models - GoogleNet, vgg19_bn, resnet. each with output 2048 -> 4096 -> 30
 class N_Parallel_Models(nn.Module):
     version = 1.0
 
     # tl_models is just for reference
-    def __init__(self, tl_models=[], freeze=None, pretrain=False, autoencoder=None):
+    def __init__(self, tl_models=[], freeze=None, pretrain=True, autoencoder=None):
         super(N_Parallel_Models, self).__init__()
 
         tl_models = [models.googlenet, models.resnet50, models.vgg19_bn] if len(tl_models) == 0 else tl_models

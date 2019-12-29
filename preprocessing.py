@@ -183,7 +183,7 @@ class Normalize(object):
     def __call__(self, sample):
         img = sample['image']
         for i in range(len(self.mean)):
-            img[i] = (img[i]-mean[i])/std[i]
+            img[i] = (img[i]-self.mean[i])/self.std[i]
 
         return {'image': img, 'label':sample['label']}
 

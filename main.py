@@ -4,7 +4,8 @@ from metrics import Metrics
 import torch.nn as nn
 import torch.optim as optim
 from models.triple_arch import N_Parallel_Models
-from models.autoencoders import Simple_AE, VAE
+#from models.vgg_TL import GoogleNet
+#from models.autoencoders import Simple_AE
 from configuration import Hyperparameters as HP
 import torch
 import json
@@ -41,7 +42,7 @@ print(len(classes_30))
 
 #pp = Preprocessor(years, include_classes=classes, train_eg_per_class=HP.number_of_images_per_class)
 #pp = Preprocessor(years, include_classes=all_classes, train_eg_per_class=HP.number_of_images_per_class, thresholding=HP.thresholding)
-pp = Preprocessor(years, include_classes=classes_vae, strategy = HP.pp_strategy, train_eg_per_class=HP.number_of_images_per_class, maxN = HP.maxN, minimum = HP.minimum, transformations = HP.transformations)
+pp = Preprocessor(years, include_classes=classes_30, strategy = HP.pp_strategy, train_eg_per_class=HP.number_of_images_per_class, maxN = HP.maxN, minimum = HP.minimum, transformations = HP.transformations)
 
 
 pp.create_datasets(HP.data_splits)
@@ -55,23 +56,22 @@ trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn
 
 
 # training autoencoder
-model = VAE()
+#model = Simple_AE()
+#model = VAE()
 
 # training normal model
-#model = N_Parallel_Models()
+model = N_Parallel_Models()
 
 # training autoencoder + model
 """
 ae_model = Simple_AE()
-path_to_ae = "../Simple_AE_3.0-10.1.pth"
-
+path_to_ae = "models/Simple_AE_3.0-10.2.pth"
 if ".tar" in path_to_ae:
     ae_model = trainer.load_partial_model(ae_model, path_to_ae)
 else:
     ae_model = trainer.load_full_model(ae_model, path_to_ae)
 model = GoogleNet(autoencoder = ae_model)
 """
-
 # training
 trainAcc = []
 validAcc = [] 
@@ -82,21 +82,21 @@ trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earl
 
 # testing autoencoder
 
-test_sumsqs, test_fnames = trainer.test_autoencoder(model, testLoader)
-test_acc = torch.mean(test_sumsqs).tolist()
+#test_sumsqs, test_fnames = trainer.test_autoencoder(model, testLoader)
+#test_acc = torch.mean(test_sumsqs).tolist()
 
 
 # testing normal model
-#test_pred, test_target, test_fnames = trainer.test(model, testLoader)
+test_pred, test_target, test_fnames = trainer.test(model, testLoader)
 #valid_pred, valid_target, valid_fnames = trainer.test(model, validLoader)
 #train_pred, train_target, train_fnames = trainer.test(model, trainLoader)
 
 
-#test_met = Metrics(test_target, test_pred)
+test_met = Metrics(test_target, test_pred)
 #valid_met = Metrics(valid_target, valid_pred)
 #train_met = Metrics(train_target, train_pred)
 
-#test_acc = test_met.accuracy()
+test_acc = test_met.accuracy()
 
 
 # Just Testing
