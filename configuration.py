@@ -3,7 +3,7 @@ from torch.optim import lr_scheduler
 import torch.nn as nn
 from training import EarlyStopping, FocalLoss, VAE_Criterion
 from torchvision import transforms
-from preprocessing import Rescale, RandomCrop, ToTensor
+from preprocessing import Rescale, RandomCrop, ToTensor, Normalize
 
 """
 versions:
@@ -52,9 +52,10 @@ strategies (training):
 # version 3.6 = same as 3.5 except patience = 40
 # version 3.7 = same as 3.5 except 1000 images ***
 # version 4.0 = same as 3.5 except 2000 images and thresholding. 20 classes changed to 30 classes
-# version 4.01 = same as 4.0 except 100 images, batch size 50. for testing purposes. not for Autoencoders. img size (64,128)
+# version 4.01 = same as 4.0 except 200 images, batch size 50. for testing purposes. not for Autoencoders. img size (64,128)
 # version 4.1 = same as 4.0 except 2500 images
 # version 4.2 = same as 4.0 except 1000 images 
+# version 4.21 = same as 4.21 except 1000 images 128 batch size 
 # version 4.3 = to test different models and avg. same as 4.0 except 500 images. (old 4.3 idk what it was)
 # version 5.0 = same as 3.5 except maxN = 30000, no thresholding, no images/class, loss_fc = FocalLoss
 # version 5.1 = same as 5.0 except maxN = 56000 which is similar N to 4.1 (56111)
@@ -75,11 +76,15 @@ strategies (training):
 # version 10.1 = same as 10.0 except batch_Size = 256, 1000 images, EarlyStopping(patience=20, mode='min')
 # version 10.2 = same as 10.1 except 800 epochs
 # version 11.0 = to test GoogleNet image size. same as 4.0 except 200 images, Rescale(32,64)
+# version 11.1 = same as 11.0 except Rescale(64, 128)
+# version 11.2 = same as 11.0 except Rescale(128, 256)
+# version 11.3 = same as 11.0 except Rescale(256, 256) out of memory so decreasing batch size to 128
+# version 11.4 = same as 11.0 except Rescale(224, 224) and normalization. transforms.Normalize(mean=[0.449], std=[0.226]) added after toTensor. batch size = 128
 # version 12.0 = to train variational autoencoder. same as 10.0 for testing purposes. loss_function = VAE_Criterion
 # version 12.1 = same as 12.0 except batch_size = 256, 1000 images, 800 epochs, split [0.8,0.1,0.1]
 # version 12.2 = same as 12.1 except updated loss function
 class Hyperparameters:
-    version=12.2
+    version=4.3
     learning_rate = 0.0003
     number_of_epochs = 800
     momentum = 0.9
@@ -92,9 +97,7 @@ class Hyperparameters:
     data_splits = [0.8,0.1,0.1] #normally [0.6, 0.2, 0.2]
     maxN = None 
     minimum = None
-    train_AE = True
-    number_of_images_per_class = 1000
-    transformations = transforms.Compose([Rescale((128, 256)), ToTensor()]) # normal: transforms.Compose([Rescale((64, 128)), ToTensor()]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
-
-
+    train_AE = False 
+    number_of_images_per_class = 500
+    transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) #transforms.Compose([Rescale((224, 224)),ToTensor(), Normalize(mean=[0.449], std=[0.226])]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
 

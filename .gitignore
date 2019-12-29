@@ -6,6 +6,7 @@ __pycache__/
 
 testing/*
 .ipynb_checkpoints/*
+models/.ipynb_checkpoints/*
 
 .idea/*
 
