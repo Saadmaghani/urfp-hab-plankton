@@ -91,7 +91,7 @@ class Trainer:
                 
                 #print statistics - have to get more of these
                 running_loss += loss.item()
-                print("batch no.:",i)
+                #print("batch no.:",i)
                 if i % 10 == 0:
                     #every 10 batches print - loss, training acc, validation acc
                     if self.autoencoder:
