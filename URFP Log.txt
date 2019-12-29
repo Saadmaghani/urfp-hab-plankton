@@ -366,4 +366,11 @@ accuracies of training/validation/test sets of each class (done)
 27/12:
 1.	training 17/12 (224,224) w/ normalization.
 2.	made triple architecture. need to train it on gpu farm.
+3.	training VAE only on chaetoceros flagellete (149 one)
+
+28/12:
+1.	so now what im going to try to do is to change one class for another. "Chaetoceros flagellate" (149) <-> "Gyrodinium" (677). 
+	reason - Gyrodinium is the largest remaining HAB causing species left. CF is tooo small. 
+	another substitution - Chaetoceros_didymus_flagellate (1427)
+2.	testing VAE only on Chaetoceros flagellete
 

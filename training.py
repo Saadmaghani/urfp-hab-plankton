@@ -97,8 +97,8 @@ class Trainer:
                     if self.autoencoder:
                         train_sumSquares, _ = self.test_autoencoder(model, trainLoader)
                         valid_sumSquares, _ = self.test_autoencoder(model, validLoader)
-                        train_acc = train_sumSquares #simple ae torch.mean(train_sumSquares).tolist()
-                        valid_acc = valid_sumSquares #simple ae torch.mean(valid_sumSquares).tolist()
+                        train_acc = train_sumSquares.tolist() #simple ae torch.mean(train_sumSquares).tolist()
+                        valid_acc = valid_sumSquares.tolist() #simple ae torch.mean(valid_sumSquares).tolist()
                         print('Running Training Loss:', running_loss)
                         print('Training Loss:', train_acc)
                         print('Valid Loss:', valid_acc)
@@ -203,8 +203,7 @@ class Trainer:
         if not self.autoencoder:
             print("error. self.autoencoder = ", str(self.autoencoder))
             return
-		
-        all_sumSquares = 0 # vae: 0  # simple AEtorch.FloatTensor().to(self.device)  
+        all_sumSquares = 0 # vae: 0  # simple AE: torch.FloatTensor().to(self.device)  
 
         all_fnames = []
         model.to(self.device)
@@ -327,7 +326,8 @@ class VAE_Criterion(nn.Module):
         recon_loss = F.binary_cross_entropy(x_sample, input_to_model, size_average=False)
 
         # kl divergence loss
-        kl_loss = 0.5 * torch.sum(torch.exp(z_var) + z_mu**2 - 1.0 - z_var)
+        #kl_loss = 0.5 * torch.sum(torch.exp(z_var) + z_mu**2 - 1.0 - z_var)  # error in Loss function
+        kl_loss = 0.5 * torch.sum(-torch.log(z_var) + z_mu**2 - 1.0 - z_var)
 
         # total loss
         loss = recon_loss + kl_loss
