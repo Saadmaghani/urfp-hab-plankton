@@ -132,4 +132,6 @@ str_to_write = "{\"Time\": \""+ time +"\",\n \"Epochs\": "+str(epochs)+ ",\n \"T
 f.write(str_to_write)
 f.close()
 
+# new line: to release cuda memory.
+torch.cuda.empty_cache()
 

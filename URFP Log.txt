@@ -374,3 +374,7 @@ accuracies of training/validation/test sets of each class (done)
 	another substitution - Chaetoceros_didymus_flagellate (1427)
 2.	testing VAE only on Chaetoceros flagellete
 
+29/12:
+1.	result of triple architecture - 86.04%. not as good as the three individually. should test it on czm w/ 4.3. lets do this first.
+2.	
+
