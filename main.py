@@ -42,7 +42,7 @@ print(len(classes_30))
 
 #pp = Preprocessor(years, include_classes=classes, train_eg_per_class=HP.number_of_images_per_class)
 #pp = Preprocessor(years, include_classes=all_classes, train_eg_per_class=HP.number_of_images_per_class, thresholding=HP.thresholding)
-pp = Preprocessor(years, include_classes=classes_vae, strategy = HP.pp_strategy, train_eg_per_class=HP.number_of_images_per_class, maxN = HP.maxN, minimum = HP.minimum, transformations = HP.transformations)
+pp = Preprocessor(years, include_classes=classes_30, strategy = HP.pp_strategy, train_eg_per_class=HP.number_of_images_per_class, maxN = HP.maxN, minimum = HP.minimum, transformations = HP.transformations)
 
 
 pp.create_datasets(HP.data_splits)

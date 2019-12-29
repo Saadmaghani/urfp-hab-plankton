@@ -86,15 +86,15 @@ strategies (training):
 class Hyperparameters:
     version=4.3
     learning_rate = 0.0003
-    number_of_epochs = 800
+    number_of_epochs = 200
     momentum = 0.9
     optimizer = optim.Adam
-    loss_function = VAE_Criterion
+    loss_function = nn.MSELoss
     es = EarlyStopping(patience=20)
-    batch_size = 256
+    batch_size = 128
     scheduler = None
     pp_strategy = "thresholding"
-    data_splits = [0.8,0.1,0.1] #normally [0.6, 0.2, 0.2]
+    data_splits = [0.6,0.2,0.2] #normally [0.6, 0.2, 0.2]
     maxN = None 
     minimum = None
     train_AE = False 
