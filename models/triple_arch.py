@@ -41,12 +41,12 @@ class ModelsConnector(nn.Module):
 
         #outs = torch.zeros(inputs[0].shape[0], self.out_features)
 
-        inputs[0] = inputs[0].matmul(self.weight[0].t())
+        temp = inputs[0].matmul(self.weight[0].t())
         for i in range(1, self.n):
-            inputs[0] += inputs[i].matmul(self.weight[i].t())
+            temp += inputs[i].matmul(self.weight[i].t())
         
-        inputs[0] += self.bias
-        return F.relu(inputs[0])
+        temp += self.bias
+        return F.relu(temp)
        
 
     def extra_repr(self):
@@ -56,6 +56,7 @@ class ModelsConnector(nn.Module):
 
 
 # version 1.0 = 3 models - GoogleNet, vgg19_bn, resnet. each with output 2048 -> 4096 -> 30
+# version 1.1 = 3 models - GoogleNet, vgg19_bn, resnet. each with output 2048 -> 2048 -> 30
 class N_Parallel_Models(nn.Module):
     version = 1.0
 
@@ -73,8 +74,8 @@ class N_Parallel_Models(nn.Module):
         self.resnet50.fc = nn.Linear(2048, 2048)
         self.vgg19_bn.classifier = nn.Sequential(nn.Linear(25088, 2048), nn.ReLU(inplace=True), nn.Dropout(p=0.5, inplace=False))
 
-        self.connector = nn.Sequential(ModelsConnector(3, 2048, 4096), nn.Dropout(p=0.5, inplace=False))
-        self.fc = nn.Linear(4096, 30)
+        self.connector = nn.Sequential(ModelsConnector(3, 2048, 2048), nn.Dropout(p=0.5, inplace=False))
+        self.fc = nn.Linear(2048, 30)
         #self.pyramid_layers = nn.Sequential(Pyramid(3, 2048, 2048), Pyramid(2, 2048, 30))
 
         self.softmax = nn.Softmax()
