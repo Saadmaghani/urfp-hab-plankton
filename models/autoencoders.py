@@ -137,11 +137,17 @@ class VAE(nn.Module):
         return predicted, z_mu, z_var
 
     def get_sample(self):
-        z = torch.randn(1, self.latent_dim).to(device)
+        d = self.get_device()
+        z = torch.randn(1, self.latent_dim).to(d)
         sample = self.dec(z)
 
         return sample
 
+    def get_device(self):
+        if next(self.parameters()).is_cuda:
+            return torch.device("cuda:0")
+        else:
+            return torch.device("cpu") 
 
     def __str__(self): 
         return type(self).__name__ + "_" + str(self.version)
