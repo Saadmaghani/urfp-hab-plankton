@@ -376,5 +376,6 @@ accuracies of training/validation/test sets of each class (done)
 
 29/12:
 1.	result of triple architecture - 86.04%. not as good as the three individually. should test it on czm w/ 4.3. lets do this first.
-		86.31% with 4.3. so lets do different things.
+	1. 1.0/4.3 - 86.31% 
+	2. 1.1/4.3 - 86.11%. 
 
