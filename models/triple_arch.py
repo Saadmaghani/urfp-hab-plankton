@@ -55,10 +55,11 @@ class ModelsConnector(nn.Module):
         )
 
 
-# version 1.0 = 3 models - GoogleNet, vgg19_bn, resnet. each with output 2048 -> 4096 -> 30
-# version 1.1 = 3 models - GoogleNet, vgg19_bn, resnet. each with output 2048 -> 2048 -> 30
+# version 1.0 = 3 models - GoogleNet, vgg19_bn, resnet. each with output 2048*3 -> 4096 -> 30
+# version 1.1 = 3 models (as above). 2048*3 -> 2048 -> 30
+# version 1.2 = 3 models (as above). 2048*3 -> 2048 -> 1024 -> 30
 class N_Parallel_Models(nn.Module):
-    version = 1.0
+    version = 1.2
 
     # tl_models is just for reference
     def __init__(self, tl_models=[], freeze=None, pretrain=True, autoencoder=None):
@@ -70,12 +71,14 @@ class N_Parallel_Models(nn.Module):
         self.resnet50 = models.resnet50(pretrained=pretrain)
         self.vgg19_bn = models.vgg19_bn(pretrained=pretrain)
 
-        self.googlenet.fc = nn.Linear(1024, 2048)
-        self.resnet50.fc = nn.Linear(2048, 2048)
-        self.vgg19_bn.classifier = nn.Sequential(nn.Linear(25088, 2048), nn.ReLU(inplace=True), nn.Dropout(p=0.5, inplace=False))
+        self.googlenet.fc = nn.Sequential(nn.Linear(1024, 2048), nn.ReLU(inplace=True))
+        self.resnet50.fc = nn.Sequential(nn.Linear(2048, 2048), nn.ReLU(inplace=True))
+        self.vgg19_bn.classifier = nn.Sequential(nn.Linear(25088, 2048), nn.ReLU(inplace=True))
 
         self.connector = nn.Sequential(ModelsConnector(3, 2048, 2048), nn.Dropout(p=0.5, inplace=False))
-        self.fc = nn.Linear(2048, 30)
+        self.fc1 = nn.Sequential(nn.Linear(2048, 2048), nn.ReLU(inplace=True), nn.Dropout(p=0.5, inplace=False))
+        self.fc2 = nn.Linear(2048, 30) 
+
         #self.pyramid_layers = nn.Sequential(Pyramid(3, 2048, 2048), Pyramid(2, 2048, 30))
 
         self.softmax = nn.Softmax()
@@ -96,7 +99,8 @@ class N_Parallel_Models(nn.Module):
         xs.append(temp)
 
         out = self.connector(xs)
-        out = self.fc(out)
+        out = self.fc1(out)
+        out = self.fc2(out)
         out = self.softmax(out)
 
         return out
