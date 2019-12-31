@@ -62,21 +62,23 @@ class UnFlatten(nn.Module):
     def forward(self, input, size=1024):
         return input.view(input.size(0), size, 1, 1)
 
-# version 1.0 = as copied from src
+# version 1.0 = kernal_size=3, stride=1, padding=1. Maxpool after every 2 layers.
 class CNN_VAE(nn.Module):
     version = 1.0
 
-    def __init__(self, image_channels=1, h_dim=1024, z_dim=32):
+    def __init__(self, image_channels=1, h_dim=2048, z_dim=32):
         super(CNN_VAE, self).__init__()
         self.encoder = nn.Sequential(
-            nn.Conv2d(image_channels, 32, kernel_size=4, stride=2),
+            nn.Conv2d(image_channels, 32, kernel_size=3, stride=1, padding=1),
             nn.ReLU(),
-            nn.Conv2d(32, 64, kernel_size=4, stride=2),
+            nn.Conv2d(32, 64, kernel_size=3, stride=1, padding=1),
             nn.ReLU(),
-            nn.Conv2d(64, 128, kernel_size=4, stride=2),
+            nn.MaxPool2d(2),
+            nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
             nn.ReLU(),
-            nn.Conv2d(128, 256, kernel_size=4, stride=2),
+            nn.Conv2d(128, 256, kernel_size=3, stride=1, padding=1),
             nn.ReLU(),
+            nn.MaxPool2d(2),
             Flatten()
         )
 
@@ -104,6 +106,7 @@ class CNN_VAE(nn.Module):
         return z
 
     def bottleneck(self, h):
+        print("h:",h.shape)
         mu, logvar = self.fc1(h), self.fc2(h)
         z = self.reparameterize(mu, logvar)
         return z, mu, logvar
