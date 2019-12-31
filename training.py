@@ -333,12 +333,24 @@ class VAE_Criterion(nn.Module):
         loss = recon_loss + kl_loss
         return loss
 
+# script copied form https://github.com/sksq96/pytorch-vae/blob/master/vae-cnn.ipynb
+# author: sksq96
+def cnnvae_lossfn(recon_x, x, mu, logvar):
+    BCE = F.binary_cross_entropy(recon_x, x, size_average=False)
+    # BCE = F.mse_loss(recon_x, x, size_average=False)
+
+    # see Appendix B from VAE paper:
+    # Kingma and Welling. Auto-Encoding Variational Bayes. ICLR, 2014
+    # 0.5 * sum(1 + log(sigma^2) - mu^2 - sigma^2)
+    KLD = -0.5 * torch.mean(1 + logvar - mu.pow(2) - logvar.exp())
+
+    return BCE + KLD, BCE, KLD
+
+
 
 
 # script copied from https://www.kaggle.com/c/tgs-salt-identification-challenge/discussion/65938
 # author: Allen Qin, Github: qinfubiao
-
-
 class FocalLoss(nn.Module):
     def __init__(self, alpha=1, gamma=2, logits=False, reduce=True):
         super(FocalLoss, self).__init__()

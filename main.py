@@ -3,9 +3,9 @@ from training import Trainer
 from metrics import Metrics
 import torch.nn as nn
 import torch.optim as optim
-from models.triple_arch import N_Parallel_Models
+#from models.triple_arch import N_Parallel_Models
 #from models.vgg_TL import GoogleNet
-#from models.autoencoders import Simple_AE
+from models.autoencoders import Simple_AE, CNN_VAE
 from configuration import Hyperparameters as HP
 import torch
 import json
@@ -42,7 +42,7 @@ print(len(classes_30))
 
 #pp = Preprocessor(years, include_classes=classes, train_eg_per_class=HP.number_of_images_per_class)
 #pp = Preprocessor(years, include_classes=all_classes, train_eg_per_class=HP.number_of_images_per_class, thresholding=HP.thresholding)
-pp = Preprocessor(years, include_classes=classes_30, strategy = HP.pp_strategy, train_eg_per_class=HP.number_of_images_per_class, maxN = HP.maxN, minimum = HP.minimum, transformations = HP.transformations)
+pp = Preprocessor(years, include_classes=classes_vae, strategy = HP.pp_strategy, train_eg_per_class=HP.number_of_images_per_class, maxN = HP.maxN, minimum = HP.minimum, transformations = HP.transformations)
 
 
 pp.create_datasets(HP.data_splits)
@@ -57,10 +57,10 @@ trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn
 
 # training autoencoder
 #model = Simple_AE()
-#model = VAE()
+model = CNN_VAE()
 
 # training normal model
-model = N_Parallel_Models()
+#model = N_Parallel_Models()
 
 # training autoencoder + model
 """
