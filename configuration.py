@@ -1,7 +1,7 @@
 import torch.optim as optim
 from torch.optim import lr_scheduler
 import torch.nn as nn
-from training import EarlyStopping, FocalLoss, VAE_Criterion, cnnvae_lossfn
+from training import EarlyStopping, FocalLoss, VAE_Criterion, CNNVAE_Criterion
 from torchvision import transforms
 from preprocessing import Rescale, RandomCrop, ToTensor, Normalize
 
@@ -90,7 +90,7 @@ class Hyperparameters:
     number_of_epochs = 800
     momentum = 0.9
     optimizer = optim.Adam
-    loss_function = cnnvae_lossfn
+    loss_function = CNNVAE_Criterion
     es = EarlyStopping(patience=20)
     batch_size = 128
     scheduler = None
