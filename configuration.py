@@ -1,7 +1,7 @@
 import torch.optim as optim
 from torch.optim import lr_scheduler
 import torch.nn as nn
-from training import EarlyStopping, FocalLoss, VAE_Criterion
+from training import EarlyStopping, FocalLoss, VAE_Criterion, cnnvae_lossfn
 from torchvision import transforms
 from preprocessing import Rescale, RandomCrop, ToTensor, Normalize
 
@@ -83,21 +83,22 @@ strategies (training):
 # version 12.0 = to train variational autoencoder. same as 10.0 for testing purposes. loss_function = VAE_Criterion
 # version 12.1 = same as 12.0 except batch_size = 256, 1000 images, 800 epochs, split [0.8,0.1,0.1]
 # version 12.2 = same as 12.1 except updated loss function
+# version 12.3 = same as 12.0 except loss_fn = cnnvae_lossfn
 class Hyperparameters:
-    version=4.3
+    version=12.2
     learning_rate = 0.0003
-    number_of_epochs = 200
+    number_of_epochs = 800
     momentum = 0.9
     optimizer = optim.Adam
-    loss_function = nn.MSELoss
+    loss_function = cnnvae_lossfn
     es = EarlyStopping(patience=20)
     batch_size = 128
     scheduler = None
     pp_strategy = "thresholding"
-    data_splits = [0.6,0.2,0.2] #normally [0.6, 0.2, 0.2]
+    data_splits = [0.8,0.1,0.1] #normally [0.6, 0.2, 0.2]
     maxN = None 
     minimum = None
     train_AE = False 
-    number_of_images_per_class = 500
-    transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) #transforms.Compose([Rescale((224, 224)),ToTensor(), Normalize(mean=[0.449], std=[0.226])]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
+    number_of_images_per_class = 1000
+    transformations = transforms.Compose([Rescale((128, 256)), ToTensor()]) #transforms.Compose([Rescale((224, 224)),ToTensor(), Normalize(mean=[0.449], std=[0.226])]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
 
