@@ -62,7 +62,7 @@ class CNN_VAE(nn.Module):
         super(CNN_VAE, self).__init__()
         self.encoder = nn.Sequential(
             nn.Conv2d(image_channels, 32, kernel_size=4, stride=2),
-            nn.ReLU(),q
+            nn.ReLU(),
             nn.Conv2d(32, 64, kernel_size=4, stride=2),
             nn.ReLU(),
             nn.Conv2d(64, 128, kernel_size=4, stride=2),
@@ -71,11 +71,11 @@ class CNN_VAE(nn.Module):
             nn.ReLU(),
             Flatten()
         )
-        
+
         self.fc1 = nn.Linear(h_dim, z_dim)
         self.fc2 = nn.Linear(h_dim, z_dim)
         self.fc3 = nn.Linear(z_dim, h_dim)
-        
+
         self.decoder = nn.Sequential(
             UnFlatten(),
             nn.ConvTranspose2d(h_dim, 128, kernel_size=5, stride=2),
@@ -87,14 +87,14 @@ class CNN_VAE(nn.Module):
             nn.ConvTranspose2d(32, image_channels, kernel_size=6, stride=2),
             nn.Sigmoid(),
         )
-        
+
     def reparameterize(self, mu, logvar):
         std = logvar.mul(0.5).exp_()
         # return torch.normal(mu, std)
         esp = torch.randn(*mu.size())
         z = mu + std * esp
         return z
-    
+
     def bottleneck(self, h):
         mu, logvar = self.fc1(h), self.fc2(h)
         z = self.reparameterize(mu, logvar)
@@ -115,7 +115,7 @@ class CNN_VAE(nn.Module):
         z = self.decode(z)
         return z, mu, logvar
 
-     def __str__(self):
+    def __str__(self):
         return type(self).__name__ + "_" + str(self.version)
 
 
