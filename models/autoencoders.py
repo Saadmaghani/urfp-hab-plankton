@@ -54,6 +54,14 @@ class Simple_AE(nn.Module):
 # script copied form https://github.com/sksq96/pytorch-vae/blob/master/vae-cnn.ipynb
 # author: sksq96
 
+class Flatten(nn.Module):
+    def forward(self, input):
+        return input.view(input.size(0), -1)
+
+class UnFlatten(nn.Module):
+    def forward(self, input, size=1024):
+        return input.view(input.size(0), size, 1, 1)
+
 # version 1.0 = as copied from src
 class CNN_VAE(nn.Module):
     version = 1.0
