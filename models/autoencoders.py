@@ -64,10 +64,11 @@ class UnFlatten(nn.Module):
 
 # version 1.0 = kernal_size=3, stride=1, padding=1. Maxpool after every 2 layers. z_dim = 32
 # version 1.1 = z_dim = 64
+# version 1.2 = z_dim = 128
 class CNN_VAE(nn.Module):
-    version = 1.1
+    version = 1.2
 
-    def __init__(self, image_channels=1, h_dim=8*16*256, z_dim=64):
+    def __init__(self, image_channels=1, h_dim=8*16*256, z_dim=128):
         super(CNN_VAE, self).__init__()
 
         self.z_dim = z_dim
