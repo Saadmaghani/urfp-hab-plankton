@@ -59,8 +59,8 @@ class Flatten(nn.Module):
         return input.view(input.size(0), -1)
 
 class UnFlatten(nn.Module):
-    def forward(self, input, size=256):
-        return input.view(input.size(0), size, 8, 16)
+    def forward(self, input, size=(256, 8, 16)):
+        return input.view(input.size(0), size[0], size[1], size[2])
 
 # version 1.0 = kernal_size=3, stride=1, padding=1. Maxpool after every 1 layers. 4 layers. z_dim = 32
 # version 1.1 = z_dim = 64
@@ -79,6 +79,8 @@ class CNN_VAE(nn.Module):
             z_dim=128
 
         self.z_dim = z_dim
+        self.h_dims = (512, 4, 8)
+        h_dim = self.h_dims[0]*self.h_dims[1]*self.h_dims[2]
 
         self.encoder = nn.Sequential(
             nn.Conv2d(image_channels, 32, kernel_size=3, stride=1, padding=1),
@@ -104,7 +106,7 @@ class CNN_VAE(nn.Module):
         self.fc3 = nn.Linear(z_dim, h_dim)
 
         self.decoder = nn.Sequential(
-            UnFlatten(),
+            UnFlatten(size=self.h_dims),
             nn.ConvTranspose2d(512, 256, kernel_size=2, stride=2),
             nn.ReLU(),
             nn.ConvTranspose2d(256, 128, kernel_size=2, stride=2),
