@@ -98,7 +98,7 @@ class Hyperparameters:
     data_splits = [0.8,0.1,0.1] #normally [0.6, 0.2, 0.2]
     maxN = None 
     minimum = None
-    train_AE = False 
+    train_AE = True 
     number_of_images_per_class = 1000
     transformations = transforms.Compose([Rescale((128, 256)), ToTensor()]) #transforms.Compose([Rescale((224, 224)),ToTensor(), Normalize(mean=[0.449], std=[0.226])]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
 

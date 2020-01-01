@@ -59,25 +59,25 @@ class Flatten(nn.Module):
         return input.view(input.size(0), -1)
 
 class UnFlatten(nn.Module):
-    def forward(self, input, size=1024):
-        return input.view(input.size(0), size, 1, 1)
+    def forward(self, input, size=256):
+        return input.view(input.size(0), size, 8, 16)
 
 # version 1.0 = kernal_size=3, stride=1, padding=1. Maxpool after every 2 layers.
 class CNN_VAE(nn.Module):
     version = 1.0
 
-    def __init__(self, image_channels=1, h_dim=2048, z_dim=32):
+    def __init__(self, image_channels=1, h_dim=8*16*256, z_dim=32):
         super(CNN_VAE, self).__init__()
         self.encoder = nn.Sequential(
             nn.Conv2d(image_channels, 32, kernel_size=3, stride=1, padding=1),
             nn.ReLU(),
-            PrintLayer(),
+            nn.MaxPool2d(2),
             nn.Conv2d(32, 64, kernel_size=3, stride=1, padding=1),
             nn.ReLU(),
             nn.MaxPool2d(2),
-            PrintLayer(),
             nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
             nn.ReLU(),
+            nn.MaxPool2d(2),
             nn.Conv2d(128, 256, kernel_size=3, stride=1, padding=1),
             nn.ReLU(),
             nn.MaxPool2d(2),
@@ -90,14 +90,14 @@ class CNN_VAE(nn.Module):
 
         self.decoder = nn.Sequential(
             UnFlatten(),
-            nn.ConvTranspose2d(h_dim, 128, kernel_size=5, stride=2),
+            nn.ConvTranspose2d(256, 128, kernel_size=2, stride=2),
             nn.ReLU(),
-            nn.ConvTranspose2d(128, 64, kernel_size=5, stride=2),
+            nn.ConvTranspose2d(128, 64, kernel_size=2, stride=2),
             nn.ReLU(),
-            nn.ConvTranspose2d(64, 32, kernel_size=6, stride=2),
+            nn.ConvTranspose2d(64, 32, kernel_size=2, stride=2),
             nn.ReLU(),
-            nn.ConvTranspose2d(32, image_channels, kernel_size=6, stride=2),
-            nn.Sigmoid(),
+            nn.ConvTranspose2d(32, image_channels, kernel_size=2, stride=2),
+            nn.Sigmoid()
         )
 
     def reparameterize(self, mu, logvar):
@@ -108,7 +108,6 @@ class CNN_VAE(nn.Module):
         return z
 
     def bottleneck(self, h):
-        print("h:",h.shape)
         mu, logvar = self.fc1(h), self.fc2(h)
         z = self.reparameterize(mu, logvar)
         return z, mu, logvar
