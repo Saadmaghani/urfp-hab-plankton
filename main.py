@@ -39,6 +39,9 @@ classes_vae = ['Chaetoceros_flagellate']
 print(len(classes_30))
 
 
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+
 
 #pp = Preprocessor(years, include_classes=classes, train_eg_per_class=HP.number_of_images_per_class)
 #pp = Preprocessor(years, include_classes=all_classes, train_eg_per_class=HP.number_of_images_per_class, thresholding=HP.thresholding)
@@ -52,7 +55,7 @@ validLoader = pp.get_loaders('validation', HP.batch_size)
 testLoader = pp.get_loaders('test', HP.batch_size)
 
 trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn = HP.loss_function, optimizer = HP.optimizer, 
-	scheduler = HP.scheduler, lr = HP.learning_rate, momentum = HP.momentum, useCuda=True, autoencoder=HP.train_AE)
+	scheduler = HP.scheduler, lr = HP.learning_rate, momentum = HP.momentum, autoencoder=HP.train_AE)
 
 
 # training autoencoder

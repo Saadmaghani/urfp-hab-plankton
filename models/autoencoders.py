@@ -101,9 +101,12 @@ class CNN_VAE(nn.Module):
         )
 
     def reparameterize(self, mu, logvar):
+        global device
+        d = device
+
         std = logvar.mul(0.5).exp_()
         # return torch.normal(mu, std)
-        esp = torch.randn(*mu.size())
+        esp = torch.randn(*mu.size()).to(d)
         z = mu + std * esp
         return z
 
@@ -218,17 +221,13 @@ class VAE(nn.Module):
         return predicted, z_mu, z_var
 
     def get_sample(self):
-        d = self.get_device()
+        global device
+        d = device
         z = torch.randn(1, self.latent_dim).to(d)
         sample = self.dec(z)
 
         return sample
 
-    def get_device(self):
-        if next(self.parameters()).is_cuda:
-            return torch.device("cuda:0")
-        else:
-            return torch.device("cpu") 
-
+  
     def __str__(self): 
         return type(self).__name__ + "_" + str(self.version)

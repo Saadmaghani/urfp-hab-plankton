@@ -7,7 +7,7 @@ import math
 import sys
 
 class Trainer:
-    def __init__(self, HP_version, epochs, loss_fn, optimizer, scheduler = None, lr = 0.01, momentum=0.9, useCuda = False, autoencoder=False):
+    def __init__(self, HP_version, epochs, loss_fn, optimizer, scheduler = None, lr = 0.01, momentum=0.9, autoencoder=False):
         self.epochs = epochs
         self.hp_version = HP_version
         self.criterion = loss_fn()
@@ -15,11 +15,9 @@ class Trainer:
         self.scheduler = scheduler
         self.lr = lr
         self.momentum = momentum
-        self.device = torch.device("cpu")
-        if useCuda:
-            self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        else:
-            self.device = torch.device("cpu")
+        global device
+        self.device = device
+       
         self.autoencoder = autoencoder
 
         
@@ -341,7 +339,7 @@ class CNNVAE_Criterion(nn.Module):
 
     def forward(self, output_from_model, x):
         recon_x, mu, logvar = output_from_model
-        
+
         BCE = F.binary_cross_entropy(recon_x, x, size_average=False)
         # BCE = F.mse_loss(recon_x, x, size_average=False)
 
