@@ -62,12 +62,16 @@ class UnFlatten(nn.Module):
     def forward(self, input, size=256):
         return input.view(input.size(0), size, 8, 16)
 
-# version 1.0 = kernal_size=3, stride=1, padding=1. Maxpool after every 2 layers.
+# version 1.0 = kernal_size=3, stride=1, padding=1. Maxpool after every 2 layers. z_dim = 32
+# version 1.1 = z_dim = 64
 class CNN_VAE(nn.Module):
     version = 1.0
 
     def __init__(self, image_channels=1, h_dim=8*16*256, z_dim=32):
         super(CNN_VAE, self).__init__()
+
+        self.z_dim = z_dim
+
         self.encoder = nn.Sequential(
             nn.Conv2d(image_channels, 32, kernel_size=3, stride=1, padding=1),
             nn.ReLU(),
@@ -127,6 +131,14 @@ class CNN_VAE(nn.Module):
         z, mu, logvar = self.encode(x)
         z = self.decode(z)
         return z, mu, logvar
+
+
+    def get_sample(self):
+        d = self.get_device()
+        z = torch.randn(1, self.z_dim).to(d)
+        sample = self.dec(z)
+
+        return sample
 
     def __str__(self):
         return type(self).__name__ + "_" + str(self.version)
