@@ -39,7 +39,7 @@ class Trainer:
         epoch = 0
         
         if partialModelFile is not None:
-            model, optimizer, epoch = self.load_partial_model(model, optimizer, partialModelFile)
+            model, optimizer, epoch = load_partial_model(model, optimizer, partialModelFile)
             
         model.to(self.device)
             
@@ -178,25 +178,6 @@ class Trainer:
         
         return model, optimizer, epoch
     
-    def load_partial_model_eval(self, model, path_to_statedict):
-        checkpoint = torch.load(path_to_statedict)
-        model.load_state_dict(checkpoint['model_state_dict'])
-        model.eval()
-        # - or -
-        #model.train()
-        return model
-    
-  
-    def load_full_model(self, model, path_to_statedict):
-        state_dict = torch.load(path_to_statedict, map_location=lambda storage, loc: storage)
-        model.load_state_dict(state_dict)
-        model.eval()
-
-        del state_dict
-
-        return model
-
-
     def test_autoencoder(self, model, testloader):
         if not self.autoencoder:
             print("error. self.autoencoder = ", str(self.autoencoder))
@@ -298,6 +279,27 @@ class EarlyStopping(object):
             if mode == 'max':
                 self.is_better = lambda a, best: a > best + (
                             best * min_delta / 100)
+
+
+def load_partial_model_eval(model, path_to_statedict):
+    checkpoint = torch.load(path_to_statedict)
+    model.load_state_dict(checkpoint['model_state_dict'])
+    model.eval()
+    # - or -
+    #model.train()
+    return model
+
+
+def load_full_model(model, path_to_statedict):
+    state_dict = torch.load(path_to_statedict, map_location=lambda storage, loc: storage)
+    model.load_state_dict(state_dict)
+    model.eval()
+
+    del state_dict
+
+    return model
+
+
 
 import torch.nn as nn
 import torch.nn.functional as F

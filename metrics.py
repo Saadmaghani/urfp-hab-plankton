@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import json
 from skimage import io, transform
-
+import torchvision
 
 class Metrics:
 
@@ -125,7 +125,6 @@ class Metrics:
                 class_names.append(preprocessor.onehotInd_to_label(cl))
             return class_names
 
-
 def show_plankton(fnames):
     c=0
     for fname in fnames:
@@ -141,8 +140,16 @@ def show_plankton(fnames):
     plt.show()
 
 
+
 def load_json_from_file(filename):
     f = open(filename, "r")
     content = f.read()
     return json.loads(content)
 
+
+def show_weights(layer):
+    weights = layer.weight.data
+    img_grid = torchvision.utils.make_grid(weights)
+    img_grid = img_grid.mean(dim=0)
+    img_grid = img_grid /2 +0.5
+    plt.imshow(img_grid.numpy(), cmap="Greys")
