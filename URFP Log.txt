@@ -382,4 +382,7 @@ accuracies of training/validation/test sets of each class (done)
 	4. 1.2/4.3 - 84.47%
 
 31/12:
-1.	training cnn vae
+1.	training cnn vae (loss)
+	1. 1.0/12.2 - 327180
+	2. 1.1/12.2 - 304792
+	3. 1.2/12.2 - 317231
