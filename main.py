@@ -1,6 +1,6 @@
 import torch
 from preprocessing import Preprocessor
-from training import Trainer
+from training import Trainer, load_partial_model, load_full_model
 from metrics import Metrics
 import torch.nn as nn
 import torch.optim as optim
@@ -68,9 +68,9 @@ model = CNN_VAE()
 ae_model = Simple_AE()
 path_to_ae = "models/Simple_AE_3.0-10.2.pth"
 if ".tar" in path_to_ae:
-    ae_model = trainer.load_partial_model(ae_model, path_to_ae)
+    ae_model = load_partial_model(ae_model, path_to_ae)
 else:
-    ae_model = trainer.load_full_model(ae_model, path_to_ae)
+    ae_model = load_full_model(ae_model, path_to_ae)
 model = GoogleNet(autoencoder = ae_model)
 """
 # training
@@ -107,9 +107,9 @@ model = Simple_AE()
 path_to_statedict = "models/Simple_AE_3.0-10.1.pth"
 
 if ".tar" in path_to_statedict:
-    model = trainer.load_partial_model(model, path_to_statedict)
+    model = load_partial_model(model, path_to_statedict)
 else:
-    model = trainer.load_full_model(model, path_to_statedict)
+    model = load_full_model(model, path_to_statedict)
 
 # further training of model
 trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
