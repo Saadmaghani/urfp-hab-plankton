@@ -341,7 +341,7 @@ class CNNVAE_Criterion(nn.Module):
 
     def forward(self, output_from_model, x):
         recon_x, mu, logvar = output_from_model
-
+        
         BCE = F.binary_cross_entropy(recon_x, x, size_average=False)
         # BCE = F.mse_loss(recon_x, x, size_average=False)
 
