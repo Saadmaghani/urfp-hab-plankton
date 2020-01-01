@@ -164,19 +164,6 @@ class Trainer:
         path_to_statedict = './models/'+str(model)+"-"+str(self.hp_version)+'.pth' 
         torch.save(model.state_dict(), path_to_statedict)
 
-
-    def load_partial_model(self, model, optimizer, path_to_statedict):
-        checkpoint = torch.load(path_to_statedict)
-        
-        model.load_state_dict(checkpoint['model_state_dict'])
-        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-        epoch = checkpoint['epoch']
-        
-        #model.eval()
-        # - or -
-        model.train()
-        
-        return model, optimizer, epoch
     
     def test_autoencoder(self, model, testloader):
         if not self.autoencoder:
@@ -279,6 +266,20 @@ class EarlyStopping(object):
             if mode == 'max':
                 self.is_better = lambda a, best: a > best + (
                             best * min_delta / 100)
+
+
+def load_partial_model(self, model, optimizer, path_to_statedict):
+    checkpoint = torch.load(path_to_statedict)
+
+    model.load_state_dict(checkpoint['model_state_dict'])
+    optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+    epoch = checkpoint['epoch']
+
+    #model.eval()
+    # - or -
+    model.train()
+
+    return model, optimizer, epoch
 
 
 def load_partial_model_eval(model, path_to_statedict):
