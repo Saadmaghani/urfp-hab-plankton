@@ -1,3 +1,4 @@
+import torch
 from preprocessing import Preprocessor
 from training import Trainer
 from metrics import Metrics
@@ -7,7 +8,6 @@ import torch.optim as optim
 #from models.vgg_TL import GoogleNet
 from models.autoencoders import Simple_AE, CNN_VAE
 from configuration import Hyperparameters as HP
-import torch
 import json
 import math
 
@@ -38,8 +38,6 @@ classes_vae = ['Chaetoceros_flagellate']
 
 print(len(classes_30))
 
-
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
 

@@ -15,8 +15,8 @@ class Trainer:
         self.scheduler = scheduler
         self.lr = lr
         self.momentum = momentum
-        global device
-        self.device = device
+
+        self.device = device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
        
         self.autoencoder = autoencoder
 
