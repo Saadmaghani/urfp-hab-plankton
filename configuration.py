@@ -91,7 +91,7 @@ class Hyperparameters:
     momentum = 0.9
     optimizer = optim.Adam
     loss_function = CNNVAE_Criterion
-    es = EarlyStopping(patience=20)
+    es = EarlyStopping(patience=20, mode='min')
     batch_size = 128
     scheduler = None
     pp_strategy = "thresholding"
