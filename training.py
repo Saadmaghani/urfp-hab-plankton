@@ -93,10 +93,10 @@ class Trainer:
                 if i % 10 == 0:
                     #every 10 batches print - loss, training acc, validation acc
                     if self.autoencoder:
-                        train_sumSquares, _ = self.test_autoencoder(model, trainLoader)
-                        valid_sumSquares, _ = self.test_autoencoder(model, validLoader)
-                        train_acc = train_sumSquares.tolist() #simple ae torch.mean(train_sumSquares).tolist()
-                        valid_acc = valid_sumSquares.tolist() #simple ae torch.mean(valid_sumSquares).tolist()
+                        train_loss, _ = self.test_autoencoder(model, trainLoader)
+                        valid_loss, _ = self.test_autoencoder(model, validLoader)
+                        train_acc = train_loss.tolist() #simple ae torch.mean(train_loss).tolist()
+                        valid_acc = valid_loss.tolist() #simple ae torch.mean(valid_loss).tolist()
                         print('Running Training Loss:', running_loss)
                         print('Training Loss:', train_acc)
                         print('Valid Loss:', valid_acc)
@@ -201,7 +201,7 @@ class Trainer:
         if not self.autoencoder:
             print("error. self.autoencoder = ", str(self.autoencoder))
             return
-        all_sumSquares = 0 # vae: 0  # simple AE: torch.FloatTensor().to(self.device)  
+        all_loss = 0 # vae: 0  # simple AE: torch.FloatTensor().to(self.device)  
 
         all_fnames = []
         model.to(self.device)
@@ -212,19 +212,12 @@ class Trainer:
                 inputs, _ = data['image'].to(self.device).float(), data['encoded_label'].to(self.device).float()
                 outputs = model(inputs)
 
-                # VAE: 
-                x_sample, z_mu, z_var = outputs
-                recon_loss = F.binary_cross_entropy(x_sample, inputs, size_average=False)
-                kl_loss = 0.5 * torch.sum(torch.exp(z_var) + z_mu**2 - 1.0 - z_var)
-                loss = recon_loss + kl_loss
+                loss = self.criterion(outputs, inputs)
 
-                #Simple AE: sumsquare = torch.sum((outputs - inputs)**2) 
-
-
-                all_sumSquares += loss #Simple AE: torch.cat((all_sumSquares, sumsquare.view(1)), 0)
+                all_loss += loss #Simple AE: torch.cat((all_loss, sumsquare.view(1)), 0)
                 all_fnames.extend(data['fname'])
 
-        return all_sumSquares, all_fnames
+        return all_loss, all_fnames
 
     def test(self, model, testloader):
         all_preds = torch.LongTensor().to(self.device)
