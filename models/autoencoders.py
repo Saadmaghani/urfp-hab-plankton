@@ -59,7 +59,12 @@ class Flatten(nn.Module):
         return input.view(input.size(0), -1)
 
 class UnFlatten(nn.Module):
-    def forward(self, input, size=(256, 8, 16)):
+    def __init__(self, size = (256, 8, 16)):
+        super(UnFlatten, self).__init__()
+        self.size = size
+
+    def forward(self, input):
+        size = self.size
         return input.view(input.size(0), size[0], size[1], size[2])
 
 # version 1.0 = kernal_size=3, stride=1, padding=1. Maxpool after every 1 layers. 4 layers. z_dim = 32
