@@ -83,21 +83,22 @@ trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earl
 
 # testing autoencoder
 
-#test_sumsqs, test_fnames = trainer.test_autoencoder(model, testLoader)
+test_sumsqs, test_fnames = trainer.test_autoencoder(model, testLoader)
+test_acc = test_sumsqs.tolist()
 #test_acc = torch.mean(test_sumsqs).tolist()
 
 
 # testing normal model
-test_pred, test_target, test_fnames = trainer.test(model, testLoader)
+#test_pred, test_target, test_fnames = trainer.test(model, testLoader)
 #valid_pred, valid_target, valid_fnames = trainer.test(model, validLoader)
 #train_pred, train_target, train_fnames = trainer.test(model, trainLoader)
 
 
-test_met = Metrics(test_target, test_pred)
+#test_met = Metrics(test_target, test_pred)
 #valid_met = Metrics(valid_target, valid_pred)
 #train_met = Metrics(train_target, train_pred)
 
-test_acc = test_met.accuracy()
+#test_acc = test_met.accuracy()
 
 
 # Just Testing
