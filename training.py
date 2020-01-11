@@ -104,7 +104,8 @@ class Trainer:
                         print('Running Training Loss:', running_loss)
                         print('Training Loss:', train_acc)
                         print('Valid Loss:', valid_acc)
-                        if valid_acc < best_acc:
+                        #if valid_acc < best_acc: for AE. minimize loss. for VAE maximize lower bound (criterion)
+                        if valid_acc > best_acc:
                             best_acc = valid_acc
                             best_model_weights = copy.deepcopy(model.state_dict())
                     else:
