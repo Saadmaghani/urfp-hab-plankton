@@ -85,14 +85,16 @@ strategies (training):
 # version 12.2 = same as 12.1 except updated loss function
 # version 12.3 = same as 12.0 except loss_fn = cnnvae_lossfn
 # version 12.4 = same as 12.3 except es = EarlyStopping(patience = 20) (not min)
+# version 12.5 = same as 12.4 except images/class = 2000
+# version 12.6 = same as 12.4 except images/class = 5000 es = EarlyStopping(patience = 40, mode='min')
 class Hyperparameters:
-    version=12.4
+    version=12.6
     learning_rate = 0.0003
     number_of_epochs = 800
     momentum = 0.9
     optimizer = optim.Adam
     loss_function = CNNVAE_Criterion
-    es = EarlyStopping(patience=20)
+    es = EarlyStopping(patience=40, mode='min')
     batch_size = 128
     scheduler = None
     pp_strategy = "thresholding"
@@ -100,6 +102,6 @@ class Hyperparameters:
     maxN = None 
     minimum = None
     train_AE = True 
-    number_of_images_per_class = 1000
+    number_of_images_per_class = 5000
     transformations = transforms.Compose([Rescale((128, 256)), ToTensor()]) #transforms.Compose([Rescale((224, 224)),ToTensor(), Normalize(mean=[0.449], std=[0.226])]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
 

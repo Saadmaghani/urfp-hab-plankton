@@ -69,36 +69,37 @@ class UnFlatten(nn.Module):
 
 # version 1.0 = kernal_size=3, stride=1, padding=1. Maxpool after every 1 layers. 4 layers. z_dim = 32, h_dim = 8,16,256
 # version 1.1 = z_dim = 64
+# version 1.11 = same as 1.1 except for MNIST dataset
+# version 1.12 = same as 1.1 except with 2 classes
 # version 1.2 = z_dim = 128
 # version 1.3 = z_dim = 64, 5 layers. h_dim = 4*8*512
 # version 1.4 = z_dim = 64, 3 layers. h_dim = 16*32*128
+# version 1.5 = z_dim = 15, h_dim = 256,8,16. 2 classes
+# version 1.6 = same as 1.5 except z_dim = 8
+# version 1.7 = z_dim = 32, 1 class (detritus)
+# version 2.0 = 1 conv layer, z_dim = 32, h_dim = 32,64,128
 class CNN_VAE(nn.Module):
-    version = 1.1
+    version = 2.0
 
     def __init__(self, image_channels=1, h_dim=8*16*256, z_dim=64):
         super(CNN_VAE, self).__init__()
-        if self.version == 1.0:
+        if self.version == 1.5:
+            z_dim = 16
+        elif self.version == 1.0:
             z_dim = 32
         elif self.version==1.1 or self.version == 1.3:
             z_dim=64
         elif self.version==1.2:
             z_dim=128
 
+        z_dim = 32
+
         self.z_dim = z_dim
-        self.h_dims = (256, 8, 16)
+        self.h_dims = (32, 64, 128)
         h_dim = self.h_dims[0]*self.h_dims[1]*self.h_dims[2]
 
         self.encoder = nn.Sequential(
             nn.Conv2d(image_channels, 32, kernel_size=3, stride=1, padding=1),
-            nn.ReLU(),
-            nn.MaxPool2d(2),
-            nn.Conv2d(32, 64, kernel_size=3, stride=1, padding=1),
-            nn.ReLU(),
-            nn.MaxPool2d(2),
-            nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
-            nn.ReLU(),
-            nn.MaxPool2d(2),
-            nn.Conv2d(128, 256, kernel_size=3, stride=1, padding=1),
             nn.ReLU(),
             nn.MaxPool2d(2),
             Flatten()
@@ -110,12 +111,6 @@ class CNN_VAE(nn.Module):
 
         self.decoder = nn.Sequential(
             UnFlatten(size=self.h_dims),
-            nn.ConvTranspose2d(256, 128, kernel_size=2, stride=2),
-            nn.ReLU(),
-            nn.ConvTranspose2d(128, 64, kernel_size=2, stride=2),
-            nn.ReLU(),
-            nn.ConvTranspose2d(64, 32, kernel_size=2, stride=2),
-            nn.ReLU(),
             nn.ConvTranspose2d(32, image_channels, kernel_size=2, stride=2),
             nn.Sigmoid()
         )

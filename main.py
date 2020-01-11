@@ -34,7 +34,7 @@ classes_30 = ["Asterionellopsis", "bad", "Chaetoceros", "Chaetoceros_flagellate"
 	"Dinobryon", "Ditylum", "Eucampia", "flagellate_sp3", "Guinardia_delicatula", "Guinardia_flaccida", "Guinardia_striata", "Heterocapsa_triquetra", "Laboea_strobila", "Leptocylindrus",
 	"pennate", "Phaeocystis", "Pleurosigma", "Prorocentrum", "Pseudonitzschia", "Skeletonema", "Thalassionema", "Thalassiosira", "Thalassiosira_dirty", "Tintinnid"]
 
-classes_vae = ['Chaetoceros_flagellate']
+classes_vae = ['detritus']
 
 print(len(classes_30))
 

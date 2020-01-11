@@ -60,10 +60,8 @@ class Trainer:
 
             for i, data in enumerate(trainLoader, 0):
                 #get the unputs; data is a list of [inputs, labels]
-                #inputs, labels = data['image'], data['encoded_label'].to(self.device).float()
+                inputs, labels = data['image'], data['encoded_label'].to(self.device).float()
 
-                #just for mnist test:
-                inputs, labels = data[0], data[1]
 
                 if type(inputs) is list:
                     for i in range(len(inputs)):
@@ -99,13 +97,13 @@ class Trainer:
                     if self.autoencoder:
                         train_loss, _ = self.test_autoencoder(model, trainLoader)
                         valid_loss, _ = self.test_autoencoder(model, validLoader)
-                        train_acc = train_loss.tolist() #simple ae torch.mean(train_loss).tolist()
-                        valid_acc = valid_loss.tolist() #simple ae torch.mean(valid_loss).tolist()
+                        # log loss taken as its a cumulative loss
+                        train_acc = train_loss.log().tolist() #simple ae torch.mean(train_loss).tolist()
+                        valid_acc = valid_loss.log().tolist() #simple ae torch.mean(valid_loss).tolist()
                         print('Running Training Loss:', running_loss)
                         print('Training Loss:', train_acc)
                         print('Valid Loss:', valid_acc)
-                        #if valid_acc < best_acc: for AE. minimize loss. for VAE maximize lower bound (criterion)
-                        if valid_acc > best_acc:
+                        if valid_acc < best_acc: 
                             best_acc = valid_acc
                             best_model_weights = copy.deepcopy(model.state_dict())
                     else:
@@ -182,14 +180,14 @@ class Trainer:
         with torch.no_grad():
 
             for data in testloader:
-                #inputs, _ = data['image'].to(self.device).float(), data['encoded_label'].to(self.device).float()
-                inputs, _ = data[0].to(self.device).float(), data[1].to(self.device).float()
+                inputs, _ = data['image'].to(self.device).float(), data['encoded_label'].to(self.device).float()
+                #inputs, _ = data[0].to(self.device).float(), data[1].to(self.device).float()
                 outputs = model(inputs)
 
                 loss = self.criterion(outputs, inputs)
 
                 all_loss += loss #Simple AE: torch.cat((all_loss, sumsquare.view(1)), 0)
-                #all_fnames.extend(data['fname'])
+                all_fnames.extend(data['fname'])
 
         return all_loss, all_fnames
 
@@ -350,6 +348,12 @@ class CNNVAE_Criterion(nn.Module):
         # 0.5 * sum(1 + log(sigma^2) - mu^2 - sigma^2)
         KLD = -0.5 * torch.mean(1 + logvar - mu.pow(2) - logvar.exp())
 
+        """
+        print("#####################################")
+        print("BCE+KLD:", (BCE + KLD).item())
+        print("KLD:", KLD.item())
+        print("BCE:", BCE.item())
+        """
         return BCE + KLD
 
 
