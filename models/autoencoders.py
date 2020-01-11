@@ -73,7 +73,7 @@ class UnFlatten(nn.Module):
 # version 1.3 = z_dim = 64, 5 layers. h_dim = 4*8*512
 # version 1.4 = z_dim = 64, 3 layers. h_dim = 16*32*128
 class CNN_VAE(nn.Module):
-    version = 1.4
+    version = 1.1
 
     def __init__(self, image_channels=1, h_dim=8*16*256, z_dim=64):
         super(CNN_VAE, self).__init__()
@@ -85,7 +85,7 @@ class CNN_VAE(nn.Module):
             z_dim=128
 
         self.z_dim = z_dim
-        self.h_dims = (128, 16, 32)
+        self.h_dims = (256, 8, 16)
         h_dim = self.h_dims[0]*self.h_dims[1]*self.h_dims[2]
 
         self.encoder = nn.Sequential(
@@ -98,6 +98,9 @@ class CNN_VAE(nn.Module):
             nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
             nn.ReLU(),
             nn.MaxPool2d(2),
+            nn.Conv2d(128, 256, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2),
             Flatten()
         )
 
@@ -107,6 +110,8 @@ class CNN_VAE(nn.Module):
 
         self.decoder = nn.Sequential(
             UnFlatten(size=self.h_dims),
+            nn.ConvTranspose2d(256, 128, kernel_size=2, stride=2),
+            nn.ReLU(),
             nn.ConvTranspose2d(128, 64, kernel_size=2, stride=2),
             nn.ReLU(),
             nn.ConvTranspose2d(64, 32, kernel_size=2, stride=2),
@@ -147,7 +152,7 @@ class CNN_VAE(nn.Module):
     def get_sample(self):
         d = self.get_device()
         z = torch.randn(1, self.z_dim).to(d)
-        sample = self.dec(z)
+        sample = self.decode(z)
 
         return sample
 

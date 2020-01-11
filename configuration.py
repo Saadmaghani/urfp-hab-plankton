@@ -84,14 +84,15 @@ strategies (training):
 # version 12.1 = same as 12.0 except batch_size = 256, 1000 images, 800 epochs, split [0.8,0.1,0.1]
 # version 12.2 = same as 12.1 except updated loss function
 # version 12.3 = same as 12.0 except loss_fn = cnnvae_lossfn
+# version 12.4 = same as 12.3 except es = EarlyStopping(patience = 20) (not min)
 class Hyperparameters:
-    version=12.2
+    version=12.4
     learning_rate = 0.0003
     number_of_epochs = 800
     momentum = 0.9
     optimizer = optim.Adam
     loss_function = CNNVAE_Criterion
-    es = EarlyStopping(patience=20, mode='min')
+    es = EarlyStopping(patience=20)
     batch_size = 128
     scheduler = None
     pp_strategy = "thresholding"
