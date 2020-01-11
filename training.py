@@ -60,7 +60,11 @@ class Trainer:
 
             for i, data in enumerate(trainLoader, 0):
                 #get the unputs; data is a list of [inputs, labels]
-                inputs, labels = data['image'], data['encoded_label'].to(self.device).float()
+                #inputs, labels = data['image'], data['encoded_label'].to(self.device).float()
+
+                #just for mnist test:
+                inputs, labels = data[0], data[1]
+
                 if type(inputs) is list:
                     for i in range(len(inputs)):
                         inputs[i] = inputs[i].to(self.device).float()
@@ -177,13 +181,14 @@ class Trainer:
         with torch.no_grad():
 
             for data in testloader:
-                inputs, _ = data['image'].to(self.device).float(), data['encoded_label'].to(self.device).float()
+                #inputs, _ = data['image'].to(self.device).float(), data['encoded_label'].to(self.device).float()
+                inputs, _ = data[0].to(self.device).float(), data[1].to(self.device).float()
                 outputs = model(inputs)
 
                 loss = self.criterion(outputs, inputs)
 
                 all_loss += loss #Simple AE: torch.cat((all_loss, sumsquare.view(1)), 0)
-                all_fnames.extend(data['fname'])
+                #all_fnames.extend(data['fname'])
 
         return all_loss, all_fnames
 
