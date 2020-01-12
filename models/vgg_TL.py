@@ -114,11 +114,12 @@ class AlexNet(nn.Module):
 # version 1.0 = googlenet with 3 input channels & 20 outputs
 # version 1.1 = all outputs (94)
 # version 1.2 = 30 outputs
+# version 1.3 = 30 outputs no Chataecores flagellate. instead Mesodinium_sp
 # version 2.0 = 16 random crops, 16 outputs, average the outputs = answer
 # version 3.0 = 16 random crops as minibatch, reshape into 1 minibatch 16*1024 as input into FC
 # version 4.0 = same as 1.2 except with auto encoder
 class GoogleNet(nn.Module):
-    version = 1.2
+    version = 1.3
 
     # used with version 3.0
     class ReshapeLayer(nn.Module):

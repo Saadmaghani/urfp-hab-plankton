@@ -5,8 +5,8 @@ from metrics import Metrics
 import torch.nn as nn
 import torch.optim as optim
 #from models.triple_arch import N_Parallel_Models
-#from models.vgg_TL import GoogleNet
-from models.autoencoders import Simple_AE, CNN_VAE
+from models.vgg_TL import GoogleNet
+#from models.autoencoders import Simple_AE, CNN_VAE
 from configuration import Hyperparameters as HP
 import json
 import math
@@ -30,7 +30,7 @@ all_classes = ["mix", "detritus", "Leptocylindrus", "mix_elongated", "Chaetocero
 	"Odontella", "Protoperidinium", "zooplankton", "Stephanopyxis", "Tontonia_appendiculariformis", "Strombidium_capitatum", "Bidulphia", "Euplotes_sp", 
 	"Parvicorbicula_socialis", "bubble", "Hemiaulus", "Didinium_sp", "pollen", "Tiarina_fusus", "Bacillaria", "Cochlodinium", "Akashiwo", "Karenia"]
 
-classes_30 = ["Asterionellopsis", "bad", "Chaetoceros", "Chaetoceros_flagellate", "Ciliate_mix", "Corethron", "Cylindrotheca", "Dictyocha","dino30", "detritus",
+classes_30 = ["Asterionellopsis", "bad", "Chaetoceros", "Ciliate_mix", "Corethron", "Cylindrotheca", "Dictyocha","dino30", "detritus", "Chaetoceros_flagellate", 
 	"Dinobryon", "Ditylum", "Eucampia", "flagellate_sp3", "Guinardia_delicatula", "Guinardia_flaccida", "Guinardia_striata", "Heterocapsa_triquetra", "Laboea_strobila", "Leptocylindrus",
 	"pennate", "Phaeocystis", "Pleurosigma", "Prorocentrum", "Pseudonitzschia", "Skeletonema", "Thalassionema", "Thalassiosira", "Thalassiosira_dirty", "Tintinnid"]
 
@@ -43,7 +43,7 @@ print(len(classes_30))
 
 #pp = Preprocessor(years, include_classes=classes, train_eg_per_class=HP.number_of_images_per_class)
 #pp = Preprocessor(years, include_classes=all_classes, train_eg_per_class=HP.number_of_images_per_class, thresholding=HP.thresholding)
-pp = Preprocessor(years, include_classes=classes_vae, strategy = HP.pp_strategy, train_eg_per_class=HP.number_of_images_per_class, maxN = HP.maxN, minimum = HP.minimum, transformations = HP.transformations)
+pp = Preprocessor(years, include_classes=classes_30, strategy = HP.pp_strategy, train_eg_per_class=HP.number_of_images_per_class, maxN = HP.maxN, minimum = HP.minimum, transformations = HP.transformations)
 
 
 pp.create_datasets(HP.data_splits)
@@ -58,10 +58,10 @@ trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn
 
 # training autoencoder
 #model = Simple_AE()
-model = CNN_VAE()
+#model = CNN_VAE()
 
 # training normal model
-#model = N_Parallel_Models()
+model = GoogleNet()
 
 # training autoencoder + model
 """
@@ -83,22 +83,22 @@ trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earl
 
 # testing autoencoder
 
-test_sumsqs, test_fnames = trainer.test_autoencoder(model, testLoader)
-test_acc = test_sumsqs.tolist()
+#test_sumsqs, test_fnames = trainer.test_autoencoder(model, testLoader)
+#test_acc = test_sumsqs.tolist()
 #test_acc = torch.mean(test_sumsqs).tolist()
 
 
 # testing normal model
-#test_pred, test_target, test_fnames = trainer.test(model, testLoader)
+test_pred, test_target, test_fnames = trainer.test(model, testLoader)
 #valid_pred, valid_target, valid_fnames = trainer.test(model, validLoader)
 #train_pred, train_target, train_fnames = trainer.test(model, trainLoader)
 
 
-#test_met = Metrics(test_target, test_pred)
+test_met = Metrics(test_target, test_pred)
 #valid_met = Metrics(valid_target, valid_pred)
 #train_met = Metrics(train_target, train_pred)
 
-#test_acc = test_met.accuracy()
+test_acc = test_met.accuracy()
 
 
 # Just Testing
