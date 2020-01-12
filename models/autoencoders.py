@@ -74,14 +74,15 @@ class UnFlatten(nn.Module):
 # version 1.2 = z_dim = 128
 # version 1.3 = z_dim = 64, 5 layers. h_dim = 4*8*512
 # version 1.4 = z_dim = 64, 3 layers. h_dim = 16*32*128
-# version 1.5 = z_dim = 15, h_dim = 256,8,16. 2 classes
+# version 1.5 = z_dim = 16, h_dim = 256,8,16. 2 classes
 # version 1.6 = same as 1.5 except z_dim = 8
-# version 1.7 = z_dim = 32, 1 class (detritus)
-# version 2.0 = 1 conv layer, z_dim = 32, h_dim = 32,64,128
+# version 2.0 = 1 conv layer, z_dim = 32, h_dim = 32,64,128, 1 class (detritus)
 # version 2.1 = 2 conv layer, z_dim = 32. h_dim = 64,32,64
 # version 2.2 = 3 conv layer, z_dim = 32. h_dim = 128,16,32
+# version 2.3 = 4 conv layer, z_dim = 32, h_dim = 256,8,16
+# version 3,0 = 3 conv layer, z_dim = 2, h_dim = 128,16,32
 class CNN_VAE(nn.Module):
-    version = 2.2
+    version = 3.0
 
     def __init__(self, image_channels=1, h_dim=8*16*256, z_dim=64):
         super(CNN_VAE, self).__init__()
@@ -94,7 +95,7 @@ class CNN_VAE(nn.Module):
         elif self.version==1.2:
             z_dim=128
 
-        z_dim = 32
+        z_dim = 2
 
         self.z_dim = z_dim
         self.h_dims = (128, 16, 32)
