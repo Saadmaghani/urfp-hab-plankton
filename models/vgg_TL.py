@@ -118,8 +118,9 @@ class AlexNet(nn.Module):
 # version 2.0 = 16 random crops, 16 outputs, average the outputs = answer
 # version 3.0 = 16 random crops as minibatch, reshape into 1 minibatch 16*1024 as input into FC
 # version 4.0 = same as 1.2 except with auto encoder
+# version 5.0 = same as 1.2 except with confidence
 class GoogleNet(nn.Module):
-    version = 1.2
+    version = 5.0
 
     # used with version 3.0
     class ReshapeLayer(nn.Module):
@@ -150,6 +151,9 @@ class GoogleNet(nn.Module):
         if self.version == 4.0:
             self.autoencoder = autoencoder
         self.softmax = nn.Softmax()
+        self.sigmoid = nn.Sigmoid()
+
+
 
     def forward(self, x):
 
