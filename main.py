@@ -30,7 +30,7 @@ all_classes = ["mix", "detritus", "Leptocylindrus", "mix_elongated", "Chaetocero
 	"Odontella", "Protoperidinium", "zooplankton", "Stephanopyxis", "Tontonia_appendiculariformis", "Strombidium_capitatum", "Bidulphia", "Euplotes_sp", 
 	"Parvicorbicula_socialis", "bubble", "Hemiaulus", "Didinium_sp", "pollen", "Tiarina_fusus", "Bacillaria", "Cochlodinium", "Akashiwo", "Karenia"]
 
-classes_30 = ["Asterionellopsis", "bad", "Chaetoceros", "Ciliate_mix", "Corethron", "Cylindrotheca", "Dictyocha","dino30", "detritus", "Chaetoceros_flagellate", 
+classes_30 = ["Asterionellopsis", "bad", "Chaetoceros", "Ciliate_mix", "Corethron", "Cylindrotheca", "Dictyocha","dino30", "detritus","Mesodinium_sp", "Chaetoceros_flagellate", 
 	"Dinobryon", "Ditylum", "Eucampia", "flagellate_sp3", "Guinardia_delicatula", "Guinardia_flaccida", "Guinardia_striata", "Heterocapsa_triquetra", "Laboea_strobila", "Leptocylindrus",
 	"pennate", "Phaeocystis", "Pleurosigma", "Prorocentrum", "Pseudonitzschia", "Skeletonema", "Thalassionema", "Thalassiosira", "Thalassiosira_dirty", "Tintinnid"]
 
@@ -80,8 +80,21 @@ epochs = 0
 trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
 
 
+# Just Testing
+"""
+model = GoogleNet()
+path_to_statedict = "models/GoogleNet_1.3-4.2.pth"
 
-# testing autoencoder
+if ".tar" in path_to_statedict:
+    model = load_partial_model(model, path_to_statedict)
+else:
+    model = load_full_model(model, path_to_statedict)
+"""
+# further training of model
+#trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
+
+
+#testing autoencoder
 
 #test_sumsqs, test_fnames = trainer.test_autoencoder(model, testLoader)
 #test_acc = test_sumsqs.tolist()
@@ -100,29 +113,12 @@ test_met = Metrics(test_target, test_pred)
 
 test_acc = test_met.accuracy()
 
-
-# Just Testing
-"""
-model = Simple_AE()
-path_to_statedict = "models/Simple_AE_3.0-10.1.pth"
-
-if ".tar" in path_to_statedict:
-    model = load_partial_model(model, path_to_statedict)
-else:
-    model = load_full_model(model, path_to_statedict)
-
-# further training of model
-trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
-"""
-
-
-
 print(test_acc)
 
 time = trainer.getTime()
 print(time)
 
-f = open("./stats/stats-"+str(model)+"-"+str(HP.version)+".json","w+")
+f = open("./stats/stats-test-"+str(model)+"-"+str(HP.version)+".json","w+")
 
 #str(test_met.accuracy()) + \
 
