@@ -115,6 +115,7 @@ class AlexNet(nn.Module):
 # version 1.1 = all outputs (94)
 # version 1.2 = 30 outputs
 # version 1.3 = 30 outputs no Chataecores flagellate. instead Mesodinium_sp
+# version 1.3 = 31 outputs both Chataecores flagellat and Mesodinium_sp
 # version 2.0 = 16 random crops, 16 outputs, average the outputs = answer
 # version 3.0 = 16 random crops as minibatch, reshape into 1 minibatch 16*1024 as input into FC
 # version 4.0 = same as 1.2 except with auto encoder

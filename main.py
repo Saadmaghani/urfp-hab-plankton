@@ -30,7 +30,7 @@ all_classes = ["mix", "detritus", "Leptocylindrus", "mix_elongated", "Chaetocero
 	"Odontella", "Protoperidinium", "zooplankton", "Stephanopyxis", "Tontonia_appendiculariformis", "Strombidium_capitatum", "Bidulphia", "Euplotes_sp", 
 	"Parvicorbicula_socialis", "bubble", "Hemiaulus", "Didinium_sp", "pollen", "Tiarina_fusus", "Bacillaria", "Cochlodinium", "Akashiwo", "Karenia"]
 
-classes_30 = ["Asterionellopsis", "bad", "Chaetoceros", "Ciliate_mix", "Corethron", "Cylindrotheca", "Dictyocha","dino30", "detritus","Mesodinium_sp", 
+classes_30 = ["Asterionellopsis", "bad", "Chaetoceros", "Ciliate_mix", "Corethron", "Cylindrotheca", "Dictyocha","dino30", "detritus","Mesodinium_sp", "Chaetoceros_flagellate", 
 	"Dinobryon", "Ditylum", "Eucampia", "flagellate_sp3", "Guinardia_delicatula", "Guinardia_flaccida", "Guinardia_striata", "Heterocapsa_triquetra", "Laboea_strobila", "Leptocylindrus",
 	"pennate", "Phaeocystis", "Pleurosigma", "Prorocentrum", "Pseudonitzschia", "Skeletonema", "Thalassionema", "Thalassiosira", "Thalassiosira_dirty", "Tintinnid"]
 
@@ -61,7 +61,7 @@ trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn
 #model = CNN_VAE()
 
 # training normal model
-#model = GoogleNet()
+model = GoogleNet()
 
 # training autoencoder + model
 """
@@ -77,10 +77,11 @@ model = GoogleNet(autoencoder = ae_model)
 trainAcc = []
 validAcc = [] 
 epochs = 0 
-#trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
+trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
 
 
 # Just Testing
+"""
 model = GoogleNet()
 path_to_statedict = "models/GoogleNet_1.3-4.2.pth"
 
@@ -88,7 +89,7 @@ if ".tar" in path_to_statedict:
     model = load_partial_model(model, path_to_statedict)
 else:
     model = load_full_model(model, path_to_statedict)
-
+"""
 # further training of model
 #trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
 
