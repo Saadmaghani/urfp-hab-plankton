@@ -84,7 +84,7 @@ class Trainer:
                 if str(model)[:-1] == "GoogleNet_5.":
                     _, conf = outputs 
                     if "totalConfs" in vars():
-                        totalConfs = tensor.cat((totalConfs, conf), 0)
+                        totalConfs = torch.cat((totalConfs, conf), 0)
                     else:
                         totalConfs = conf
                 # training autoencoder:
@@ -95,7 +95,6 @@ class Trainer:
                     loss = self.criterion(outputs, inputs)
                 else:
                     loss = self.criterion(outputs, labels)
-
 
                 loss.backward()
                 optimizer.step()

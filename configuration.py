@@ -89,8 +89,9 @@ strategies (training):
 # version 12.5 = same as 12.4 except images/class = 2000
 # version 12.6 = same as 12.4 except images/class = 5000 es = EarlyStopping(patience = 40, mode='min')
 # version 13.0 = same as 4.2 except loss_function = Confidenceloss w/ BCELoss & lambda = 1
+# version 13.1 = same as 13.0 except for testing purposes images/class = 20
 class Hyperparameters:
-    version=13.0
+    version=13.1
     learning_rate = 0.0003
     number_of_epochs = 200
     momentum = 0.9
@@ -104,6 +105,6 @@ class Hyperparameters:
     maxN = None 
     minimum = None
     train_AE = False
-    number_of_images_per_class = 1000
+    number_of_images_per_class = 20
     transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) #transforms.Compose([Rescale((224, 224)),ToTensor(), Normalize(mean=[0.449], std=[0.226])]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
 
