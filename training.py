@@ -46,6 +46,11 @@ class Trainer:
         loss = None
         valid_acc = None
         train_acc = None
+        other_stats = None
+
+        # version 5.x GoogleNet. other_stats = avg. Confidence 
+        if str(model)[:-1] == "GoogleNet_5.":
+            other_stats = {"avg_confidence":[]}
 
         best_model_weights = copy.deepcopy(model.state_dict())
         if self.autoencoder:
@@ -75,7 +80,13 @@ class Trainer:
                 #forward + backward + optimize
                 outputs = model(inputs)
 
-                
+                # version 5.x GoogleNet. save avg confidence
+                if str(model)[:-1] == "GoogleNet_5.":
+                    _, conf = outputs 
+                    if "totalConfs" in vars():
+                        totalConfs = tensor.cat((totalConfs, conf), 0)
+                    else:
+                        totalConfs = conf
                 # training autoencoder:
                 if self.autoencoder:
                     # for normal AE, uncomment the two lines below
@@ -112,6 +123,11 @@ class Trainer:
                         train_acc = accuracy_score(train_target.cpu(), train_pred.cpu())
                         valid_acc = accuracy_score(valid_target.cpu(), valid_pred.cpu())      
 
+                        if str(model)[:-1] == "GoogleNet_5.":
+                            print('current avg. confidence:', totalConfs.mean())
+                            other_stats['avg_confidence'].append(totalConfs.mean())
+                            del totalConfs
+
                         print('Running Training Loss:', running_loss)
                         print('Training Accuracy:', train_acc)
                         print('Valid Accuracy:', valid_acc)
@@ -138,7 +154,7 @@ class Trainer:
             self._save_full_model(model)
         print('Finished Training')
         self.timeEnd = time.time()
-        return all_train_acc, all_valid_acc, epoch
+        return all_train_acc, all_valid_acc, epoch, other_stats
     
         
     def getTime(self):
@@ -206,6 +222,10 @@ class Trainer:
                 _, labels = torch.max(labels, 1)
 
                 outputs = model(inputs)
+
+                # version 5.x GoogleNet has outputs = (outputs, confidence)
+                if str(model)[:-1] == "GoogleNet_5.":
+                    outputs, _ = outputs 
                 _, predicted = torch.max(outputs.data, 1)
                 #print("labels:", labels)
                 #print("predicted:", predicted)
@@ -310,8 +330,11 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
 
+# version 1.0 = classifierLoss = BCE Loss, lambda = 1
 class ConfidenceLoss(nn.Module):
-    def __init__(self, classifierLoss, lambda_normalizer):
+    version=1.0
+
+    def __init__(self, classifierLoss = nn.BCELoss, lambda_normalizer=1):
         super(ConfidenceLoss, self).__init__()
         self.classifierLoss = classifierLoss()
         self.lambda_normalizer = lambda_normalizer

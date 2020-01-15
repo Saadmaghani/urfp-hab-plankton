@@ -89,7 +89,7 @@ model = GoogleNet(autoencoder = ae_model)
 trainAcc = []
 validAcc = [] 
 epochs = 0 
-trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
+trainAcc, validAcc, epochs, other_stats = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
 
 
 # Just Testing
@@ -136,6 +136,7 @@ f = open("./stats/stats-"+str(model)+"-"+str(HP.version)+".json","w+")
 
 str_to_write = "{\"Time\": \""+ time +"\",\n \"Epochs\": "+str(epochs)+ ",\n \"TrainAcc\": "+ str(trainAcc)+",\n \"ValidAcc\": "+str(validAcc)+",\n \"TestAcc\": "+ str(test_acc) + \
 ",\n \"Test_Pred\": " + str(list(test_pred.cpu().numpy())) + ",\n \"Test_Target\": " + str(list(test_target.cpu().numpy())) + ",\n \"Test_fnames\": " + json.dumps(test_fnames) + \
+",\n \"avg_confidence\": "+ str(other_stats["avg_confidence"]) + \
 "}"
 #",\n \"Train_Pred\": " + str(list(train_pred.cpu().numpy())) + ",\n \"Train_Target\": " + str(list(train_target.cpu().numpy())) + ",\n \"Train_fnames\": " + json.dumps(train_fnames) + 
 #",\n \"Valid_Pred\": " + str(list(valid_pred.cpu().numpy())) + ",\n \"Valid_Target\": " + str(list(valid_target.cpu().numpy())) + ",\n \"Valid_fnames\": " + json.dumps(valid_fnames) + 

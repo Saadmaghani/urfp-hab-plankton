@@ -121,7 +121,7 @@ class AlexNet(nn.Module):
 # version 4.0 = same as 1.2 except with auto encoder
 # version 5.0 = same as 1.2 except with confidence
 class GoogleNet(nn.Module):
-    version = 1.2
+    version = 5.0
 
     # used with version 5.0
     class IdentityLayer(nn.Module):

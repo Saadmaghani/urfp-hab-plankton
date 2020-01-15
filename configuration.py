@@ -1,7 +1,7 @@
 import torch.optim as optim
 from torch.optim import lr_scheduler
 import torch.nn as nn
-from training import EarlyStopping, FocalLoss, VAE_Criterion, CNNVAE_Criterion
+from training import EarlyStopping, FocalLoss, VAE_Criterion, CNNVAE_Criterion, ConfidenceLoss
 from torchvision import transforms
 from preprocessing import Rescale, RandomCrop, ToTensor, Normalize
 
@@ -88,14 +88,14 @@ strategies (training):
 # version 12.4 = same as 12.3 except es = EarlyStopping(patience = 20) (not min)
 # version 12.5 = same as 12.4 except images/class = 2000
 # version 12.6 = same as 12.4 except images/class = 5000 es = EarlyStopping(patience = 40, mode='min')
-# version 13.0 = 
+# version 13.0 = same as 4.2 except loss_function = Confidenceloss w/ BCELoss & lambda = 1
 class Hyperparameters:
-    version=4.4
+    version=13.0
     learning_rate = 0.0003
     number_of_epochs = 200
     momentum = 0.9
     optimizer = optim.Adam
-    loss_function = nn.BCELoss
+    loss_function = ConfidenceLoss
     es = EarlyStopping(patience=20)
     batch_size = 256 
     scheduler = None
