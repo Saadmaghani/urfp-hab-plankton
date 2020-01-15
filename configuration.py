@@ -88,7 +88,7 @@ strategies (training):
 # version 12.4 = same as 12.3 except es = EarlyStopping(patience = 20) (not min)
 # version 12.5 = same as 12.4 except images/class = 2000
 # version 12.6 = same as 12.4 except images/class = 5000 es = EarlyStopping(patience = 40, mode='min')
-# version 13.0
+# version 13.0 = 
 class Hyperparameters:
     version=4.4
     learning_rate = 0.0003
