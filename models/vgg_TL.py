@@ -142,12 +142,13 @@ class GoogleNet(nn.Module):
             x = torch.reshape(x, self.reshape_tup)
             return x
 
+
     def __init__(self, freeze=None, pretrain=True, autoencoder=None):
         super(GoogleNet, self).__init__()
 
         self.model = models.googlenet(pretrained=pretrain)
 
-        # self.model.features[0] = nn.Conv2d(1, 64, 3, padding = 1)3
+        # self.model.features[0] = nn.Conv2d(1, 64, 3, padding = 1)
         if freeze is not None:
             for param in self.model.parameters():
                 param.requires_grad = False

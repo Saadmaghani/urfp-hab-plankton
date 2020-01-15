@@ -13,11 +13,11 @@ import math
 
 years = [str(y) for y in range(2006, 2015)]
 
-classes = ["detritus", "Leptocylindrus", "Chaetoceros", "Rhizosolenia", "Guinardia_delicatula", "Cerataulina", "Cylindrotheca",
+classes_20 = ["detritus", "Leptocylindrus", "Chaetoceros", "Rhizosolenia", "Guinardia_delicatula", "Cerataulina", "Cylindrotheca",
     "Skeletonema", "Dactyliosolen", "Thalassiosira", "Dinobryon", "Corethron", "Thalassionema", "Ditylum", "pennate", "Prorocentrum",
     "Pseudonitzschia", "Tintinnid", "Guinardia_striata", "Phaeocystis"]
 
-all_classes = ["mix", "detritus", "Leptocylindrus", "mix_elongated", "Chaetoceros", "dino30", "Rhizosolenia", "Guinardia_delicatula", 
+classes_all = ["mix", "detritus", "Leptocylindrus", "mix_elongated", "Chaetoceros", "dino30", "Rhizosolenia", "Guinardia_delicatula", 
 	"Cerataulina", "Cylindrotheca", "Skeletonema", "Ciliate_mix", "Dactyliosolen", "Thalassiosira", "bad", "Dinobryon", "Corethron", 
 	"DactFragCerataul", "Thalassionema", "Ditylum", "pennate", "Prorocentrum", "Pseudonitzschia", "Mesodinium_sp", "G_delicatula_parasite", 
 	"Tintinnid", "Guinardia_striata", "Phaeocystis", "Dictyocha", "Pleurosigma", "Eucampia", "Thalassiosira_dirty", "Asterionellopsis", 
@@ -31,21 +31,29 @@ all_classes = ["mix", "detritus", "Leptocylindrus", "mix_elongated", "Chaetocero
 	"Stephanopyxis", "Tontonia_appendiculariformis", "Strombidium_capitatum", "Bidulphia", "Euplotes_sp", "Parvicorbicula_socialis", 
 	"bubble", "Hemiaulus", "Didinium_sp", "pollen", "Tiarina_fusus", "Bacillaria", "Cochlodinium", "Akashiwo", "Karenia"]
 
-classes_30 = ["Asterionellopsis", "bad", "Chaetoceros", "Ciliate_mix", "Corethron", "Cylindrotheca", "Dictyocha","dino30", "detritus", 
+classes_31 = ["Asterionellopsis", "bad", "Chaetoceros", "Ciliate_mix", "Corethron", "Cylindrotheca", "Dictyocha","dino30", "detritus", 
 	"Mesodinium_sp", "Chaetoceros_flagellate", "Dinobryon", "Ditylum", "Eucampia", "flagellate_sp3", "Guinardia_delicatula", "Guinardia_flaccida", 
 	"Guinardia_striata", "Heterocapsa_triquetra", "Laboea_strobila", "Leptocylindrus","pennate", "Phaeocystis", "Pleurosigma", "Prorocentrum", 
 	"Pseudonitzschia", "Skeletonema", "Thalassionema", "Thalassiosira", "Thalassiosira_dirty", "Tintinnid"]
 
+classes_30_cf = ["Asterionellopsis", "bad", "Chaetoceros", "Ciliate_mix", "Corethron", "Cylindrotheca", "Dictyocha","dino30", "detritus", 
+	"Chaetoceros_flagellate", "Dinobryon", "Ditylum", "Eucampia", "flagellate_sp3", "Guinardia_delicatula", "Guinardia_flaccida", "Guinardia_striata",
+	"Heterocapsa_triquetra", "Laboea_strobila", "Leptocylindrus","pennate", "Phaeocystis", "Pleurosigma", "Prorocentrum", "Pseudonitzschia", 
+	"Skeletonema", "Thalassionema", "Thalassiosira", "Thalassiosira_dirty", "Tintinnid"]
+
+classes_30_ms = ["Asterionellopsis", "bad", "Chaetoceros", "Ciliate_mix", "Corethron", "Cylindrotheca", "Dictyocha","dino30", "detritus", 
+	"Mesodinium_sp", "Dinobryon", "Ditylum", "Eucampia", "flagellate_sp3", "Guinardia_delicatula", "Guinardia_flaccida", "Guinardia_striata", 
+	"Heterocapsa_triquetra", "Laboea_strobila", "Leptocylindrus","pennate", "Phaeocystis", "Pleurosigma", "Prorocentrum", "Pseudonitzschia", 
+	"Skeletonema", "Thalassionema", "Thalassiosira", "Thalassiosira_dirty", "Tintinnid"]
+
 classes_vae = ['detritus']
 
-print(len(classes_30))
-
-
+print(len(classes_30_cf))
 
 
 #pp = Preprocessor(years, include_classes=classes, train_eg_per_class=HP.number_of_images_per_class)
 #pp = Preprocessor(years, include_classes=all_classes, train_eg_per_class=HP.number_of_images_per_class, thresholding=HP.thresholding)
-pp = Preprocessor(years, include_classes=classes_30, strategy = HP.pp_strategy, train_eg_per_class=HP.number_of_images_per_class, maxN = HP.maxN, 
+pp = Preprocessor(years, include_classes=classes_30_cf, strategy = HP.pp_strategy, train_eg_per_class=HP.number_of_images_per_class, maxN = HP.maxN, 
 	minimum =  HP.minimum, transformations = HP.transformations)
 
 
@@ -76,6 +84,7 @@ else:
     ae_model = load_full_model(ae_model, path_to_ae)
 model = GoogleNet(autoencoder = ae_model)
 """
+
 # training
 trainAcc = []
 validAcc = [] 
