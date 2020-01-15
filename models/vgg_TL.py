@@ -115,13 +115,13 @@ class AlexNet(nn.Module):
 # version 1.1 = all outputs (94)
 # version 1.2 = 30 outputs
 # version 1.3 = 30 outputs no Chataecores flagellate. instead Mesodinium_sp
-# version 1.3 = 31 outputs both Chataecores flagellat and Mesodinium_sp
+# version 1.4 = 31 outputs both Chataecores flagellat and Mesodinium_sp
 # version 2.0 = 16 random crops, 16 outputs, average the outputs = answer
 # version 3.0 = 16 random crops as minibatch, reshape into 1 minibatch 16*1024 as input into FC
 # version 4.0 = same as 1.2 except with auto encoder
 # version 5.0 = same as 1.2 except with confidence
 class GoogleNet(nn.Module):
-    version = 5.0
+    version = 1.2
 
     # used with version 5.0
     class IdentityLayer(nn.Module):
@@ -160,7 +160,6 @@ class GoogleNet(nn.Module):
             self.sigmoid = nn.Sigmoid()
             self.classifier = nn.Linear(1024, 30)
             self.confidence = nn.Linear(1024, 1)
-
         else:
             self.model.fc = nn.Linear(1024, 30)
 
@@ -168,8 +167,6 @@ class GoogleNet(nn.Module):
             self.autoencoder = autoencoder
 
         self.softmax = nn.Softmax()
-        
-
 
 
     def forward(self, x):
