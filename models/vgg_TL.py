@@ -195,6 +195,7 @@ class GoogleNet(nn.Module):
             x = self.model(x)
             x = self.softmax(x)
         elif self.version == 5.0:
+            x = x.repeat(1, 3, 1, 1)
             x = self.model(x)
             results = self.softmax(self.classifier(x))
             confidence = self.sigmoid(self.confidence(x))
