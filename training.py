@@ -310,6 +310,19 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
 
+class ConfidenceLoss(nn.Module):
+    def __init__(self, classifierLoss, lambda_normalizer):
+        super(ConfidenceLoss, self).__init__()
+        self.classifierLoss = classifierLoss()
+        self.lambda_normalizer = lambda_normalizer
+
+    def forward(self, output_from_model, input_to_model):
+        softmax_classes, sigmoid_confidence = output_from_model
+        classifier_loss = self.classifierLoss(softmax_classes, input_to_model)* self.lambda_normalizer
+        loss = (sigmoid_confidence**2) * (classifier_loss**2) + (1-sigmoid_confidence)**2
+        return loss
+
+
 # script copied from https://graviraja.github.io/vanillavae/#
 # author: graviraja
 class VAE_Criterion(nn.Module):
@@ -330,6 +343,7 @@ class VAE_Criterion(nn.Module):
         # total loss
         loss = recon_loss + kl_loss
         return loss
+
 
 # script copied form https://github.com/sksq96/pytorch-vae/blob/master/vae-cnn.ipynb
 # author: sksq96
@@ -355,7 +369,6 @@ class CNNVAE_Criterion(nn.Module):
         print("BCE:", BCE.item())
         """
         return BCE + KLD
-
 
 
 # script copied from https://www.kaggle.com/c/tgs-salt-identification-challenge/discussion/65938

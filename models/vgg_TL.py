@@ -123,6 +123,15 @@ class AlexNet(nn.Module):
 class GoogleNet(nn.Module):
     version = 5.0
 
+    # used with version 5.0
+    class IdentityLayer(nn.Module):
+        def __init__(self):
+            super(GoogleNet.IdentityLayer, self).__init__()
+
+        def forward(self, x):
+            return x
+
+
     # used with version 3.0
     class ReshapeLayer(nn.Module):
         def __init__(self, tup):
@@ -146,13 +155,20 @@ class GoogleNet(nn.Module):
         if self.version == 3.0:
             self.model.avgpool = nn.Sequential(self.model.avgpool, GoogleNet.ReshapeLayer((1,-1)))
             self.model.fc = nn.Linear(1024*16, 30)
+        elif self.version == 5.0:
+            self.model.fc = GoogleNet.IdentityLayer()
+            self.sigmoid = nn.Sigmoid()
+            self.classifier = nn.Linear(1024, 30)
+            self.confidence = nn.Linear(1024, 1)
+
         else:
             self.model.fc = nn.Linear(1024, 30)
 
         if self.version == 4.0:
             self.autoencoder = autoencoder
+
         self.softmax = nn.Softmax()
-        self.sigmoid = nn.Sigmoid()
+        
 
 
 
@@ -180,6 +196,11 @@ class GoogleNet(nn.Module):
                 x = self.autoencoder.get_latent(x)
             x = self.model(x)
             x = self.softmax(x)
+        elif self.version == 5.0:
+            x = self.model(x)
+            results = self.softmax(self.classifier(x))
+            confidence = self.sigmoid(self.confidence(x))
+            x = (results, confidence)
         else:
             x = x.repeat(1, 3, 1, 1)
             x = self.model(x)
