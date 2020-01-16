@@ -236,6 +236,8 @@ class Trainer:
                     outputs = outputs[idxs]
                     labels = labels[idxs]
 
+                if len(outputs.data) == 0:
+                    continue
                 _, predicted = torch.max(outputs.data, 1)
                 #print("labels:", labels)
                 #print("predicted:", predicted)
