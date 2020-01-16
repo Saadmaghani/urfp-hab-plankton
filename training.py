@@ -123,8 +123,8 @@ class Trainer:
                         valid_acc = accuracy_score(valid_target.cpu(), valid_pred.cpu())      
 
                         if str(model)[:-1] == "GoogleNet_5.":
-                            print('current avg. confidence:', totalConfs.mean())
-                            other_stats['avg_confidence'].append(totalConfs.mean())
+                            print('current avg. confidence:', totalConfs.mean().item())
+                            other_stats['avg_confidence'].append(totalConfs.mean().item())
                             del totalConfs
 
                         print('Running Training Loss:', running_loss)
@@ -224,7 +224,12 @@ class Trainer:
 
                 # version 5.x GoogleNet has outputs = (outputs, confidence)
                 if str(model)[:-1] == "GoogleNet_5.":
-                    outputs, _ = outputs 
+                    outputs, confs = outputs 
+                    idxs, _ = torch.where(confs>model.threshold)
+                    idxs = torch.unique(idxs)
+                    outputs = outputs[idxs]
+                    labels = labels[idxs]
+
                 _, predicted = torch.max(outputs.data, 1)
                 #print("labels:", labels)
                 #print("predicted:", predicted)
