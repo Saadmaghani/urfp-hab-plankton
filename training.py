@@ -49,7 +49,7 @@ class Trainer:
         other_stats = None
 
         # version 5.x GoogleNet. other_stats = avg. Confidence 
-        if str(model)[:-1] == "GoogleNet_5.":
+        if str(model).split(".")[0] == "GoogleNet_5":
             other_stats = {"avg_confidence":[]}
 
         best_model_weights = copy.deepcopy(model.state_dict())
@@ -81,7 +81,7 @@ class Trainer:
                 outputs = model(inputs)
 
                 # version 5.x GoogleNet. save avg confidence
-                if str(model)[:-1] == "GoogleNet_5.":
+                if str(model).split('.')[0] == "GoogleNet_5":
                     _, conf = outputs 
                     if "totalConfs" in vars():
                         totalConfs = torch.cat((totalConfs, conf), 0)
@@ -122,7 +122,7 @@ class Trainer:
                         train_acc = accuracy_score(train_target.cpu(), train_pred.cpu())
                         valid_acc = accuracy_score(valid_target.cpu(), valid_pred.cpu())      
 
-                        if str(model)[:-1] == "GoogleNet_5.":
+                        if str(model).split(".")[0] == "GoogleNet_5":
                             print('current avg. confidence:', totalConfs.mean().item())
                             other_stats['avg_confidence'].append(totalConfs.mean().item())
                             del totalConfs
@@ -223,9 +223,9 @@ class Trainer:
                 outputs = model(inputs)
 
                 # version 5.x GoogleNet has outputs = (outputs, confidence)
-                if str(model)[:-1] == "GoogleNet_5.":
+                if str(model).split('.')[0] == "GoogleNet_5":
                     outputs, confs = outputs 
-                    idxs, _ = torch.nonzero(confs>model.threshold, as_tuple=True)
+                    idxs = torch.nonzero(confs>model.threshold)[:,0]
                     idxs = torch.unique(idxs)
                     outputs = outputs[idxs]
                     labels = labels[idxs]
