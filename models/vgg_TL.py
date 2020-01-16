@@ -124,7 +124,7 @@ class AlexNet(nn.Module):
 # version 5.11 = same as 5.1 except threshold = 0.2
 # version 5.12 = same as 5.1 except threshold = 0.3
 class GoogleNet(nn.Module):
-    version = 5.11
+    version = 5.12
 
     # used with version 5.0
     class IdentityLayer(nn.Module):
