@@ -128,8 +128,9 @@ class AlexNet(nn.Module):
 # version 5.15 = same as 5.1 except threshold = 0.6
 # version 5.16 = same as 5.1 except threshold = 0.7
 # version 5.17 = same as 5.1 except threshold = 0.8
+# version 5.2 = same as 5.1 except training threshold changes to avg. confidence. initial 0.0
 class GoogleNet(nn.Module):
-    version = 5.17
+    version = 5.2
 
     # used with version 5.0
     class IdentityLayer(nn.Module):
@@ -165,7 +166,7 @@ class GoogleNet(nn.Module):
             self.model.avgpool = nn.Sequential(self.model.avgpool, GoogleNet.ReshapeLayer((1,-1)))
             self.model.fc = nn.Linear(1024*16, 30)
         elif self.version >= 5.0 and self.version < 6.0:
-            self.threshold = 0.8
+            self.threshold = 0.0
             self.model.fc = GoogleNet.IdentityLayer()
             self.sigmoid = nn.Sigmoid()
             self.classifier = nn.Linear(1024, 30)

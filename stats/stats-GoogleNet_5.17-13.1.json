@@ -1,0 +1,11 @@
+{"Time": "0.0:0.0:8.724064588546753",
+ "Epochs": 2,
+ "TrainAcc": [nan, nan],
+ "ValidAcc": [nan, nan],
+ "TestAcc": nan,
+ "Test_Pred": [],
+ "Test_Target": [],
+ "Test_fnames": [],
+ "avg_confidence": [0.5028643012046814, 0.5120505690574646],
+ "train_drop": [360, 360],
+ "valid_drop": [120, 120]}

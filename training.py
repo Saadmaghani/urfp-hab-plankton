@@ -127,8 +127,10 @@ class Trainer:
                             vd = len(validLoader.dataset) - valid_pred.shape[0]
                             print('train drop:', td)
                             print('valid drop:', vd)
-                            print('current avg. confidence:', totalConfs.mean().item())
-                            other_stats['avg_confidence'].append(totalConfs.mean().item())
+                            meanConf = totalConfs.mean().item()
+                            model.threshold = meanConf
+                            print('current avg. confidence:', meanConf)
+                            other_stats['avg_confidence'].append(meanConf)
                             other_stats['train_drop'].append(td)
                             other_stats['valid_drop'].append(vd)
                             del totalConfs
