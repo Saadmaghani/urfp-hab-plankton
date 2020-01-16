@@ -96,11 +96,11 @@ class Trainer:
                 else:
                     loss = self.criterion(outputs, labels)
 
-                loss.backward()
+                loss.sum().backward()
                 optimizer.step()
                 
                 #print statistics - have to get more of these
-                running_loss += loss.item()
+                running_loss += loss.sum().item()
                 #print("batch no.:",i)
                 if i % 10 == 0:
                     #every 10 batches print - loss, training acc, validation acc
@@ -342,6 +342,9 @@ class ConfidenceLoss(nn.Module):
         softmax_classes, sigmoid_confidence = output_from_model
         classifier_loss = self.classifierLoss(softmax_classes, input_to_model)* self.lambda_normalizer
         loss = (sigmoid_confidence**2) * (classifier_loss**2) + (1-sigmoid_confidence)**2
+
+        #loss = loss.repeat(1,2)
+
         return loss
 
 
