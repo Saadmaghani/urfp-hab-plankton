@@ -225,7 +225,7 @@ class Trainer:
                 # version 5.x GoogleNet has outputs = (outputs, confidence)
                 if str(model)[:-1] == "GoogleNet_5.":
                     outputs, confs = outputs 
-                    idxs, _ = torch.where(confs>model.threshold)
+                    idxs, _ = torch.nonzero(confs>model.threshold, as_tuple=True)
                     idxs = torch.unique(idxs)
                     outputs = outputs[idxs]
                     labels = labels[idxs]
