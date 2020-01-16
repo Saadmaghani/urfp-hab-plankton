@@ -345,10 +345,11 @@ import torch.nn.functional as F
 from torch.autograd import Variable
 
 # version 1.0 = classifierLoss = BCE Loss, lambda = 1
+# version 2.0 = MSELoss, lambda = 1
 class ConfidenceLoss(nn.Module):
-    version=1.0
+    version=2.0
 
-    def __init__(self, classifierLoss = nn.BCELoss, lambda_normalizer=1):
+    def __init__(self, classifierLoss = nn.MSELoss, lambda_normalizer=1):
         super(ConfidenceLoss, self).__init__()
         self.classifierLoss = classifierLoss()
         self.lambda_normalizer = lambda_normalizer

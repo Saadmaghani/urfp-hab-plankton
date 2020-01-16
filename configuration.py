@@ -90,6 +90,7 @@ strategies (training):
 # version 12.6 = same as 12.4 except images/class = 5000 es = EarlyStopping(patience = 40, mode='min')
 # version 13.0 = same as 4.2 except loss_function = Confidenceloss w/ BCELoss & lambda = 1
 # version 13.1 = same as 13.0 except for testing purposes images/class = 20
+# version 13.2 = same as 13.1 except loss_function = Confidenceloss w/ MSELoss & lambda = 1
 class Hyperparameters:
     version=13.1
     learning_rate = 0.0003
