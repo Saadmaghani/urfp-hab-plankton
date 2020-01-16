@@ -108,7 +108,7 @@ class Metrics:
         plt.show()
         
     def plot_series(series):
-        x = np.arange(len(series['TrainAcc']))
+        x = np.arange(len(series[next(iter(series))]))
         legend = []
         for key, value in series.items():
             plt.plot(x, value)
