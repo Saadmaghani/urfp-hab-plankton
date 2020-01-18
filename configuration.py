@@ -1,7 +1,7 @@
 import torch.optim as optim
 from torch.optim import lr_scheduler
 import torch.nn as nn
-from training import EarlyStopping, FocalLoss, VAE_Criterion
+from training import EarlyStopping, FocalLoss, VAE_Criterion, CNNVAE_Criterion, ConfidenceLoss
 from torchvision import transforms
 from preprocessing import Rescale, RandomCrop, ToTensor, Normalize
 
@@ -57,6 +57,7 @@ strategies (training):
 # version 4.2 = same as 4.0 except 1000 images 
 # version 4.21 = same as 4.21 except 1000 images 128 batch size 
 # version 4.3 = to test different models and avg. same as 4.0 except 500 images. (old 4.3 idk what it was)
+# version 4.4 = same as 4.2 except loss_function = binary cross entropy
 # version 5.0 = same as 3.5 except maxN = 30000, no thresholding, no images/class, loss_fc = FocalLoss
 # version 5.1 = same as 5.0 except maxN = 56000 which is similar N to 4.1 (56111)
 # version 5.2 = same as 5.0 except maxN = 100000
@@ -83,21 +84,28 @@ strategies (training):
 # version 12.0 = to train variational autoencoder. same as 10.0 for testing purposes. loss_function = VAE_Criterion
 # version 12.1 = same as 12.0 except batch_size = 256, 1000 images, 800 epochs, split [0.8,0.1,0.1]
 # version 12.2 = same as 12.1 except updated loss function
+# version 12.3 = same as 12.0 except loss_fn = cnnvae_lossfn
+# version 12.4 = same as 12.3 except es = EarlyStopping(patience = 20) (not min)
+# version 12.5 = same as 12.4 except images/class = 2000
+# version 12.6 = same as 12.4 except images/class = 5000 es = EarlyStopping(patience = 40, mode='min')
+# version 13.0 = same as 4.2 except loss_function = Confidenceloss w/ BCELoss & lambda = 1
+# version 13.1 = same as 13.0 except for testing purposes images/class = 20
+# version 13.2 = same as 13.1 except loss_function = Confidenceloss w/ MSELoss & lambda = 1
 class Hyperparameters:
-    version=4.3
+    version=13.2
     learning_rate = 0.0003
-    number_of_epochs = 800
+    number_of_epochs = 200
     momentum = 0.9
     optimizer = optim.Adam
-    loss_function = VAE_Criterion
+    loss_function = ConfidenceLoss
     es = EarlyStopping(patience=20)
-    batch_size = 256
+    batch_size = 256 
     scheduler = None
     pp_strategy = "thresholding"
-    data_splits = [0.8,0.1,0.1] #normally [0.6, 0.2, 0.2]
+    data_splits = [0.6,0.2,0.2] #vae: [0.8, 0.1, 0.1]
     maxN = None 
     minimum = None
-    train_AE = False 
-    number_of_images_per_class = 500
+    train_AE = False
+    number_of_images_per_class = 20
     transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) #transforms.Compose([Rescale((224, 224)),ToTensor(), Normalize(mean=[0.449], std=[0.226])]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
 

@@ -7,7 +7,7 @@ import math
 import sys
 
 class Trainer:
-    def __init__(self, HP_version, epochs, loss_fn, optimizer, scheduler = None, lr = 0.01, momentum=0.9, useCuda = False, autoencoder=False):
+    def __init__(self, HP_version, epochs, loss_fn, optimizer, scheduler = None, lr = 0.01, momentum=0.9, autoencoder=False):
         self.epochs = epochs
         self.hp_version = HP_version
         self.criterion = loss_fn()
@@ -15,11 +15,9 @@ class Trainer:
         self.scheduler = scheduler
         self.lr = lr
         self.momentum = momentum
-        self.device = torch.device("cpu")
-        if useCuda:
-            self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        else:
-            self.device = torch.device("cpu")
+
+        self.device = device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+       
         self.autoencoder = autoencoder
 
         
@@ -41,13 +39,18 @@ class Trainer:
         epoch = 0
         
         if partialModelFile is not None:
-            model, optimizer, epoch = self.load_partial_model(model, optimizer, partialModelFile)
+            model, optimizer, epoch = load_partial_model(model, optimizer, partialModelFile)
             
         model.to(self.device)
             
         loss = None
         valid_acc = None
         train_acc = None
+        other_stats = None
+
+        # version 5.x GoogleNet. other_stats = avg. Confidence 
+        if str(model).split(".")[0] == "GoogleNet_5":
+            other_stats = {"avg_confidence":[], "train_drop":[], 'valid_drop':[]}
 
         best_model_weights = copy.deepcopy(model.state_dict())
         if self.autoencoder:
@@ -63,6 +66,8 @@ class Trainer:
             for i, data in enumerate(trainLoader, 0):
                 #get the unputs; data is a list of [inputs, labels]
                 inputs, labels = data['image'], data['encoded_label'].to(self.device).float()
+
+
                 if type(inputs) is list:
                     for i in range(len(inputs)):
                         inputs[i] = inputs[i].to(self.device).float()
@@ -75,7 +80,13 @@ class Trainer:
                 #forward + backward + optimize
                 outputs = model(inputs)
 
-                
+                # version 5.x GoogleNet. save avg confidence
+                if str(model).split('.')[0] == "GoogleNet_5":
+                    _, conf = outputs 
+                    if "totalConfs" in vars():
+                        totalConfs = torch.cat((totalConfs, conf), 0)
+                    else:
+                        totalConfs = conf
                 # training autoencoder:
                 if self.autoencoder:
                     # for normal AE, uncomment the two lines below
@@ -85,24 +96,24 @@ class Trainer:
                 else:
                     loss = self.criterion(outputs, labels)
 
-
-                loss.backward()
+                loss.sum().backward()
                 optimizer.step()
                 
                 #print statistics - have to get more of these
-                running_loss += loss.item()
+                running_loss += loss.sum().item()
                 #print("batch no.:",i)
                 if i % 10 == 0:
                     #every 10 batches print - loss, training acc, validation acc
                     if self.autoencoder:
-                        train_sumSquares, _ = self.test_autoencoder(model, trainLoader)
-                        valid_sumSquares, _ = self.test_autoencoder(model, validLoader)
-                        train_acc = train_sumSquares.tolist() #simple ae torch.mean(train_sumSquares).tolist()
-                        valid_acc = valid_sumSquares.tolist() #simple ae torch.mean(valid_sumSquares).tolist()
+                        train_loss, _ = self.test_autoencoder(model, trainLoader)
+                        valid_loss, _ = self.test_autoencoder(model, validLoader)
+                        # log loss taken as its a cumulative loss
+                        train_acc = train_loss.log().tolist() #simple ae torch.mean(train_loss).tolist()
+                        valid_acc = valid_loss.log().tolist() #simple ae torch.mean(valid_loss).tolist()
                         print('Running Training Loss:', running_loss)
                         print('Training Loss:', train_acc)
                         print('Valid Loss:', valid_acc)
-                        if valid_acc < best_acc:
+                        if valid_acc < best_acc: 
                             best_acc = valid_acc
                             best_model_weights = copy.deepcopy(model.state_dict())
                     else:
@@ -110,6 +121,19 @@ class Trainer:
                         valid_pred, valid_target, _ = self.test(model, validLoader)
                         train_acc = accuracy_score(train_target.cpu(), train_pred.cpu())
                         valid_acc = accuracy_score(valid_target.cpu(), valid_pred.cpu())      
+
+                        if str(model).split(".")[0] == "GoogleNet_5":
+                            td = len(trainLoader.dataset) - train_pred.shape[0]
+                            vd = len(validLoader.dataset) - valid_pred.shape[0]
+                            print('train drop:', td)
+                            print('valid drop:', vd)
+                            meanConf = totalConfs.mean().item()
+                            model.threshold = meanConf
+                            print('current avg. confidence:', meanConf)
+                            other_stats['avg_confidence'].append(meanConf)
+                            other_stats['train_drop'].append(td)
+                            other_stats['valid_drop'].append(vd)
+                            del totalConfs
 
                         print('Running Training Loss:', running_loss)
                         print('Training Accuracy:', train_acc)
@@ -137,7 +161,7 @@ class Trainer:
             self._save_full_model(model)
         print('Finished Training')
         self.timeEnd = time.time()
-        return all_train_acc, all_valid_acc, epoch
+        return all_train_acc, all_valid_acc, epoch, other_stats
     
         
     def getTime(self):
@@ -166,44 +190,12 @@ class Trainer:
         path_to_statedict = './models/'+str(model)+"-"+str(self.hp_version)+'.pth' 
         torch.save(model.state_dict(), path_to_statedict)
 
-
-    def load_partial_model(self, model, optimizer, path_to_statedict):
-        checkpoint = torch.load(path_to_statedict)
-        
-        model.load_state_dict(checkpoint['model_state_dict'])
-        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-        epoch = checkpoint['epoch']
-        
-        #model.eval()
-        # - or -
-        model.train()
-        
-        return model, optimizer, epoch
     
-    def load_partial_model_eval(self, model, path_to_statedict):
-        checkpoint = torch.load(path_to_statedict)
-        model.load_state_dict(checkpoint['model_state_dict'])
-        model.eval()
-        # - or -
-        #model.train()
-        return model
-    
-  
-    def load_full_model(self, model, path_to_statedict):
-        state_dict = torch.load(path_to_statedict, map_location=lambda storage, loc: storage)
-        model.load_state_dict(state_dict)
-        model.eval()
-
-        del state_dict
-
-        return model
-
-
     def test_autoencoder(self, model, testloader):
         if not self.autoencoder:
             print("error. self.autoencoder = ", str(self.autoencoder))
             return
-        all_sumSquares = 0 # vae: 0  # simple AE: torch.FloatTensor().to(self.device)  
+        all_loss = 0 # vae: 0  # simple AE: torch.FloatTensor().to(self.device)  
 
         all_fnames = []
         model.to(self.device)
@@ -212,21 +204,15 @@ class Trainer:
 
             for data in testloader:
                 inputs, _ = data['image'].to(self.device).float(), data['encoded_label'].to(self.device).float()
+                #inputs, _ = data[0].to(self.device).float(), data[1].to(self.device).float()
                 outputs = model(inputs)
 
-                # VAE: 
-                x_sample, z_mu, z_var = outputs
-                recon_loss = F.binary_cross_entropy(x_sample, inputs, size_average=False)
-                kl_loss = 0.5 * torch.sum(torch.exp(z_var) + z_mu**2 - 1.0 - z_var)
-                loss = recon_loss + kl_loss
+                loss = self.criterion(outputs, inputs)
 
-                #Simple AE: sumsquare = torch.sum((outputs - inputs)**2) 
-
-
-                all_sumSquares += loss #Simple AE: torch.cat((all_sumSquares, sumsquare.view(1)), 0)
+                all_loss += loss #Simple AE: torch.cat((all_loss, sumsquare.view(1)), 0)
                 all_fnames.extend(data['fname'])
 
-        return all_sumSquares, all_fnames
+        return all_loss, all_fnames
 
     def test(self, model, testloader):
         all_preds = torch.LongTensor().to(self.device)
@@ -243,6 +229,17 @@ class Trainer:
                 _, labels = torch.max(labels, 1)
 
                 outputs = model(inputs)
+
+                # version 5.x GoogleNet has outputs = (outputs, confidence)
+                if str(model).split('.')[0] == "GoogleNet_5":
+                    outputs, confs = outputs 
+                    idxs = torch.nonzero(confs>model.threshold)[:,0]
+                    idxs = torch.unique(idxs)
+                    outputs = outputs[idxs]
+                    labels = labels[idxs]
+
+                if len(outputs.data) == 0:
+                    continue
                 _, predicted = torch.max(outputs.data, 1)
                 #print("labels:", labels)
                 #print("predicted:", predicted)
@@ -308,9 +305,64 @@ class EarlyStopping(object):
                 self.is_better = lambda a, best: a > best + (
                             best * min_delta / 100)
 
+
+def load_partial_model(self, model, optimizer, path_to_statedict):
+    checkpoint = torch.load(path_to_statedict)
+
+    model.load_state_dict(checkpoint['model_state_dict'])
+    optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+    epoch = checkpoint['epoch']
+
+    #model.eval()
+    # - or -
+    model.train()
+
+    return model, optimizer, epoch
+
+
+def load_partial_model_eval(model, path_to_statedict):
+    checkpoint = torch.load(path_to_statedict)
+    model.load_state_dict(checkpoint['model_state_dict'])
+    model.eval()
+    # - or -
+    #model.train()
+    return model
+
+
+def load_full_model(model, path_to_statedict):
+    state_dict = torch.load(path_to_statedict, map_location=lambda storage, loc: storage)
+    model.load_state_dict(state_dict)
+    model.eval()
+
+    del state_dict
+
+    return model
+
+
+
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
+
+# version 1.0 = classifierLoss = BCE Loss, lambda = 1
+# version 2.0 = MSELoss, lambda = 1
+class ConfidenceLoss(nn.Module):
+    version=2.0
+
+    def __init__(self, classifierLoss = nn.MSELoss, lambda_normalizer=1):
+        super(ConfidenceLoss, self).__init__()
+        self.classifierLoss = classifierLoss()
+        self.lambda_normalizer = lambda_normalizer
+
+    def forward(self, output_from_model, input_to_model):
+        softmax_classes, sigmoid_confidence = output_from_model
+        classifier_loss = self.classifierLoss(softmax_classes, input_to_model)* self.lambda_normalizer
+        loss = (sigmoid_confidence**2) * (classifier_loss**2) + (1-sigmoid_confidence)**2
+
+        #loss = loss.repeat(1,2)
+
+        return loss
+
 
 # script copied from https://graviraja.github.io/vanillavae/#
 # author: graviraja
@@ -334,11 +386,34 @@ class VAE_Criterion(nn.Module):
         return loss
 
 
+# script copied form https://github.com/sksq96/pytorch-vae/blob/master/vae-cnn.ipynb
+# author: sksq96
+class CNNVAE_Criterion(nn.Module):
+    def __init__(self):
+        super(CNNVAE_Criterion, self).__init__()
+
+    def forward(self, output_from_model, x):
+        recon_x, mu, logvar = output_from_model
+
+        BCE = F.binary_cross_entropy(recon_x, x, size_average=False)
+        # BCE = F.mse_loss(recon_x, x, size_average=False)
+
+        # see Appendix B from VAE paper:
+        # Kingma and Welling. Auto-Encoding Variational Bayes. ICLR, 2014
+        # 0.5 * sum(1 + log(sigma^2) - mu^2 - sigma^2)
+        KLD = -0.5 * torch.mean(1 + logvar - mu.pow(2) - logvar.exp())
+
+        """
+        print("#####################################")
+        print("BCE+KLD:", (BCE + KLD).item())
+        print("KLD:", KLD.item())
+        print("BCE:", BCE.item())
+        """
+        return BCE + KLD
+
 
 # script copied from https://www.kaggle.com/c/tgs-salt-identification-challenge/discussion/65938
 # author: Allen Qin, Github: qinfubiao
-
-
 class FocalLoss(nn.Module):
     def __init__(self, alpha=1, gamma=2, logits=False, reduce=True):
         super(FocalLoss, self).__init__()

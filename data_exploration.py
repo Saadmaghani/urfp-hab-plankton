@@ -30,7 +30,7 @@ for year in years:
 		non_hab_causing = [0]
 		for class_name in os.listdir(data_path):
 
-			if class_name not in class_names or class_name in ignored_classes:
+			if class_name not in all_classes or class_name in ignored_classes:
 				continue
 
 			#if class_name in ignored_classes:
