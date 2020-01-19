@@ -51,6 +51,8 @@ class Trainer:
         # version 5.x GoogleNet. other_stats = avg. Confidence 
         if str(model).split(".")[0] == "GoogleNet_5":
             other_stats = {"avg_confidence":[], "train_drop":[], 'valid_drop':[], 'loss':[], 'class_loss':[]}
+        else:
+            other_stats = {"loss": []}
 
         best_model_weights = copy.deepcopy(model.state_dict())
         if self.autoencoder:
@@ -143,11 +145,12 @@ class Trainer:
                             other_stats['avg_confidence'].append(meanConf)
                             other_stats['train_drop'].append(td)
                             other_stats['valid_drop'].append(vd)
-                            other_stats['loss'].append(running_loss)
+                            
                             other_stats['class_loss'].append(running_classLoss)
                             running_classLoss = 0.0
                             del totalConfs
 
+                        
                         print('Running Training Loss:', running_loss)
                         print('Training Accuracy:', train_acc)
                         print('Valid Accuracy:', valid_acc)
@@ -156,6 +159,7 @@ class Trainer:
                             best_model_weights = copy.deepcopy(model.state_dict())
 
                     print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+                    other_stats['loss'].append(running_loss)
                     running_loss = 0.0
 
                     all_train_acc.append(train_acc)
