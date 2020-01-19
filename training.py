@@ -144,7 +144,7 @@ class Trainer:
                             other_stats['train_drop'].append(td)
                             other_stats['valid_drop'].append(vd)
                             other_stats['loss'].append(running_loss)
-                            other_stats['class_loss'].apppend(running_classLoss)
+                            other_stats['class_loss'].append(running_classLoss)
                             running_classLoss = 0.0
                             del totalConfs
 
