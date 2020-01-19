@@ -50,7 +50,7 @@ class Trainer:
 
         # version 5.x GoogleNet. other_stats = avg. Confidence 
         if str(model).split(".")[0] == "GoogleNet_5":
-            other_stats = {"avg_confidence":[], "train_drop":[], 'valid_drop':[]}
+            other_stats = {"avg_confidence":[], "train_drop":[], 'valid_drop':[], 'loss':[], 'class_loss':[]}
 
         best_model_weights = copy.deepcopy(model.state_dict())
         if self.autoencoder:
@@ -60,6 +60,9 @@ class Trainer:
 
         while epoch < self.epochs:
             running_loss = 0.0
+            if str(model).split(".")[0] == "GoogleNet_5":
+                running_classLoss = 0.0
+
             if scheduler is not None:
                     scheduler.step()
 
@@ -94,13 +97,18 @@ class Trainer:
                     #    inputs = inputs.repeat(1,3,1,1)
                     loss = self.criterion(outputs, inputs)
                 else:
-                    loss, classifier_loss = self.criterion(outputs, labels)
+                    if str(model).split('.')[0] == "GoogleNet_5":
+                        loss, classifier_loss = self.criterion(outputs, labels)
+                        running_classLoss += classifier_loss.sum().item()
+                    else:
+                        loss = self.criterion(outputs, labels)
 
                 loss.sum().backward()
                 optimizer.step()
                 
                 #print statistics - have to get more of these
                 running_loss += loss.sum().item()
+                
                 #print("batch no.:",i)
                 if i % 10 == 0:
                     #every 10 batches print - loss, training acc, validation acc
@@ -130,11 +138,14 @@ class Trainer:
                             meanConf = totalConfs.mean().item()
                             model.threshold = meanConf
                             print('current avg. confidence:', meanConf)
+                            print('Running Training Class loss:', running_classLoss)
+
                             other_stats['avg_confidence'].append(meanConf)
                             other_stats['train_drop'].append(td)
                             other_stats['valid_drop'].append(vd)
                             other_stats['loss'].append(running_loss)
-                            other_stats['class_loss'].apppend(
+                            other_stats['class_loss'].apppend(running_classLoss)
+                            running_classLoss = 0.0
                             del totalConfs
 
                         print('Running Training Loss:', running_loss)
