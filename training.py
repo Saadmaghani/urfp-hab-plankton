@@ -50,7 +50,9 @@ class Trainer:
 
         # version 5.x GoogleNet. other_stats = avg. Confidence 
         if str(model).split(".")[0] == "GoogleNet_5":
-            other_stats = {"avg_confidence":[], "train_drop":[], 'valid_drop':[]}
+            other_stats = {"avg_confidence":[], "train_drop":[], 'valid_drop':[], 'loss':[], 'class_loss':[]}
+        else:
+            other_stats = {"loss": []}
 
         best_model_weights = copy.deepcopy(model.state_dict())
         if self.autoencoder:
@@ -60,6 +62,9 @@ class Trainer:
 
         while epoch < self.epochs:
             running_loss = 0.0
+            if str(model).split(".")[0] == "GoogleNet_5":
+                running_classLoss = 0.0
+
             if scheduler is not None:
                     scheduler.step()
 
@@ -94,13 +99,18 @@ class Trainer:
                     #    inputs = inputs.repeat(1,3,1,1)
                     loss = self.criterion(outputs, inputs)
                 else:
-                    loss = self.criterion(outputs, labels)
+                    if str(model).split('.')[0] == "GoogleNet_5":
+                        loss, classifier_loss = self.criterion(outputs, labels)
+                        running_classLoss += classifier_loss.sum().item()
+                    else:
+                        loss = self.criterion(outputs, labels)
 
                 loss.sum().backward()
                 optimizer.step()
                 
                 #print statistics - have to get more of these
                 running_loss += loss.sum().item()
+                
                 #print("batch no.:",i)
                 if i % 10 == 0:
                     #every 10 batches print - loss, training acc, validation acc
@@ -130,11 +140,17 @@ class Trainer:
                             meanConf = totalConfs.mean().item()
                             model.threshold = meanConf
                             print('current avg. confidence:', meanConf)
+                            print('Running Training Class loss:', running_classLoss)
+
                             other_stats['avg_confidence'].append(meanConf)
                             other_stats['train_drop'].append(td)
                             other_stats['valid_drop'].append(vd)
+                            
+                            other_stats['class_loss'].append(running_classLoss)
+                            running_classLoss = 0.0
                             del totalConfs
 
+                        
                         print('Running Training Loss:', running_loss)
                         print('Training Accuracy:', train_acc)
                         print('Valid Accuracy:', valid_acc)
@@ -143,6 +159,7 @@ class Trainer:
                             best_model_weights = copy.deepcopy(model.state_dict())
 
                     print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+                    other_stats['loss'].append(running_loss)
                     running_loss = 0.0
 
                     all_train_acc.append(train_acc)
@@ -345,23 +362,24 @@ import torch.nn.functional as F
 from torch.autograd import Variable
 
 # version 1.0 = classifierLoss = BCE Loss, lambda = 1
+# version 1.1 = classifierLoss = BCE Loss, lambda = 2
 # version 2.0 = MSELoss, lambda = 1
 class ConfidenceLoss(nn.Module):
-    version=2.0
+    version=1.0
 
-    def __init__(self, classifierLoss = nn.MSELoss, lambda_normalizer=1):
+    def __init__(self, classifierLoss = nn.BCELoss, lambda_normalizer=1):
         super(ConfidenceLoss, self).__init__()
         self.classifierLoss = classifierLoss()
         self.lambda_normalizer = lambda_normalizer
 
     def forward(self, output_from_model, input_to_model):
         softmax_classes, sigmoid_confidence = output_from_model
-        classifier_loss = self.classifierLoss(softmax_classes, input_to_model)* self.lambda_normalizer
+        classifier_loss = self.classifierLoss(softmax_classes, input_to_model) * self.lambda_normalizer
         loss = (sigmoid_confidence**2) * (classifier_loss**2) + (1-sigmoid_confidence)**2
-
+        
         #loss = loss.repeat(1,2)
 
-        return loss
+        return loss, classifier_loss
 
 
 # script copied from https://graviraja.github.io/vanillavae/#

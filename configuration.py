@@ -58,6 +58,7 @@ strategies (training):
 # version 4.21 = same as 4.21 except 1000 images 128 batch size 
 # version 4.3 = to test different models and avg. same as 4.0 except 500 images. (old 4.3 idk what it was)
 # version 4.4 = same as 4.2 except loss_function = binary cross entropy
+# version 4.41 = same as 4.4 except images/class = 20
 # version 5.0 = same as 3.5 except maxN = 30000, no thresholding, no images/class, loss_fc = FocalLoss
 # version 5.1 = same as 5.0 except maxN = 56000 which is similar N to 4.1 (56111)
 # version 5.2 = same as 5.0 except maxN = 100000
@@ -90,14 +91,16 @@ strategies (training):
 # version 12.6 = same as 12.4 except images/class = 5000 es = EarlyStopping(patience = 40, mode='min')
 # version 13.0 = same as 4.2 except loss_function = Confidenceloss w/ BCELoss & lambda = 1
 # version 13.1 = same as 13.0 except for testing purposes images/class = 20
+# version 13.11 = same as 13.1 except lambda = 2
+# version 13.12 = same as 13.1 except patience = 40
 # version 13.2 = same as 13.1 except loss_function = Confidenceloss w/ MSELoss & lambda = 1
 class Hyperparameters:
-    version=13.2
+    version=4.41
     learning_rate = 0.0003
     number_of_epochs = 200
     momentum = 0.9
     optimizer = optim.Adam
-    loss_function = ConfidenceLoss
+    loss_function = nn.BCELoss
     es = EarlyStopping(patience=20)
     batch_size = 256 
     scheduler = None
