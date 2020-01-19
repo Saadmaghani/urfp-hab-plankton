@@ -91,15 +91,16 @@ strategies (training):
 # version 13.0 = same as 4.2 except loss_function = Confidenceloss w/ BCELoss & lambda = 1
 # version 13.1 = same as 13.0 except for testing purposes images/class = 20
 # version 13.11 = same as 13.1 except lambda = 2
+# version 13.12 = same as 13.1 except patience = 40
 # version 13.2 = same as 13.1 except loss_function = Confidenceloss w/ MSELoss & lambda = 1
 class Hyperparameters:
-    version=13.1
+    version=13.12
     learning_rate = 0.0003
     number_of_epochs = 200
     momentum = 0.9
     optimizer = optim.Adam
     loss_function = ConfidenceLoss
-    es = EarlyStopping(patience=20)
+    es = EarlyStopping(patience=40)
     batch_size = 256 
     scheduler = None
     pp_strategy = "thresholding"
