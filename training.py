@@ -94,7 +94,7 @@ class Trainer:
                     #    inputs = inputs.repeat(1,3,1,1)
                     loss = self.criterion(outputs, inputs)
                 else:
-                    loss = self.criterion(outputs, labels)
+                    loss, classifier_loss = self.criterion(outputs, labels)
 
                 loss.sum().backward()
                 optimizer.step()
@@ -133,6 +133,8 @@ class Trainer:
                             other_stats['avg_confidence'].append(meanConf)
                             other_stats['train_drop'].append(td)
                             other_stats['valid_drop'].append(vd)
+                            other_stats['loss'].append(running_loss)
+                            other_stats['class_loss'].apppend(
                             del totalConfs
 
                         print('Running Training Loss:', running_loss)
@@ -345,23 +347,24 @@ import torch.nn.functional as F
 from torch.autograd import Variable
 
 # version 1.0 = classifierLoss = BCE Loss, lambda = 1
+# version 1.1 = classifierLoss = BCE Loss, lambda = 2
 # version 2.0 = MSELoss, lambda = 1
 class ConfidenceLoss(nn.Module):
-    version=2.0
+    version=1.0
 
-    def __init__(self, classifierLoss = nn.MSELoss, lambda_normalizer=1):
+    def __init__(self, classifierLoss = nn.BCELoss, lambda_normalizer=1):
         super(ConfidenceLoss, self).__init__()
         self.classifierLoss = classifierLoss()
         self.lambda_normalizer = lambda_normalizer
 
     def forward(self, output_from_model, input_to_model):
         softmax_classes, sigmoid_confidence = output_from_model
-        classifier_loss = self.classifierLoss(softmax_classes, input_to_model)* self.lambda_normalizer
+        classifier_loss = self.classifierLoss(softmax_classes, input_to_model) * self.lambda_normalizer
         loss = (sigmoid_confidence**2) * (classifier_loss**2) + (1-sigmoid_confidence)**2
-
+        
         #loss = loss.repeat(1,2)
 
-        return loss
+        return loss, classifier_loss
 
 
 # script copied from https://graviraja.github.io/vanillavae/#
