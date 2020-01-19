@@ -48,7 +48,7 @@ class Trainer:
         train_acc = None
         other_stats = None
 
-        # version 5.x GoogleNet. other_stats = avg. Confidence 
+        # version 5.x GoogleNet. other_stats = avg. confidence 
         if str(model).split(".")[0] == "GoogleNet_5":
             other_stats = {"avg_confidence":[], "train_drop":[], 'valid_drop':[], 'loss':[], 'class_loss':[]}
         else:
@@ -366,11 +366,13 @@ from torch.autograd import Variable
 # version 1.2 = classifierLoss = BCE Loss, lambda = 4
 # version 1.3 = classifierLoss = BCE Loss, lambda = 8
 # version 1.4 = classifierLoss = BCE Loss, lambda = 16
+# version 1.5 = classifierLoss = BCE Loss, lambda = 32
+# version 1.6 = classifierLoss = BCE Loss, lambda = 12
 # version 2.0 = MSELoss, lambda = 1
 class ConfidenceLoss(nn.Module):
-    version=1.4
+    version=1.6
 
-    def __init__(self, classifierLoss = nn.BCELoss, lambda_normalizer=16):
+    def __init__(self, classifierLoss = nn.BCELoss, lambda_normalizer=12):
         super(ConfidenceLoss, self).__init__()
         self.classifierLoss = classifierLoss()
         self.lambda_normalizer = lambda_normalizer
