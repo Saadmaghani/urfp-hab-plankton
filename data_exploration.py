@@ -2,7 +2,7 @@ import os
 from PIL import Image
 import matplotlib.pyplot as plt
 
-data_folder = "data"
+data_folder = "data_19_Jan"
 years = [str(i) for i in range(2006, 2015)]
 class_names = ["Akashiwo", "Amphidinium sp", "Chrysochromulina", "Cochlodinium", 
 	"Dinophysis", "Gonyaulax", "Guinardia_delicatula", "Guinardia_striata", "Gyrodinium", 
