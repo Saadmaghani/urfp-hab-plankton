@@ -107,13 +107,17 @@ class Metrics:
         plt.yticks(np.arange(cm.shape[0]), labels)
         plt.show()
         
-    def plot_series(series):
-        x = np.arange(len(series[next(iter(series))]))
+    def plot_series(series, title="", Lloc="upper left", Lncol=1, Lbbox=None):
         legend = []
         for key, value in series.items():
+            x = np.arange(len(value))
             plt.plot(x, value)
             legend.append(key)
-        plt.legend(legend, loc='upper left')
+        if Lbbox is None:
+            plt.legend(legend, loc=Lloc, ncol=Lncol)
+        else:
+            plt.legend(legend, loc=Lloc, ncol=Lncol, bbox_to_anchor=Lbbox)
+        plt.title(title)
         plt.show()
 
 
