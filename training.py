@@ -368,11 +368,17 @@ from torch.autograd import Variable
 # version 1.4 = classifierLoss = BCE Loss, lambda = 16
 # version 1.5 = classifierLoss = BCE Loss, lambda = 32
 # version 1.6 = classifierLoss = BCE Loss, lambda = 12
+# version 1.7 = classifierLoss = BCE Loss, lambda = 9
+# version 1.8 = classifierLoss = BCE Loss, lambda = 10
+# version 1.9 = classifierLoss = BCE Loss, lambda = 11
+# version 1.10 = classifierLoss = BCE Loss, lambda = 13
+# version 1.11 = classifierLoss = BCE Loss, lambda = 14
+# version 1.12 = classifierLoss = BCE Loss, lambda = 15
 # version 2.0 = MSELoss, lambda = 1
 class ConfidenceLoss(nn.Module):
-    version=2.0
+    version=1.10
 
-    def __init__(self, classifierLoss = nn.MSELoss, lambda_normalizer=1):
+    def __init__(self, classifierLoss = nn.BCELoss, lambda_normalizer=13):
         super(ConfidenceLoss, self).__init__()
         self.classifierLoss = classifierLoss()
         self.lambda_normalizer = lambda_normalizer
