@@ -99,9 +99,15 @@ strategies (training):
 # version 13.124 = same as 13.12 except lambda = 16
 # version 13.125 = same as 13.12 except lambda = 32
 # version 13.126 = same as 13.12 except lambda = 12
+# version 13.127 = same as 13.12 except lambda = 9
+# version 13.128 = same as 13.12 except lambda = 10
+# version 13.129 = same as 13.12 except lambda = 11
+# version 13.1211 = same as 13.12 except lambda = 13
+# version 13.1212 = same as 13.12 except lambda = 14
+# version 13.1213 = same as 13.12 except lambda = 15
 # version 13.2 = same as 13.1 except loss_function = Confidenceloss w/ MSELoss & lambda = 1
 class Hyperparameters:
-    version=13.2
+    version=13.1213
     learning_rate = 0.0003
     number_of_epochs = 200
     momentum = 0.9
