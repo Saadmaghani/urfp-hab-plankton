@@ -51,6 +51,7 @@ class Trainer:
         # version 5.x GoogleNet. other_stats = avg. confidence 
         if str(model).split(".")[0] == "GoogleNet_5":
             other_stats = {"avg_confidence":[], "train_drop":[], 'valid_drop':[], 'loss':[], 'class_loss':[]}
+            best_conf = 0
         else:
             other_stats = {"loss": []}
 
@@ -65,8 +66,8 @@ class Trainer:
             if str(model).split(".")[0] == "GoogleNet_5":
                 running_classLoss = 0.0
 
-            if scheduler is not None:
-                    scheduler.step()
+            #if scheduler is not None:
+            #    scheduler.step()
 
             for i, data in enumerate(trainLoader, 0):
                 #get the unputs; data is a list of [inputs, labels]
@@ -157,6 +158,8 @@ class Trainer:
                         if valid_acc > best_acc:
                             best_acc = valid_acc
                             best_model_weights = copy.deepcopy(model.state_dict())
+                            if str(model).split(".")[0] == "GoogleNet_5":
+                                best_conf = 
 
                     print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
                     other_stats['loss'].append(running_loss)
@@ -235,14 +238,19 @@ class Trainer:
         all_preds = torch.LongTensor().to(self.device)
         all_targets = torch.LongTensor().to(self.device)
 
+
         all_fnames = []
+        if str(model).split('.')[0] == "GoogleNet_5":
+            all_fnames = ([], [])
+
         model.to(self.device)
         
         with torch.no_grad():
 
             for data in testloader:
                 inputs, labels = data['image'].to(self.device).float(), data['encoded_label'].to(self.device).float()
-                
+                fnames = data['fname']
+
                 _, labels = torch.max(labels, 1)
 
                 outputs = model(inputs)
@@ -250,10 +258,13 @@ class Trainer:
                 # version 5.x GoogleNet has outputs = (outputs, confidence)
                 if str(model).split('.')[0] == "GoogleNet_5":
                     outputs, confs = outputs 
-                    idxs = torch.nonzero(confs>model.threshold)[:,0]
-                    idxs = torch.unique(idxs)
+                    idxs = torch.unique(torch.nonzero(confs>model.threshold)[:,0])
+                    not_idxs = torch.unique(torch.nonzero(confs <=model.threshold)[:,0])
+
                     outputs = outputs[idxs]
                     labels = labels[idxs]
+                    dropped_fnames = fnames[not_idxs]
+                    fnames = fnames[idxs]
 
                 if len(outputs.data) == 0:
                     continue
@@ -266,8 +277,11 @@ class Trainer:
                 
                 #if total >=10:
                 #   break
-                
-                all_fnames.extend(data['fname'])
+                if str(model).split('.')[0] == "GoogleNet_5":
+                    all_fnames[0].extend(fnames)
+                    all_fnames[1].extend(dropped_fnames)
+                else:
+                    all_fnames.extend(fnames)
 
         return all_preds, all_targets, all_fnames
 

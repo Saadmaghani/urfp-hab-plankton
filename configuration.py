@@ -106,14 +106,15 @@ strategies (training):
 # version 13.1212 = same as 13.12 except lambda = 14
 # version 13.1213 = same as 13.12 except lambda = 15
 # version 13.2 = same as 13.1 except loss_function = Confidenceloss w/ MSELoss & lambda = 1
+# version 13.3 = same as 13.128 (lambda = 10, patience=40, loss_fc = ConfidenceLoss w/ BCELoss) except 100 images/class
 class Hyperparameters:
-    version=13.1211
+    version=13.3
     learning_rate = 0.0003
     number_of_epochs = 200
     momentum = 0.9
     optimizer = optim.Adam
     loss_function = ConfidenceLoss
-    es = EarlyStopping(patience=20)
+    es = EarlyStopping(patience=40)
     batch_size = 256 
     scheduler = None
     pp_strategy = "thresholding"
@@ -121,6 +122,6 @@ class Hyperparameters:
     maxN = None 
     minimum = None
     train_AE = False
-    number_of_images_per_class = 20
+    number_of_images_per_class = 100
     transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) #transforms.Compose([Rescale((224, 224)),ToTensor(), Normalize(mean=[0.449], std=[0.226])]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
 
