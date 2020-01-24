@@ -4,6 +4,7 @@ import numpy as np
 import json
 from skimage import io, transform
 import torchvision
+from numpy.polynomial.polynomial import polyfit
 
 class Metrics:
 
@@ -107,16 +108,54 @@ class Metrics:
         plt.yticks(np.arange(cm.shape[0]), labels)
         plt.show()
         
-    def plot_series(series, title="", Lloc="upper left", Lncol=1, Lbbox=None):
-        legend = []
+
+    def _plot_avg_lines(x, y, size, color):
+        q = len(x)//size
+        r = len(x)%size
+        for i in range(q,0,-1):
+            b, m = polyfit(x[(i-1)*size+r : (i*size)+r], y[(i-1)*size+r : (i*size)+r], 1)
+            plt.plot(x[(i-1)*size+r : (i*size)+r], b + m * x[(i-1)*size+r : (i*size)+r], 'C'+str(color), linewidth=3)
+        b, m = polyfit(x[0:r], y[0:r], 1)
+        plt.plot(x[0:r], b + m * x[0:r], 'C'+str(color), linewidth=3)
+
+    def _plot_lobf_deg(x, y, degree, color):
+        
+        a = polyfit(x, y, degree)
+        out = 0
+        for i, deg in enumerate(a):
+            out += deg*x**i
+        plt.plot(x, out, 'C'+str(color), linewidth=3)
+
+
+    def plot_series(series, title="", Lloc="upper left", Lncol=1, Lbbox=None, show_avgs=None):
+        cn = 0
+
         for key, value in series.items():
             x = np.arange(len(value))
-            plt.plot(x, value)
-            legend.append(key)
+
+            if show_avgs is not None:
+                if isinstance(show_avgs, tuple):
+                    avg, show = show_avgs
+                    if show:
+                        plt.plot(x, value, 'C'+str(cn), label=key)
+                    else:
+                        plt.plot(0,0, 'C'+str(cn), label=key)
+                    Metrics._plot_lobf_deg(x, value, avg, color=cn)
+
+                else:
+                    avg = show_avgs
+                    plt.plot(x, value, 'C'+str(cn), label=key)
+                    Metrics._plot_lobf_deg(x, value, avg, color=cn)
+
+            else:
+                plt.plot(x, value, 'C'+str(cn), label=key)
+
+            cn = (cn+1)%10
+
         if Lbbox is None:
-            plt.legend(legend, loc=Lloc, ncol=Lncol)
+            plt.legend(loc=Lloc, ncol=Lncol)
         else:
-            plt.legend(legend, loc=Lloc, ncol=Lncol, bbox_to_anchor=Lbbox)
+            plt.legend(loc=Lloc, ncol=Lncol, bbox_to_anchor=Lbbox)
         plt.title(title)
         plt.show()
 
