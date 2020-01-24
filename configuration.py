@@ -113,7 +113,7 @@ class Hyperparameters:
     momentum = 0.9
     optimizer = optim.Adam
     loss_function = ConfidenceLoss
-    es = EarlyStopping(patience=20)
+    es = EarlyStopping(patience=40)
     batch_size = 256 
     scheduler = None
     pp_strategy = "thresholding"
