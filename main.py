@@ -91,7 +91,7 @@ validAcc = []
 epochs = 0 
 trainAcc, validAcc, epochs, other_stats = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
 
-print("model thredhold -3", model.thredhold)
+print("model thredhold -3", model.threshold)
 
 # Just Testing
 """

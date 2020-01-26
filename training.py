@@ -134,7 +134,7 @@ class Trainer:
                         valid_acc = accuracy_score(valid_target.cpu(), valid_pred.cpu())      
 
                         if str(model).split(".")[0] == "GoogleNet_5":
-                            print("model threshold," model.threshold)
+                            print("model threshold", model.threshold)
                             print("tl dataset", trainLoader.dataset)
                             print("train_pred", train_pred.shape[0])
                             print("vl dataset", len(validLoader.dataset))
