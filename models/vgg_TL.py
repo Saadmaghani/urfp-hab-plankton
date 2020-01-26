@@ -131,7 +131,7 @@ class AlexNet(nn.Module):
 # version 5.2 = same as 5.1 except training threshold changes to avg. confidence. initial 0.0
 # version 5.3 = same as 5.2 except dropping images with conf < threshold.
 class GoogleNet(nn.Module):
-    version = 5.3
+    version = 5.2
 
     # used with version 5.0
     class IdentityLayer(nn.Module):
@@ -210,8 +210,8 @@ class GoogleNet(nn.Module):
             x = self.model(x)
             results = self.softmax(self.classifier(x))
             confidence = self.sigmoid(self.confidence(x))
-            idxs = torch.unique(torch.nonzero(confidence>model.threshold)[:,0])
-            results = results[idxs]
+            #idxs = torch.unique(torch.nonzero(confidence>model.threshold)[:,0])
+            #results = results[idxs]
             x = (results, confidence)
         else:
             x = x.repeat(1, 3, 1, 1)

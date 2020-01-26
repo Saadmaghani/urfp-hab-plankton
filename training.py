@@ -128,16 +128,21 @@ class Trainer:
                             best_acc = valid_acc
                             best_model_weights = copy.deepcopy(model.state_dict())
                     else:
-                        train_pred, train_target, _ = self.test(model, trainLoader)
-                        valid_pred, valid_target, _ = self.test(model, validLoader)
+                        train_pred, train_target, t_f = self.test(model, trainLoader)
+                        valid_pred, valid_target, v_f = self.test(model, validLoader)
                         train_acc = accuracy_score(train_target.cpu(), train_pred.cpu())
                         valid_acc = accuracy_score(valid_target.cpu(), valid_pred.cpu())      
 
                         if str(model).split(".")[0] == "GoogleNet_5":
-                            print("tl dataset", trainLoader.dataset)
+                            print("tl dataset", len(trainLoader.dataset))
                             print("train_pred", train_pred.shape[0])
-                            print("vl dataset", validLoader.dataset)
+                            print("vl dataset", len(validLoader.dataset))
                             print("vl_pred", valid_pred.shape[0])
+                            print("t_f[0]", len(t_f[0]))
+                            print("t_f[1]", len(t_f[1]))
+                            print("v_f[0]", len(v_f[0]))
+                            print("v_f[1]", len(v_f[1]))
+
 
                             td = len(trainLoader.dataset) - train_pred.shape[0]
                             vd = len(validLoader.dataset) - valid_pred.shape[0]
