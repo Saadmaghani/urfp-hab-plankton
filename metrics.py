@@ -6,6 +6,7 @@ from skimage import io, transform
 import torchvision
 from numpy.polynomial.polynomial import polyfit
 import re
+import random
 
 class Metrics:
 
@@ -182,9 +183,10 @@ class FileHandler:
                 self.d[cl] = {'count': 0, 'files':[]}
 
     def sample(self, n, name=None):
-        if name is not None:
-            fname = random.sample(self.d[name]['files'], n)
-            show_plankton(fname)
+        if name is None:
+            name = random.choice(self.d.keys())
+        fname = random.sample(self.d[name]['files'], n)
+        show_plankton(fname) 
 
     def plot_counts(self):
         x = [names for names in self.d.keys()]
