@@ -159,7 +159,7 @@ class Trainer:
                             best_acc = valid_acc
                             best_model_weights = copy.deepcopy(model.state_dict())
                             if str(model).split(".")[0] == "GoogleNet_5":
-                                best_conf = 
+                                best_conf = model.threshold 
 
                     print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
                     other_stats['loss'].append(running_loss)
@@ -177,6 +177,9 @@ class Trainer:
                 break
         
             model.load_state_dict(best_model_weights)
+            if str(model).split(".")[0] == "GoogleNet_5":
+                model.threshold = best_conf
+
         if save == True:
             self._save_full_model(model)
         print('Finished Training')
