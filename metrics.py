@@ -5,6 +5,7 @@ import json
 from skimage import io, transform
 import torchvision
 from numpy.polynomial.polynomial import polyfit
+import re
 
 class Metrics:
 
@@ -167,6 +168,31 @@ class Metrics:
             for cl in uniq_classes:
                 class_names.append(preprocessor.onehotInd_to_label(cl))
             return class_names
+
+
+class FileHandler:
+    def __init__(self, list_of_files):
+        self.d = {}
+        for fn in list_of_files:
+            cl = re.search("\/.*\/\d+\/(.*)\/", fn).group(1)
+            if cl in self.d:
+                self.d[cl]['count'] += 1
+                self.d[cl]['files'].append(fn)
+            else:
+                self.d[cl] = {'count': 0, 'files':[]}
+
+    def sample(self, n, name=None):
+        if name is not None:
+            fname = random.sample(self.d[name]['files'], n)
+            show_plankton(fname)
+
+    def plot_counts(self):
+        x = [names for names in self.d.keys()]
+        x.sort()
+        y = [self.d[names]['count'] for names in x]
+        plt.xticks(rotation=90)
+        plt.bar(x,y)
+        plt.show()
 
 def show_plankton(fnames):
     c=0
