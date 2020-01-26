@@ -266,8 +266,14 @@ class Trainer:
 
                     outputs = outputs[idxs]
                     labels = labels[idxs]
-                    dropped_fnames = fnames[not_idxs]
-                    fnames = fnames[idxs]
+
+                    print(type(labels))
+                    print(type(fnames))
+                    print(type(idxs))
+
+
+                    dropped_fnames = [fnames[i] for i in not_idxs.tolist()]
+                    fnames = [fnames[i] for i in idxs.tolist()]
 
                 if len(outputs.data) == 0:
                     continue
