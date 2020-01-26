@@ -134,6 +134,11 @@ class Trainer:
                         valid_acc = accuracy_score(valid_target.cpu(), valid_pred.cpu())      
 
                         if str(model).split(".")[0] == "GoogleNet_5":
+                            print("tl dataset", trainLoader.dataset)
+                            print("train_pred", train_pred.shape[0])
+                            print("vl dataset", validLoader.dataset)
+                            print("vl_pred", valid_pred.shape[0])
+
                             td = len(trainLoader.dataset) - train_pred.shape[0]
                             vd = len(validLoader.dataset) - valid_pred.shape[0]
                             print('train drop:', td)
