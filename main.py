@@ -138,7 +138,7 @@ f = open("./stats/stats-"+str(model)+"-"+str(HP.version)+".json","w+")
 #str(test_met.accuracy()) + \
 
 str_to_write = "{\"Time\": \""+ time +"\",\n \"Epochs\": "+str(epochs)+ ",\n \"TrainAcc\": "+ str(trainAcc)+",\n \"ValidAcc\": "+str(validAcc)+",\n \"TestAcc\": "+ str(test_acc) + \
-",\n \"Test_Pred\": " + str(list(test_pred.cpu().numpy())) + ",\n \"Test_Target\": " + str(list(test_target.cpu().numpy())) + ",\n \"Test_fnames\": " + json.dumps(test_fnames) + \
+",\n \"Test_Pred\": " + str(list(test_pred.cpu().numpy())) + ",\n \"Test_Target\": " + str(list(test_target.cpu().numpy())) + ",\n \"Test_fnames\": " + json.dumps(test_fnames) + ",\n \"Test_dropped_fnames\": " + json.dumps(test_dropped_fnames) + \
 ",\n \"avg_confidence\": " + str(other_stats["avg_confidence"]) + ",\n \"train_drop\": " + str(other_stats["train_drop"])+ ",\n \"valid_drop\": " + str(other_stats["valid_drop"]) + \
 ",\n \"loss\": "+ str(other_stats["loss"]) + ",\n \"class_loss\": "+ str(other_stats["class_loss"]) + \
 "}"
