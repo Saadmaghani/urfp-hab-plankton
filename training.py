@@ -134,6 +134,7 @@ class Trainer:
                         valid_acc = accuracy_score(valid_target.cpu(), valid_pred.cpu())      
 
                         if str(model).split(".")[0] == "GoogleNet_5":
+                            print("model threshold," model.threshold)
                             print("tl dataset", trainLoader.dataset)
                             print("train_pred", train_pred.shape[0])
                             print("vl dataset", validLoader.dataset)
@@ -177,13 +178,14 @@ class Trainer:
             if save == True:
                 self._save_partial_model(model, epoch, loss, optimizer)
 
-            #early stopping checked every epoch rather than every minibatch
-            if earlyStopping is not None and earlyStopping.step(valid_acc):
-                break
-        
             model.load_state_dict(best_model_weights)
             if str(model).split(".")[0] == "GoogleNet_5":
                 model.threshold = best_conf
+                print("model threshold-2", model.threshold)
+
+            #early stopping checked every epoch rather than every minibatch
+            if earlyStopping is not None and earlyStopping.step(valid_acc):
+                break
 
         if save == True:
             self._save_full_model(model)
