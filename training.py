@@ -101,6 +101,9 @@ class Trainer:
                     loss = self.criterion(outputs, inputs)
                 else:
                     if str(model).split('.')[0] == "GoogleNet_5":
+                        idxs = torch.unique(torch.nonzero(conf>model.threshold)[:,0])
+                        labels = labels[idxs]
+                        outputs = (outputs[0][idxs], outputs[1][idxs])
                         loss, classifier_loss = self.criterion(outputs, labels)
                         running_classLoss += classifier_loss.sum().item()
                     else:
