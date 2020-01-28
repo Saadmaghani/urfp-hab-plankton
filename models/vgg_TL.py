@@ -130,9 +130,10 @@ class AlexNet(nn.Module):
 # version 5.17 = same as 5.1 except threshold = 0.8
 # version 5.2 = same as 5.1 except training threshold changes to avg. confidence. initial 0.0
 # version 5.3 = same as 5.2 except dropping images with conf < threshold.
-# version 5.4 = same as 5.2 except dropping images with conf < threshold.
+# version 5.4 = same as 5.3 except conf = max x b4 softmax  
+# version 5.5 = same as 5.3 except conf = max x after softmax  
 class GoogleNet(nn.Module):
-    version = 5.4
+    version = 5.5
 
     # used with version 5.0
     class IdentityLayer(nn.Module):
@@ -208,11 +209,10 @@ class GoogleNet(nn.Module):
         elif self.version >= 5.0 and self.version < 6.0:
             x = x.repeat(1, 3, 1, 1)
             x = self.model(x)
+            x = self.classifier(x)
 
-            print(x.shape)
-            confidence, _ = torch.max(x, 1)
-            print(confidence.shape)
-            results = self.softmax(self.classifier(x))
+            results = self.softmax(x)
+            confidence, _ = torch.max(results, 1)
             #confidence = self.sigmoid(self.confidence(x))
             x = (results, confidence)
         else:
