@@ -101,9 +101,10 @@ class Trainer:
                     loss = self.criterion(outputs, inputs)
                 else:
                     if str(model).split('.')[0] == "GoogleNet_5":
-                        idxs = torch.unique(torch.nonzero(conf>model.threshold)[:,0])
-                        labels = labels[idxs]
-                        outputs = (outputs[0][idxs], outputs[1][idxs])
+                        if str(model).split('_')[1][0:3] "5.3":
+                            idxs = torch.unique(torch.nonzero(conf>model.threshold)[:,0])
+                            labels = labels[idxs]
+                            outputs = (outputs[0][idxs], outputs[1][idxs])
                         loss, classifier_loss = self.criterion(outputs, labels)
                         running_classLoss += classifier_loss.sum().item()
                     else:
@@ -407,10 +408,11 @@ from torch.autograd import Variable
 # version 1.11 = classifierLoss = BCE Loss, lambda = 14
 # version 1.12 = classifierLoss = BCE Loss, lambda = 15
 # version 2.0 = MSELoss, lambda = 1
+# version 3.0 = BCELoss, lambda = 1, not squared. conf*bceLoss*λ + (1-conf)
 class ConfidenceLoss(nn.Module):
-    version=1.8
+    version=3.0
 
-    def __init__(self, classifierLoss = nn.BCELoss, lambda_normalizer=10):
+    def __init__(self, classifierLoss = nn.BCELoss, lambda_normalizer=1):
         super(ConfidenceLoss, self).__init__()
         self.classifierLoss = classifierLoss()
         self.lambda_normalizer = lambda_normalizer
@@ -418,7 +420,7 @@ class ConfidenceLoss(nn.Module):
     def forward(self, output_from_model, input_to_model):
         softmax_classes, sigmoid_confidence = output_from_model
         classifier_loss = self.classifierLoss(softmax_classes, input_to_model) * self.lambda_normalizer
-        loss = (sigmoid_confidence**2) * (classifier_loss**2) + (1-sigmoid_confidence)**2
+        loss = (sigmoid_confidence) * (classifier_loss) + (1-sigmoid_confidence)
         
         #loss = loss.repeat(1,2)
 
