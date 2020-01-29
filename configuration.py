@@ -110,8 +110,9 @@ strategies (training):
 # version 13.4 = same as 13.138 except instead of ConfidenceLoss its just nn.BCELoss
 # version 13.5 = ConfidenceLoss v3
 # version 13.51 = same as 13.5 except 100 images/class 
+# version 13.52 = same as 13.5 except 1000 images/class 
 class Hyperparameters:
-    version=13.51
+    version=13.52
     learning_rate = 0.0003
     number_of_epochs = 200
     momentum = 0.9
@@ -125,6 +126,6 @@ class Hyperparameters:
     maxN = None 
     minimum = None
     train_AE = False
-    number_of_images_per_class = 100
+    number_of_images_per_class = 1000
     transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) #transforms.Compose([Rescale((224, 224)),ToTensor(), Normalize(mean=[0.449], std=[0.226])]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
 
