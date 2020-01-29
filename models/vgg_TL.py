@@ -129,7 +129,7 @@ class AlexNet(nn.Module):
 # version 5.16 = same as 5.1 except threshold = 0.7
 # version 5.17 = same as 5.1 except threshold = 0.8
 # version 5.2 = same as 5.1 except training threshold changes to avg. confidence. initial 0.0
-# version 5.3 = same as 5.2 except dropping images (during training) with conf < threshold.
+# version 5.3 = same as 5.2 except dropping images (during training) with conf < threshold. !! with 13.5 GG
 # version 5.4 = same as 5.3 except conf = max x b4 softmax   !! does not work
 # version 5.5 = same as 5.3 except conf = max x after softmax !! works pretty good but fairly obvious why. Very high drop rate
 # version 5.6 = conf = conf layer after classification b4 softmax!! Does not work
