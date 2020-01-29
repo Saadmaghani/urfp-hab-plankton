@@ -134,8 +134,9 @@ class AlexNet(nn.Module):
 # version 5.5 = same as 5.3 except conf = max x after softmax !! works pretty good but fairly obvious why. Very high drop rate
 # version 5.6 = conf = conf layer after classification b4 softmax!! Does not work
 # version 5.7 = Dropout layer b4 conf layer
+# version 5.71 = Dropout layer b4 conf layer
 class GoogleNet(nn.Module):
-    version = 5.7
+    version = 5.71
 
     # used with version 5.0
     class IdentityLayer(nn.Module):
@@ -179,7 +180,7 @@ class GoogleNet(nn.Module):
                 self.confidence = nn.Linear(30, 1)
             else:
                 self.confidence = nn.Linear(1024, 1)
-            self.dropout = nn.Dropout()
+            self.dropout = nn.Dropout(p=0.2)
         else:
             self.model.fc = nn.Linear(1024, 30)
 
@@ -217,7 +218,7 @@ class GoogleNet(nn.Module):
             x = self.model(x)
 
             results = self.softmax(self.classifier(x))
-            confidence = self.sigmoid(self.confidence(self.drouput(x)))
+            confidence = self.sigmoid(self.confidence(self.dropout(x)))
             x = (results, confidence)
         else:
             x = x.repeat(1, 3, 1, 1)
