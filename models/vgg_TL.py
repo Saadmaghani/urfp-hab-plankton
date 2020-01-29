@@ -131,7 +131,7 @@ class AlexNet(nn.Module):
 # version 5.2 = same as 5.1 except training threshold changes to avg. confidence. initial 0.0
 # version 5.3 = same as 5.2 except dropping images with conf < threshold.
 # version 5.4 = same as 5.3 except conf = max x b4 softmax  
-# version 5.5 = same as 5.3 except conf = max x after softmax  
+# version 5.5 = same as 5.3 except conf = max x after softmax
 class GoogleNet(nn.Module):
     version = 5.5
 
