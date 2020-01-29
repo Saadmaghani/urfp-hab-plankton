@@ -108,9 +108,9 @@ strategies (training):
 # version 13.2 = same as 13.1 except loss_function = Confidenceloss w/ MSELoss & lambda = 1
 # version 13.3 = same as 13.128 (lambda = 10, patience=40, loss_fc = ConfidenceLoss w/ BCELoss) except 100 images/class
 # version 13.4 = same as 13.138 except instead of ConfidenceLoss its just nn.BCELoss
-# version 13.4 = ConfidenceLoss v3
+# version 13.5 = ConfidenceLoss v3
 class Hyperparameters:
-    version=13.128
+    version=13.5
     learning_rate = 0.0003
     number_of_epochs = 200
     momentum = 0.9

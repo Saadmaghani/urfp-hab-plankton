@@ -101,7 +101,7 @@ class Trainer:
                     loss = self.criterion(outputs, inputs)
                 else:
                     if str(model).split('.')[0] == "GoogleNet_5":
-                        if str(model).split('_')[1][0:3] "5.3":
+                        if str(model).split('_')[1][0:3] == "5.3":
                             idxs = torch.unique(torch.nonzero(conf>model.threshold)[:,0])
                             labels = labels[idxs]
                             outputs = (outputs[0][idxs], outputs[1][idxs])
