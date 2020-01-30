@@ -139,16 +139,6 @@ class Trainer:
 
                         if str(model).split(".")[0] == "GoogleNet_5":
                             print("model threshold", model.threshold)
-                            print("tl dataset", trainLoader.dataset)
-                            print("train_pred", train_pred.shape[0])
-                            print("vl dataset", len(validLoader.dataset))
-                            print("vl_pred", valid_pred.shape[0])
-                            print("t_f[0]", len(t_f[0]))
-                            print("t_f[1]", len(t_f[1]))
-                            print("v_f[0]", len(v_f[0]))
-                            print("v_f[1]", len(v_f[1]))
-
-
                             td = len(trainLoader.dataset) - train_pred.shape[0]
                             vd = len(validLoader.dataset) - valid_pred.shape[0]
                             print('train drop:', td)
@@ -190,7 +180,7 @@ class Trainer:
             model.load_state_dict(best_model_weights)
             if str(model).split(".")[0] == "GoogleNet_5":
                 model.threshold = best_conf
-                print("model threshold-2", model.threshold)
+                print("best_conf", model.threshold)
 
             #early stopping checked every epoch rather than every minibatch
             if earlyStopping is not None and earlyStopping.step(valid_acc):
