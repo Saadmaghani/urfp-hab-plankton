@@ -34,7 +34,7 @@ class Trainer:
         else:
             optimizer = self.optimizer(model.parameters(), lr=self.lr, momentum=self.momentum)
 
-        scheduler = None if self.scheduler is None else self.scheduler['scheduler'](optimizer, self.scheduler['step_size'])
+        scheduler = None if self.scheduler is None else self.scheduler['scheduler'](optimizer, self.scheduler['args'])
 
         epoch = 0
         
@@ -65,9 +65,6 @@ class Trainer:
             running_loss = 0.0
             if str(model).split(".")[0] == "GoogleNet_5":
                 running_classLoss = 0.0
-
-            #if scheduler is not None:
-            #    scheduler.step()
 
             for i, data in enumerate(trainLoader, 0):
                 #get the unputs; data is a list of [inputs, labels]
@@ -174,6 +171,9 @@ class Trainer:
                     all_valid_acc.append(valid_acc)
                 
             epoch += 1
+            if scheduler is not None:
+                scheduler.step()
+            
             if save == True:
                 self._save_partial_model(model, epoch, loss, optimizer)
 
