@@ -121,7 +121,7 @@ class Hyperparameters:
     loss_function = ConfidenceLoss 
     es = EarlyStopping(patience=40)
     batch_size = 256 
-    scheduler = {'scheduler': lr_scheduler.MultiplicativeLR, 'args': lambda epoch: 0.1}
+    scheduler = {'scheduler': lr_scheduler.LambdaLR, 'args': lambda epoch: 0.1}
     pp_strategy = "thresholding"
     data_splits = [0.6,0.2,0.2] #vae: [0.8, 0.1, 0.1]
     maxN = None 
