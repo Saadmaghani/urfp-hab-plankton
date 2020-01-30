@@ -17,7 +17,7 @@ classes_20 = ["detritus", "Leptocylindrus", "Chaetoceros", "Rhizosolenia", "Guin
     "Skeletonema", "Dactyliosolen", "Thalassiosira", "Dinobryon", "Corethron", "Thalassionema", "Ditylum", "pennate", "Prorocentrum",
     "Pseudonitzschia", "Tintinnid", "Guinardia_striata", "Phaeocystis"]
 
-classes_all = ["mix", "detritus", "Leptocylindrus", "mix_elongated", "Chaetoceros", "dino30", "Rhizosolenia", "Guinardia_delicatula", 
+classes_all = ["detritus", "Leptocylindrus", "mix_elongated", "Chaetoceros", "dino30", "Rhizosolenia", "Guinardia_delicatula", 
 	"Cerataulina", "Cylindrotheca", "Skeletonema", "Ciliate_mix", "Dactyliosolen", "Thalassiosira", "bad", "Dinobryon", "Corethron", 
 	"DactFragCerataul", "Thalassionema", "Ditylum", "pennate", "Prorocentrum", "Pseudonitzschia", "Mesodinium_sp", "G_delicatula_parasite", 
 	"Tintinnid", "Guinardia_striata", "Phaeocystis", "Dictyocha", "Pleurosigma", "Eucampia", "Thalassiosira_dirty", "Asterionellopsis", 
@@ -48,7 +48,7 @@ classes_30_ms = ["Asterionellopsis", "bad", "Chaetoceros", "Ciliate_mix", "Coret
 
 classes_vae = ['detritus']
 
-print(len(classes_30_cf))
+print(len(classes_all))
 
 
 #pp = Preprocessor(years, include_classes=classes, train_eg_per_class=HP.number_of_images_per_class)

@@ -112,8 +112,9 @@ strategies (training):
 # version 13.51 = same as 13.5 except 100 images/class 
 # version 13.52 = same as 13.5 except 1000 images/class 
 # version 13.521 = same as 13.52 except lr_scheduler decaying every epoch for 0.1. initial lr = 0.003 
+# version 13.522 = same as 13.52 except optimizer weight_decay = 0.01
 class Hyperparameters:
-    version=13.521
+    version=13.522
     learning_rate = 0.003
     number_of_epochs = 200
     momentum = 0.9
@@ -121,7 +122,7 @@ class Hyperparameters:
     loss_function = ConfidenceLoss 
     es = EarlyStopping(patience=40)
     batch_size = 256 
-    scheduler = {'scheduler': lr_scheduler.LambdaLR, 'args': lambda epoch: 0.1}
+    scheduler = None
     pp_strategy = "thresholding"
     data_splits = [0.6,0.2,0.2] #vae: [0.8, 0.1, 0.1]
     maxN = None 
