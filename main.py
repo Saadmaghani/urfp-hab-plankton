@@ -116,7 +116,7 @@ model.threshold = HP.model_conf
 test_pred, test_target, test_fnames = trainer.test(model, testLoader)
 test_fnames, test_dropped_fnames = test_fnames
 valid_pred, valid_target, valid_fnames = trainer.test(model, validLoader)
-valid_fnames, valid_dropped_fnames = test_fnames
+valid_fnames, valid_dropped_fnames = valid_fnames
 train_pred, train_target, train_fnames = trainer.test(model, trainLoader)
 train_fnames, train_dropped_fnames = train_fnames
 
