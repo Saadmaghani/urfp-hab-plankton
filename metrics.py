@@ -180,7 +180,11 @@ class FileHandler:
                 self.d[cl]['count'] += 1
                 self.d[cl]['files'].append(fn)
             else:
-                self.d[cl] = {'count': 0, 'files':[]}
+                self.d[cl] = {'count': 1, 'files':[]}
+
+    def get_counts(self):
+        for key in self.d:
+            print("class", key, ": count =",self.d[key]['count'])
 
     def sample(self, n, name=None):
         if name is None:
