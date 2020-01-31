@@ -122,13 +122,14 @@ strategies (training):
 # version 13.66 = same as 13.6 except model_conf=0.9999
 # version 13.67 = same as 13.6 except model_conf=0.99999
 # version 13.68 = same as 13.6 except model_conf=0.999999
+# version 13.69 = same as 13.6 except model_conf=0.995
 # version 13.7 = same as 13.6 except model_conf will go step by step. model_conf = 0
 # version 13.71 = same as 13.7 except model_conf=0.1
 # version 13.72 = same as 13.7 except model_conf=0.2
 # version 13.73 = same as 13.7 except model_conf=0.4
 # version 13.74 = same as 13.7 except model_conf=0.8
 class Hyperparameters:
-    version=13.74
+    version=13.51
     learning_rate = 0.003
     number_of_epochs = 200
     momentum = 0.9
@@ -142,6 +143,6 @@ class Hyperparameters:
     maxN = None 
     minimum = None
     train_AE = False
-    number_of_images_per_class = 1000
+    number_of_images_per_class = 100
     transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) #transforms.Compose([Rescale((224, 224)),ToTensor(), Normalize(mean=[0.449], std=[0.226])]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
-    model_conf = 0.8
+    model_conf = 0.995
