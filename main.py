@@ -53,7 +53,7 @@ print(len(classes_all))
 
 #pp = Preprocessor(years, include_classes=classes, train_eg_per_class=HP.number_of_images_per_class)
 #pp = Preprocessor(years, include_classes=all_classes, train_eg_per_class=HP.number_of_images_per_class, thresholding=HP.thresholding)
-pp = Preprocessor(years, include_classes=classes_30_cf, strategy = HP.pp_strategy, train_eg_per_class=HP.number_of_images_per_class, maxN = HP.maxN, 
+pp = Preprocessor(years, include_classes=classes_all, strategy = HP.pp_strategy, train_eg_per_class=HP.number_of_images_per_class, maxN = HP.maxN, 
 	minimum =  HP.minimum, transformations = HP.transformations)
 
 
@@ -72,7 +72,7 @@ trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn
 #model = CNN_VAE()
 
 # training normal model
-#model = GoogleNet()
+model = GoogleNet()
 
 # training autoencoder + model
 """
@@ -90,16 +90,16 @@ trainAcc = []
 validAcc = [] 
 epochs = 0 
 other_stats = {}
-#trainAcc, validAcc, epochs, other_stats = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
+trainAcc, validAcc, epochs, other_stats = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
 
 # Just Testing
-model = GoogleNet()
-path_to_statedict = "models/GoogleNet_5.3-13.522.pth"
+#model = GoogleNet()
+#path_to_statedict = "models/GoogleNet_5.3-13.522.pth"
 
-if ".tar" in path_to_statedict:
-    model = load_partial_model(model, path_to_statedict)
-else:
-    model = load_full_model(model, path_to_statedict)
+#if ".tar" in path_to_statedict:
+#    model = load_partial_model(model, path_to_statedict)
+#else:
+#    model = load_full_model(model, path_to_statedict)
 
 # further training of model
 #trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
