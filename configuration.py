@@ -110,6 +110,7 @@ strategies (training):
 # version 13.4 = same as 13.138 except instead of ConfidenceLoss its just nn.BCELoss
 # version 13.5 = ConfidenceLoss v3
 # version 13.51 = same as 13.5 except 100 images/class 
+# version 13.511 = same as 13.51; patience=20 
 # version 13.52 = same as 13.5 except 1000 images/class 
 # version 13.521 = same as 13.52 except lr_scheduler decaying every epoch for 0.1. initial lr = 0.003 
 # version 13.522 = same as 13.52 except optimizer weight_decay = 0.01
@@ -135,7 +136,7 @@ class Hyperparameters:
     momentum = 0.9
     optimizer = optim.Adam
     loss_function = ConfidenceLoss 
-    es = EarlyStopping(patience=40)
+    es = EarlyStopping(patience=20)
     batch_size = 256 
     scheduler = None
     pp_strategy = "thresholding"
