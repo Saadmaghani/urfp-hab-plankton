@@ -11,7 +11,6 @@ import random
 class Metrics:
 
     def __init__(self, y_true, y_pred):
-
         if not isinstance(y_true, list):
             self.target = y_true.tolist()
         else:
@@ -57,19 +56,13 @@ class Metrics:
 
 
     def accuracy(self):
-        x = accuracy_score(self.target, self.pred)
-        print(x)
-        return x
+        return accuracy_score(self.target, self.pred)
     
     def recall(self):
-        x = recall_score(self.target, self.pred, average='micro')
-        print(x)
-        return x
+        return recall_score(self.target, self.pred, average='micro')
     
     def f_score(self):
-        x = f1_score(self.target, self.pred, average='micro')
-        print(x)
-        return x
+        return f1_score(self.target, self.pred, average='micro')
 
     def class_accuracies(self, preprocessor = None):
 
