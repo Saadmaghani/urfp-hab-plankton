@@ -113,8 +113,9 @@ strategies (training):
 # version 13.52 = same as 13.5 except 1000 images/class 
 # version 13.521 = same as 13.52 except lr_scheduler decaying every epoch for 0.1. initial lr = 0.003 
 # version 13.522 = same as 13.52 except optimizer weight_decay = 0.01
+# version 13.6 = same as 13.52 except testing with different model thresholds. model threshold = 0.9675
 class Hyperparameters:
-    version=13.522
+    version=13.6
     learning_rate = 0.003
     number_of_epochs = 200
     momentum = 0.9
@@ -130,4 +131,4 @@ class Hyperparameters:
     train_AE = False
     number_of_images_per_class = 1000
     transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) #transforms.Compose([Rescale((224, 224)),ToTensor(), Normalize(mean=[0.449], std=[0.226])]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
-
+    model_conf = 0.9675

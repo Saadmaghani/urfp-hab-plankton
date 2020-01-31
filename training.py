@@ -30,7 +30,7 @@ class Trainer:
         model = model.float()
         model.to(self.device)
         if self.optimizer == torch.optim.Adam:
-            optimizer = self.optimizer(model.parameters(), lr=self.lr, weight_decay=0.01)
+            optimizer = self.optimizer(model.parameters(), lr=self.lr)
         else:
             optimizer = self.optimizer(model.parameters(), lr=self.lr, momentum=self.momentum)
 
