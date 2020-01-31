@@ -17,7 +17,7 @@ classes_20 = ["detritus", "Leptocylindrus", "Chaetoceros", "Rhizosolenia", "Guin
     "Skeletonema", "Dactyliosolen", "Thalassiosira", "Dinobryon", "Corethron", "Thalassionema", "Ditylum", "pennate", "Prorocentrum",
     "Pseudonitzschia", "Tintinnid", "Guinardia_striata", "Phaeocystis"]
 
-classes_all = ["mix", "detritus", "Leptocylindrus", "mix_elongated", "Chaetoceros", "dino30", "Rhizosolenia", "Guinardia_delicatula", 
+classes_all = ["detritus", "Leptocylindrus", "mix_elongated", "Chaetoceros", "dino30", "Rhizosolenia", "Guinardia_delicatula", 
 	"Cerataulina", "Cylindrotheca", "Skeletonema", "Ciliate_mix", "Dactyliosolen", "Thalassiosira", "bad", "Dinobryon", "Corethron", 
 	"DactFragCerataul", "Thalassionema", "Ditylum", "pennate", "Prorocentrum", "Pseudonitzschia", "Mesodinium_sp", "G_delicatula_parasite", 
 	"Tintinnid", "Guinardia_striata", "Phaeocystis", "Dictyocha", "Pleurosigma", "Eucampia", "Thalassiosira_dirty", "Asterionellopsis", 
@@ -48,7 +48,7 @@ classes_30_ms = ["Asterionellopsis", "bad", "Chaetoceros", "Ciliate_mix", "Coret
 
 classes_vae = ['detritus']
 
-print(len(classes_30_cf))
+print(len(classes_all))
 
 
 #pp = Preprocessor(years, include_classes=classes, train_eg_per_class=HP.number_of_images_per_class)
@@ -72,7 +72,7 @@ trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn
 #model = CNN_VAE()
 
 # training normal model
-model = GoogleNet()
+#model = GoogleNet()
 
 # training autoencoder + model
 """
@@ -89,20 +89,18 @@ model = GoogleNet(autoencoder = ae_model)
 trainAcc = []
 validAcc = [] 
 epochs = 0 
-trainAcc, validAcc, epochs, other_stats = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
-
-print("model thredhold -3", model.threshold)
+other_stats = {}
+#trainAcc, validAcc, epochs, other_stats = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
 
 # Just Testing
-"""
 model = GoogleNet()
-path_to_statedict = "models/GoogleNet_1.3-4.2.pth"
+path_to_statedict = "models/GoogleNet_5.3-13.522.pth"
 
 if ".tar" in path_to_statedict:
     model = load_partial_model(model, path_to_statedict)
 else:
     model = load_full_model(model, path_to_statedict)
-"""
+
 # further training of model
 #trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
 
@@ -113,9 +111,12 @@ else:
 #test_acc = test_sumsqs.tolist()
 #test_acc = torch.mean(test_sumsqs).tolist()
 
+model.threshold = HP.model_conf
 #testing confidenceloss version:
 test_pred, test_target, test_fnames = trainer.test(model, testLoader)
 test_fnames, test_dropped_fnames = test_fnames
+valid_pred, valid_target, valid_fnames = trainer.test(model, validLoader)
+valid_fnames, valid_dropped_fnames = valid_fnames
 train_pred, train_target, train_fnames = trainer.test(model, trainLoader)
 train_fnames, train_dropped_fnames = train_fnames
 
@@ -142,11 +143,12 @@ f = open("./stats/stats-"+str(model)+"-"+str(HP.version)+".json","w+")
 
 str_to_write = "{\"Time\": \""+ time +"\",\n \"Epochs\": "+str(epochs)+ ",\n \"TrainAcc\": "+ str(trainAcc)+",\n \"ValidAcc\": "+str(validAcc)+",\n \"TestAcc\": "+ str(test_acc) + \
 ",\n \"Train_Pred\": " + str(list(train_pred.cpu().numpy())) + ",\n \"Train_Target\": " + str(list(train_target.cpu().numpy())) + ",\n \"Train_fnames\": " + json.dumps(train_fnames) + ",\n \"Train_dropped_fnames\": " + json.dumps(train_dropped_fnames) + \
+",\n \"Valid_Pred\": " + str(list(valid_pred.cpu().numpy())) + ",\n \"Valid_Target\": " + str(list(valid_target.cpu().numpy())) + ",\n \"Valid_fnames\": " + json.dumps(valid_fnames) + ",\n \"Valid_dropped_fnames\": " + json.dumps(valid_dropped_fnames) + \
 ",\n \"Test_Pred\": " + str(list(test_pred.cpu().numpy())) + ",\n \"Test_Target\": " + str(list(test_target.cpu().numpy())) + ",\n \"Test_fnames\": " + json.dumps(test_fnames) + ",\n \"Test_dropped_fnames\": " + json.dumps(test_dropped_fnames) + \
-",\n \"avg_confidence\": " + str(other_stats["avg_confidence"]) + ",\n \"train_drop\": " + str(other_stats["train_drop"])+ ",\n \"valid_drop\": " + str(other_stats["valid_drop"]) + \
-",\n \"loss\": "+ str(other_stats["loss"]) + ",\n \"class_loss\": "+ str(other_stats["class_loss"]) + \
 "}"
-#",\n \"Valid_Pred\": " + str(list(valid_pred.cpu().numpy())) + ",\n \"Valid_Target\": " + str(list(valid_target.cpu().numpy())) + ",\n \"Valid_fnames\": " + json.dumps(valid_fnames) + 
+
+#",\n \"avg_confidence\": " + str(other_stats["avg_confidence"]) + ",\n \"train_drop\": " + str(other_stats["train_drop"])+ ",\n \"valid_drop\": " + str(other_stats["valid_drop"]) + \
+#",\n \"loss\": "+ str(other_stats["loss"]) + ",\n \"class_loss\": "+ str(other_stats["class_loss"]) + \
 
 f.write(str_to_write)
 f.close()
