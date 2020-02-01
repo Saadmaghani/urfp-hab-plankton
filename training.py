@@ -402,18 +402,21 @@ from torch.autograd import Variable
 # version 3.1 = same as 3.0; lambda = 2
 # version 3.2 = same as 3.0; lambda = 4
 # version 3.3 = same as 3.0; lambda = 6
+# version 4.0 = BCELoss, lambda_1 = 1, lambda_2=1.5 (λ_2conf)^2*(bceLoss*λ_1)^2 + (1-(λ_2conf))^2
 class ConfidenceLoss(nn.Module):
-    version=3.3
+    version=4.0
 
-    def __init__(self, classifierLoss = nn.BCELoss, lambda_normalizer=6):
+    def __init__(self, classifierLoss = nn.BCELoss, lambda_1=6):
         super(ConfidenceLoss, self).__init__()
         self.classifierLoss = classifierLoss()
-        self.lambda_normalizer = lambda_normalizer
+        self.lambda_1 = lambda_1
+        self.lambda_2 = 1.5
 
     def forward(self, output_from_model, input_to_model):
         softmax_classes, sigmoid_confidence = output_from_model
-        classifier_loss = self.classifierLoss(softmax_classes, input_to_model) * self.lambda_normalizer
-        loss = (sigmoid_confidence) * (classifier_loss) + (1-sigmoid_confidence)
+        sigmoid_confidence *= self.lambda_2
+        classifier_loss = self.classifierLoss(softmax_classes, input_to_model) * self.lambda_1
+        loss = (sigmoid_confidence**2) * (classifier_loss**2) + (1-sigmoid_confidence)**2
 
         return loss, classifier_loss
 
