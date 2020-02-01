@@ -53,7 +53,7 @@ print(len(classes_all))
 
 #pp = Preprocessor(years, include_classes=classes, train_eg_per_class=HP.number_of_images_per_class)
 #pp = Preprocessor(years, include_classes=all_classes, train_eg_per_class=HP.number_of_images_per_class, thresholding=HP.thresholding)
-pp = Preprocessor(years, include_classes=classes_all, strategy = HP.pp_strategy, train_eg_per_class=HP.number_of_images_per_class, maxN = HP.maxN, 
+pp = Preprocessor(years, include_classes=classes_30_cf, strategy = HP.pp_strategy, train_eg_per_class=HP.number_of_images_per_class, maxN = HP.maxN, 
 	minimum =  HP.minimum, transformations = HP.transformations)
 
 
