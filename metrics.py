@@ -74,11 +74,16 @@ class Metrics:
             ca_dict = classification_report(self.target, self.pred, target_names=class_names, output_dict=True)
             return ca_dict
     
-    def plot_CM(self, preprocessor = None, normalize = True):
-        if not isinstance(self.target, list):
-            cm = confusion_matrix(self.target.view(-1), self.pred.view(-1))
+    def plot_CM(self, preprocessor = None, normalize = True, diff = False):
+        if diff:
+            wi = np.where(np.array(self.target) != np.array(self.pred))[0]
         else:
-            cm = confusion_matrix(self.target, self.pred)
+            wi = np.arange(len(self.target))
+
+        if not isinstance(self.target, list):
+            cm = confusion_matrix(self.target.view(-1).numpy()[wi], self.pred.view(-1).numpy()[wi])
+        else:
+            cm = confusion_matrix(np.array(self.target)[wi], np.array(self.pred)[wi])
         if normalize:
             cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
             title = "Confusion Matrix - normalized"
