@@ -134,7 +134,7 @@ class Trainer:
                         train_acc = accuracy_score(train_target.cpu(), train_pred.cpu())
                         valid_acc = accuracy_score(valid_target.cpu(), valid_pred.cpu())      
 
-                        idxs = torch.unique(torch.nonzero(train_target==1)[:,0])
+                        idxs = torch.unique(torch.nonzero(train_target==2)[:,0])
                         if "Tr_Targ_time" in other_stats:
                             other_stats["Tr_Targ_time"].append(train_target[idxs].tolist())
                             other_stats["Tr_Pred_time"].append(train_pred[idxs].tolist())
