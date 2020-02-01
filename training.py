@@ -406,7 +406,7 @@ from torch.autograd import Variable
 class ConfidenceLoss(nn.Module):
     version=4.0
 
-    def __init__(self, classifierLoss = nn.BCELoss, lambda_1=6):
+    def __init__(self, classifierLoss = nn.BCELoss, lambda_1=1):
         super(ConfidenceLoss, self).__init__()
         self.classifierLoss = classifierLoss()
         self.lambda_1 = lambda_1
