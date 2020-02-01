@@ -129,8 +129,9 @@ strategies (training):
 # version 13.72 = same as 13.7 except model_conf=0.2
 # version 13.73 = same as 13.7 except model_conf=0.4
 # version 13.74 = same as 13.7 except model_conf=0.8
+# version 13.8 = ConfLoss v3.1. 100 images/class. patience = 20
 class Hyperparameters:
-    version=13.511
+    version=13.8
     learning_rate = 0.003
     number_of_epochs = 200
     momentum = 0.9

@@ -138,7 +138,7 @@ class AlexNet(nn.Module):
 # version 5.72 = Dropout layer b4 conf layer p=0.7
 # version 5.8 = same as 5.3 except 94 classes
 class GoogleNet(nn.Module):
-    version = 5.8
+    version = 5.3
 
     # used with version 5.0
     class IdentityLayer(nn.Module):
@@ -177,7 +177,7 @@ class GoogleNet(nn.Module):
             self.threshold = 0.0
             self.model.fc = GoogleNet.IdentityLayer()
             self.sigmoid = nn.Sigmoid()
-            self.classifier = nn.Linear(1024, 95)
+            self.classifier = nn.Linear(1024, 30)
             if self.version == 5.6:
                 self.confidence = nn.Linear(30, 1)
             else:
@@ -217,7 +217,6 @@ class GoogleNet(nn.Module):
         elif self.version >= 5.0 and self.version < 6.0:
             x = x.repeat(1, 3, 1, 1)
             x = self.model(x)
-
             results = self.softmax(self.classifier(x))
             confidence = self.sigmoid(self.confidence(x))
             x = (results, confidence)
