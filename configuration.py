@@ -90,6 +90,7 @@ strategies (training):
 # version 12.5 = same as 12.4 except images/class = 2000
 # version 12.6 = same as 12.4 except images/class = 5000 es = EarlyStopping(patience = 40, mode='min')
 # version 13.0 = same as 4.2 except loss_function = Confidenceloss w/ BCELoss & lambda = 1
+# version 13.01 = same as 13.0 except 100 images/class
 # version 13.1 = same as 13.0 except for testing purposes images/class = 20
 # version 13.11 = same as 13.1 except lambda = 2
 # version 13.12 = same as 13.1 except patience = 40
@@ -134,7 +135,7 @@ strategies (training):
 # version 13.82 = ConfLoss v3.3. 
 # version 13.9 = ConfLoss v4.0
 class Hyperparameters:
-    version=13.9
+    version=13.01
     learning_rate = 0.003
     number_of_epochs = 200
     momentum = 0.9
