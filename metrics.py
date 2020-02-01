@@ -179,6 +179,12 @@ class FileHandler:
         for key in self.d:
             print("class", key, ": count =",self.d[key]['count'])
 
+    def get_total_count(self):
+        s = 0
+        for key in self.d:
+            s += self.d[key]['count']
+        return s
+
     def sample(self, n, name=None):
         if name is None:
             name = random.choice(self.d.keys())
@@ -189,6 +195,7 @@ class FileHandler:
         x = [names for names in self.d.keys()]
         x.sort()
         y = [self.d[names]['count'] for names in x]
+        plt.figure(figsize=(15,6))
         plt.xticks(rotation=90)
         plt.bar(x,y)
         plt.show()

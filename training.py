@@ -411,8 +411,6 @@ class ConfidenceLoss(nn.Module):
         softmax_classes, sigmoid_confidence = output_from_model
         classifier_loss = self.classifierLoss(softmax_classes, input_to_model) * self.lambda_normalizer
         loss = (sigmoid_confidence) * (classifier_loss) + (1-sigmoid_confidence)
-        
-        #loss = loss.repeat(1,2)
 
         return loss, classifier_loss
 
