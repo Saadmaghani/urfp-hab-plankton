@@ -115,11 +115,11 @@ trainAcc, validAcc, epochs, other_stats = trainer.train(model, trainLoader, vali
 #model.threshold = HP.model_conf
 #testing confidenceloss version:
 test_pred, test_target, test_fnames = trainer.test(model, testLoader)
-test_fnames, test_dropped_fnames = test_fnames
+test_fnames, test_dropped_fnames = test_fnames, []
 valid_pred, valid_target, valid_fnames = trainer.test(model, validLoader)
-valid_fnames, valid_dropped_fnames = valid_fnames
+valid_fnames, valid_dropped_fnames = valid_fnames, []
 train_pred, train_target, train_fnames = trainer.test(model, trainLoader)
-train_fnames, train_dropped_fnames = train_fnames
+train_fnames, train_dropped_fnames = train_fnames, []
 
 # testing normal model
 #test_pred, test_target, test_fnames = trainer.test(model, testLoader)
@@ -146,10 +146,10 @@ str_to_write = "{\"Time\": \""+ time +"\",\n \"Epochs\": "+str(epochs)+ ",\n \"T
 ",\n \"Train_Pred\": " + str(list(train_pred.cpu().numpy())) + ",\n \"Train_Target\": " + str(list(train_target.cpu().numpy())) + ",\n \"Train_fnames\": " + json.dumps(train_fnames) + ",\n \"Train_dropped_fnames\": " + json.dumps(train_dropped_fnames) + \
 ",\n \"Valid_Pred\": " + str(list(valid_pred.cpu().numpy())) + ",\n \"Valid_Target\": " + str(list(valid_target.cpu().numpy())) + ",\n \"Valid_fnames\": " + json.dumps(valid_fnames) + ",\n \"Valid_dropped_fnames\": " + json.dumps(valid_dropped_fnames) + \
 ",\n \"Test_Pred\": " + str(list(test_pred.cpu().numpy())) + ",\n \"Test_Target\": " + str(list(test_target.cpu().numpy())) + ",\n \"Test_fnames\": " + json.dumps(test_fnames) + ",\n \"Test_dropped_fnames\": " + json.dumps(test_dropped_fnames) + \
-",\n \"loss\": "+ str(other_stats["loss"]) + ",\n \"class_loss\": "+ str(other_stats["class_loss"]) + \
-",\n \"avg_confidence\": " + str(other_stats["avg_confidence"]) + ",\n \"train_drop\": " + str(other_stats["train_drop"])+ ",\n \"valid_drop\": " + str(other_stats["valid_drop"]) + \
 "}"
 
+#",\n \"loss\": "+ str(other_stats["loss"]) + ",\n \"class_loss\": "+ str(other_stats["class_loss"]) + \
+#",\n \"avg_confidence\": " + str(other_stats["avg_confidence"]) + ",\n \"train_drop\": " + str(other_stats["train_drop"])+ ",\n \"valid_drop\": " + str(other_stats["valid_drop"]) + \
 
 f.write(str_to_write)
 f.close()
