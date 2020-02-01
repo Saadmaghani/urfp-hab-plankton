@@ -59,6 +59,7 @@ strategies (training):
 # version 4.3 = to test different models and avg. same as 4.0 except 500 images. (old 4.3 idk what it was)
 # version 4.4 = same as 4.2 except loss_function = binary cross entropy
 # version 4.41 = same as 4.4 except images/class = 20
+# version 4.42 = same as 4.4 except images/class = 100 ******
 # version 5.0 = same as 3.5 except maxN = 30000, no thresholding, no images/class, loss_fc = FocalLoss
 # version 5.1 = same as 5.0 except maxN = 56000 which is similar N to 4.1 (56111)
 # version 5.2 = same as 5.0 except maxN = 100000
@@ -135,12 +136,12 @@ strategies (training):
 # version 13.82 = ConfLoss v3.3. 
 # version 13.9 = ConfLoss v4.0
 class Hyperparameters:
-    version=13.01
+    version=4.42
     learning_rate = 0.003
     number_of_epochs = 200
     momentum = 0.9
     optimizer = optim.Adam
-    loss_function = ConfidenceLoss 
+    loss_function = nn.BCELoss 
     es = EarlyStopping(patience=20)
     batch_size = 256 
     scheduler = None
