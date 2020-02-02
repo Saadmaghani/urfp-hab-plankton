@@ -114,8 +114,8 @@ class Trainer:
                 running_loss += loss.sum().item()
                 
                 #print("batch no.:",i)
-                if i % 10 == 0:
-                    #every 10 batches print - loss, training acc, validation acc
+                if (i) % 4 == 0:
+                    #every 4 batch print - loss, training acc, validation acc
                     if self.autoencoder:
                         train_loss, _ = self.test_autoencoder(model, trainLoader)
                         valid_loss, _ = self.test_autoencoder(model, validLoader)
@@ -257,7 +257,7 @@ class Trainer:
 
 
         if return_softmax:
-            all_out = torch.LongTensor().to(self.device)
+            all_outs = torch.FloatTensor().to(self.device)
         all_fnames = []
         if str(model).split('.')[0] == "GoogleNet_5":
             all_fnames = ([], [])
