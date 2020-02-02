@@ -20,7 +20,10 @@ class Metrics:
         else:
             self.pred = y_pred
 
-    def sample(self, n, classname = None, preprocessor = None, fname=None, working_indices = None):
+        self.target = np.array(self.target)
+        self.pred = np.array(self.pred)
+
+    def sample(self, n, classname = None, preprocessor=None, fname=None, working_indices=None, probs=None):
         if working_indices is None:
             working_indices = np.arange(len(self.target))
         if classname is not None:
@@ -29,33 +32,52 @@ class Metrics:
                     raise TypeError("preprocessor must be given with classname type str")
                 else:
                     classname = preprocessor.label_to_onehotInd(classname)
-            working_indices = working_indices[np.where(np.array(self.target)[working_indices] == classname)[0]]
+            working_indices = working_indices[np.where(self.target[working_indices] == classname)[0]]
 
         if n > len(working_indices):
             n = len(working_indices)
+
         random_idx = np.random.choice(working_indices, size = n, replace = False)
-        target = np.array(self.target)[random_idx]
-        pred = np.array(self.pred)[random_idx]
+        target = self.target[random_idx]
+        pred = self.pred[random_idx]
+
+        if probs is not None:
+            probs = np.array(probs)[random_idx]
+            final_probs = [] 
+            for i in range(len(pred)):
+                trgt_prob, pred_prob = probs[i][target[i]], probs[i][pred[i]]
+                final_probs.append('%.4f'%(pred_prob))
+                final_probs.append('%.4f'%(trgt_prob))
+
         if fname is not None:
-            imgs = np.array(fname)[random_idx]
+            imgs = fname[random_idx]
             i=0
             while i < len(pred):
-                indxs = np.where(np.array(self.target)==pred[i])[0]
-                pred_img = np.array(fname)[np.random.choice(indxs, size = 1)]
+                indxs = np.where(self.target==pred[i])[0]
+                pred_img = fname[np.random.choice(indxs, size = 1)]
                 imgs = np.insert(imgs, i*2 + 1, pred_img)
                 i += 1
-            show_plankton(imgs)
+            if probs is not None:
+                show_plankton(imgs, final_probs)
+            else:
+                show_plankton(imgs)
 
-        return (target, pred)
+        if probs is not None:
+            return (pred, target, final_probs)
+        else:
+            return (pred, target)
 
 
-    def sample_diff(self, n, classname=None, preprocessor=None, fname=None):
-        wi = np.where(np.array(self.target) != np.array(self.pred))[0]
-        return self.sample(n, classname=classname, preprocessor=preprocessor, fname=fname, working_indices=wi)
+        
+    def sample_diff(self, n, classname=None, preprocessor=None, fname=None, probs=None):
+        wi = np.where(self.target != self.pred)[0]
+        return self.sample(n, classname=classname, preprocessor=preprocessor, fname=fname, working_indices=wi, probs=probs)
 
-    def sample_same(self, n, classname=None, preprocessor=None, fname=None):
-        wi = np.where(np.array(self.target) == np.array(self.pred))[0]
-        return self.sample(n, classname=classname, preprocessor=preprocessor, fname=fname, working_indices=wi)
+    def sample_same(self, n, classname=None, preprocessor=None, fname=None, probs=None):
+        wi = np.where(self.target == self.pred)[0]
+        return self.sample(n, classname=classname, preprocessor=preprocessor, fname=fname, working_indices=wi, probs=probs)
+
+
 
     def accuracy(self):
         return accuracy_score(self.target, self.pred)
@@ -78,14 +100,11 @@ class Metrics:
     
     def plot_CM(self, preprocessor = None, normalize = True, diff = False, y=1):
         if diff:
-            wi = np.where(np.array(self.target) != np.array(self.pred))[0]
+            wi = np.where(self.target != self.pred)[0]
         else:
             wi = np.arange(len(self.target))
-
-        if not isinstance(self.target, list):
-            cm = confusion_matrix(self.target.view(-1).numpy()[wi], self.pred.view(-1).numpy()[wi])
-        else:
-            cm = confusion_matrix(np.array(self.target)[wi], np.array(self.pred)[wi])
+        
+        cm = confusion_matrix(self.target[wi], self.pred[wi])
         if normalize:
             cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
             title = "Confusion Matrix - normalized"
@@ -207,17 +226,22 @@ class FileHandler:
         plt.bar(x,y)
         plt.show()
 
-def show_plankton(fnames):
+def show_plankton(fnames, probs = None):
     c=0
-    for fname in fnames:
-        img = io.imread(fname)
+    for i in range(len(fnames)):
+        img = io.imread(fnames[i])
+        name = fnames[i].split("/")[3]
         if c % 2==0:
             fig, (ax1, ax2) = plt.subplots(1,2)
             ax1.imshow(img)
-            ax1.set_title(fname.split("/")[3])
+            ax1.set_title(name)
+            if probs is not None:
+                ax1.text(3, 8, name+": "+str(probs[i]), style='italic', bbox={'alpha': 0.5, 'pad': 10})
         else:
             ax2.imshow(img)
-            ax2.set_title(fname.split("/")[3])
+            ax2.set_title(name)
+            if probs is not None:
+                ax2.text(3, 8, name+": "+str(probs[i]), style='italic', bbox={'alpha': 0.5, 'pad': 10})
         c += 1
     plt.show()
 
