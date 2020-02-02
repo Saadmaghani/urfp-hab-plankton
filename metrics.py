@@ -42,7 +42,8 @@ class Metrics:
         pred = self.pred[random_idx]
 
         if probs is not None:
-            probs = np.array(probs)[random_idx]
+            probs = np.array(probs)
+            probs = probs[random_idx]
             final_probs = [] 
             for i in range(len(pred)):
                 trgt_prob, pred_prob = probs[i][target[i]], probs[i][pred[i]]
@@ -50,6 +51,7 @@ class Metrics:
                 final_probs.append('%.4f'%(trgt_prob))
 
         if fname is not None:
+            fname = np.array(fname)
             imgs = fname[random_idx]
             i=0
             while i < len(pred):
@@ -231,17 +233,15 @@ def show_plankton(fnames, probs = None):
     for i in range(len(fnames)):
         img = io.imread(fnames[i])
         name = fnames[i].split("/")[3]
+        if probs is not None:
+            name += " P: "+str(probs[i])
         if c % 2==0:
             fig, (ax1, ax2) = plt.subplots(1,2)
             ax1.imshow(img)
             ax1.set_title(name)
-            if probs is not None:
-                ax1.text(3, 8, name+": "+str(probs[i]), style='italic', bbox={'alpha': 0.5, 'pad': 10})
         else:
             ax2.imshow(img)
             ax2.set_title(name)
-            if probs is not None:
-                ax2.text(3, 8, name+": "+str(probs[i]), style='italic', bbox={'alpha': 0.5, 'pad': 10})
         c += 1
     plt.show()
 
