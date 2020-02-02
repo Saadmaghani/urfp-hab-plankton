@@ -60,7 +60,9 @@ strategies (training):
 # version 4.4 = same as 4.2 except loss_function = binary cross entropy
 # version 4.41 = same as 4.4 except images/class = 20
 # version 4.42 = same as 4.4 except images/class = 100 ******
-# version 4.5 = propReduce with maxN = 30000, loss function - MSE Loss
+# version 4.5 = 4.5 is for report purposes. thresholding w/ images/class = 200; loss function - MSE Loss
+# version 4.51 = same as 4.5; loss function - BCE Loss
+# version 4.52 = same as 4.5; loss function - Focal Loss
 # version 5.0 = same as 3.5 except maxN = 30000, no thresholding, no images/class, loss_fc = FocalLoss
 # version 5.1 = same as 5.0 except maxN = 56000 which is similar N to 4.1 (56111)
 # version 5.2 = same as 5.0 except maxN = 100000
@@ -137,20 +139,20 @@ strategies (training):
 # version 13.82 = ConfLoss v3.3. 
 # version 13.9 = ConfLoss v4.0
 class Hyperparameters:
-    version=4.5
+    version=4.52
     learning_rate = 0.003
     number_of_epochs = 200
     momentum = 0.9
     optimizer = optim.Adam
-    loss_function = nn.MSELoss 
+    loss_function = FocalLoss
     es = EarlyStopping(patience=20)
     batch_size = 256 
     scheduler = None
-    pp_strategy = "propReduce"
+    pp_strategy = "thresholding"
     data_splits = [0.6,0.2,0.2] #vae: [0.8, 0.1, 0.1]
-    maxN = 30000 
+    maxN = None 
     minimum = None
     train_AE = False
-    number_of_images_per_class = None
+    number_of_images_per_class = 200
     transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) #transforms.Compose([Rescale((224, 224)),ToTensor(), Normalize(mean=[0.449], std=[0.226])]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
     model_conf = 0.0
