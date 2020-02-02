@@ -74,7 +74,7 @@ class Metrics:
             ca_dict = classification_report(self.target, self.pred, target_names=class_names, output_dict=True)
             return ca_dict
     
-    def plot_CM(self, preprocessor = None, normalize = True, diff = False):
+    def plot_CM(self, preprocessor = None, normalize = True, diff = False, y=1):
         if diff:
             wi = np.where(np.array(self.target) != np.array(self.pred))[0]
         else:
@@ -101,7 +101,7 @@ class Metrics:
 
         fig.set_size_inches(10, 10)
         fig.colorbar(cax)
-        plt.title(title, loc='left')
+        plt.title(title, loc='left', y=y)
         plt.xlabel('Predicted')
         plt.xticks(np.arange(cm.shape[1]), labels, rotation = 'vertical')
         plt.ylabel('True')
