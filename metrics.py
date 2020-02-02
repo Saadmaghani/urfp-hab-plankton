@@ -47,8 +47,8 @@ class Metrics:
             final_probs = [] 
             for i in range(len(pred)):
                 trgt_prob, pred_prob = probs[i][target[i]], probs[i][pred[i]]
-                final_probs.append('%.4f'%(pred_prob))
                 final_probs.append('%.4f'%(trgt_prob))
+                final_probs.append('%.4f'%(pred_prob))
 
         if fname is not None:
             fname = np.array(fname)
