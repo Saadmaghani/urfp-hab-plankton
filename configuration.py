@@ -66,7 +66,9 @@ strategies (training):
 # version 5.0 = same as 3.5 except maxN = 30000, no thresholding, no images/class, loss_fc = FocalLoss
 # version 5.1 = same as 5.0 except maxN = 56000 which is similar N to 4.1 (56111)
 # version 5.2 = same as 5.0 except maxN = 100000
-# version 5.3 = same as 4.1 except with focal loss. to test against threshold w/ focal loss. 
+# version 5.3 = 5.3 is for report purposes. same as 5.0 except maxN=6000, propReduce, loss_fc = MSE Loss 
+# version 5.31 = same as 5.3; loss_fc = BCELoss
+# version 5.32 = same as 5.3; loss_fc = Focal Loss
 # version 6.0 = same as 5.0 except minimum = 100. this minimum means that if there are less than min images, include all st n = min(N, minimum). This will remove the population dist. bias but accuracies might increase. lets see
 # version 6.1 = same as 6.0 except minimum = 200
 # version 6.2 = same as 6.0 except minimum = 300
@@ -139,20 +141,20 @@ strategies (training):
 # version 13.82 = ConfLoss v3.3. 
 # version 13.9 = ConfLoss v4.0
 class Hyperparameters:
-    version=4.52
+    version=5.32
     learning_rate = 0.003
     number_of_epochs = 200
     momentum = 0.9
     optimizer = optim.Adam
-    loss_function = FocalLoss
+    loss_function = FocalLoss 
     es = EarlyStopping(patience=20)
     batch_size = 256 
     scheduler = None
-    pp_strategy = "thresholding"
+    pp_strategy = "propReduce"
     data_splits = [0.6,0.2,0.2] #vae: [0.8, 0.1, 0.1]
-    maxN = None 
+    maxN = 6000 
     minimum = None
     train_AE = False
-    number_of_images_per_class = 200
+    number_of_images_per_class = None
     transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) #transforms.Compose([Rescale((224, 224)),ToTensor(), Normalize(mean=[0.449], std=[0.226])]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
     model_conf = 0.0
