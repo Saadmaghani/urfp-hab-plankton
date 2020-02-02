@@ -51,9 +51,11 @@ class Metrics:
 
     def sample_diff(self, n, classname=None, preprocessor=None, fname=None):
         wi = np.where(np.array(self.target) != np.array(self.pred))[0]
-        
         return self.sample(n, classname=classname, preprocessor=preprocessor, fname=fname, working_indices=wi)
 
+    def sample_same(self, n, classname=None, preprocessor=None, fname=None):
+        wi = np.where(np.array(self.target) == np.array(self.pred))[0]
+        return self.sample(n, classname=classname, preprocessor=preprocessor, fname=fname, working_indices=wi)
 
     def accuracy(self):
         return accuracy_score(self.target, self.pred)

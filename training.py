@@ -251,11 +251,13 @@ class Trainer:
 
         return all_loss, all_fnames
 
-    def test(self, model, testloader):
+    def test(self, model, testloader, return_softmax=False):
         all_preds = torch.LongTensor().to(self.device)
         all_targets = torch.LongTensor().to(self.device)
 
 
+        if return_softmax:
+            all_out = torch.LongTensor().to(self.device)
         all_fnames = []
         if str(model).split('.')[0] == "GoogleNet_5":
             all_fnames = ([], [])
@@ -291,7 +293,8 @@ class Trainer:
                 #print("~~~~~~~~~~~~~~~~")
                 all_preds = torch.cat((all_preds, predicted), 0)
                 all_targets = torch.cat((all_targets, labels), 0) 
-                
+                if return_softmax:
+                    all_outs = torch.cat((all_outs, outputs.data), 0) 
                 #if total >=10:
                 #   break
                 if str(model).split('.')[0] == "GoogleNet_5":
@@ -299,8 +302,11 @@ class Trainer:
                     all_fnames[1].extend(dropped_fnames)
                 else:
                     all_fnames.extend(fnames)
-
-        return all_preds, all_targets, all_fnames
+        
+        if return_softmax:
+            return all_preds, all_targets, all_fnames, all_outs
+        else:
+            return all_preds, all_targets, all_fnames
 
 # script copied from https://gist.github.com/stefanonardo/693d96ceb2f531fa05db530f3e21517d
 # author: Stefano Nardo, Github: stefanonardo
