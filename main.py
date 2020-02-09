@@ -94,7 +94,7 @@ other_stats = {}
 
 # Just Testing
 model = GoogleNet()
-path_to_statedict = "models/GoogleNet_5.3-13.522.pth"
+path_to_statedict = "models/GoogleNet_5.3-13.52.pth"
 
 if ".tar" in path_to_statedict:
     model = load_partial_model(model, path_to_statedict)
