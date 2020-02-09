@@ -251,19 +251,19 @@ class Trainer:
 
         return all_loss, all_fnames
 
-    def test(self, model, testloader, return_softmax=False, return_conf=False):
+    def test(self, model, testloader, return_softmax=False, return_confs=False):
         all_preds = torch.LongTensor().to(self.device)
         all_targets = torch.LongTensor().to(self.device)
 
 
         if return_softmax:
             if str(model).split('.')[0] == "GoogleNet_5": # (!dropped, dropped)
-                all_outs = (torch.FloatTensor().to(self.device), torch.FloatTensor().to(self.device))
+                all_outs = [torch.FloatTensor().to(self.device), torch.FloatTensor().to(self.device)]
             else:
                 all_outs = torch.FloatTensor().to(self.device)
 
-        if return_conf and str(model).split('.')[0] == "GoogleNet_5": # (!dropped, dropped)
-            all_confs = (torch.FloatTensor().to(self.device), torch.FloatTensor().to(self.device))
+        if return_confs and str(model).split('.')[0] == "GoogleNet_5": # (!dropped, dropped)
+            all_confs = [torch.FloatTensor().to(self.device), torch.FloatTensor().to(self.device)]
 
         all_fnames = []
         if str(model).split('.')[0] == "GoogleNet_5":
@@ -292,8 +292,9 @@ class Trainer:
                     labels = labels[idxs]
                     dropped_fnames = [fnames[i] for i in not_idxs.tolist()]
                     fnames = [fnames[i] for i in idxs.tolist()]
-                    all_confs[0] = torch.cat((all_confs[0], confs[idxs]), 0)
-                    all_confs[1] = torch.cat((all_confs[1], confs[not_idxs]), 0)
+                    if return_confs:
+                        all_confs[0] = torch.cat((all_confs[0], confs[idxs]), 0)
+                        all_confs[1] = torch.cat((all_confs[1], confs[not_idxs]), 0)
                     
 
                 if len(outputs.data) == 0:
@@ -323,7 +324,7 @@ class Trainer:
         extras = {}
         if return_softmax:
             extras["all_outs"] = all_outs
-        if return_conf:
+        if return_confs:
             extras["all_confs"] = all_confs
 
         return all_preds, all_targets, all_fnames, extras

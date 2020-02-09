@@ -114,7 +114,7 @@ else:
 
 model.threshold = HP.model_conf
 #testing confidenceloss version:
-test_pred, test_target, test_fnames, test_extras = trainer.test(model, testLoader, return_softmax=True)
+test_pred, test_target, test_fnames, test_extras = trainer.test(model, testLoader, return_softmax=True, return_confs=True)
 test_fnames, test_dropped_fnames = test_fnames
 valid_pred, valid_target, valid_fnames, _ = trainer.test(model, validLoader)
 valid_fnames, valid_dropped_fnames = valid_fnames

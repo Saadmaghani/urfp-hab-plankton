@@ -130,26 +130,32 @@ strategies (training):
 # version 13.642 = same as 13.6 except model_conf=0.992
 # version 13.643 = same as 13.6 except model_conf=0.993
 # version 13.644 = same as 13.6 except model_conf=0.994
-# version 13.645 = same as 13.6 except model_conf=0.995
+# version 13.645 = same as 13.6 except model_conf=0.995 (old one called 13.69)
 # version 13.646 = same as 13.6 except model_conf=0.996
 # version 13.647 = same as 13.6 except model_conf=0.997
 # version 13.648 = same as 13.6 except model_conf=0.998
-# version 13.65 = same as 13.6 except model_conf=0.999
-# version 13.66 = same as 13.6 except model_conf=0.9999
+# version 13.649 = same as 13.6 except model_conf=0.999 (old one called 13.65)
+# version 13.65 = same as 13.6 except model_conf=0.9991
+# version 13.651 = same as 13.6 except model_conf=0.9992
+# version 13.652 = same as 13.6 except model_conf=0.9993
+# version 13.653 = same as 13.6 except model_conf=0.9994
+# version 13.654 = same as 13.6 except model_conf=0.9995
+# version 13.655 = same as 13.6 except model_conf=0.9996
+# version 13.656 = same as 13.6 except model_conf=0.9997
 # version 13.67 = same as 13.6 except model_conf=0.99999
 # version 13.68 = same as 13.6 except model_conf=0.999999
-# version 13.69 = same as 13.6 except model_conf=0.995 ***renamed to 13.645***
 # version 13.7 = same as 13.6 except model_conf will go step by step. model_conf = 0
 # version 13.71 = same as 13.7 except model_conf=0.1
 # version 13.72 = same as 13.7 except model_conf=0.2
 # version 13.73 = same as 13.7 except model_conf=0.4
 # version 13.74 = same as 13.7 except model_conf=0.8
+# version 13.75 = same as 13.7 except model_conf=0.9
 # version 13.8 = same as 13.51; ConfLoss v3.1. 100 images/class. patience = 20
 # version 13.81 = ConfLoss v3.2. 
 # version 13.82 = ConfLoss v3.3. 
 # version 13.9 = ConfLoss v4.0
 class Hyperparameters:
-    version=13.73
+    version=13.652
     learning_rate = 0.003
     number_of_epochs = 200
     momentum = 0.9
@@ -165,4 +171,4 @@ class Hyperparameters:
     train_AE = False
     number_of_images_per_class = 1000
     transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) #transforms.Compose([Rescale((224, 224)),ToTensor(), Normalize(mean=[0.449], std=[0.226])]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
-    model_conf = 0.4
+    model_conf = 0.9993
