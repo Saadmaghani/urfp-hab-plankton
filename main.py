@@ -114,11 +114,11 @@ else:
 
 model.threshold = HP.model_conf
 #testing confidenceloss version:
-test_pred, test_target, test_fnames, test_outs = trainer.test(model, testLoader, return_softmax=True)
+test_pred, test_target, test_fnames, test_extras = trainer.test(model, testLoader, return_softmax=True)
 test_fnames, test_dropped_fnames = test_fnames
-valid_pred, valid_target, valid_fnames = trainer.test(model, validLoader)
+valid_pred, valid_target, valid_fnames, _ = trainer.test(model, validLoader)
 valid_fnames, valid_dropped_fnames = valid_fnames
-train_pred, train_target, train_fnames = trainer.test(model, trainLoader)
+train_pred, train_target, train_fnames, _ = trainer.test(model, trainLoader)
 train_fnames, train_dropped_fnames = train_fnames
 
 # testing normal model
@@ -145,7 +145,8 @@ f = open("./stats/stats-"+str(model)+"-"+str(HP.version)+".json","w+")
 str_to_write = "{\"Time\": \""+ time +"\",\n \"Epochs\": "+str(epochs)+ ",\n \"TrainAcc\": "+ str(trainAcc)+",\n \"ValidAcc\": "+str(validAcc)+",\n \"TestAcc\": "+ str(test_acc) + \
 ",\n \"Train_Pred\": " + str(train_pred.tolist()) + ",\n \"Train_Target\": " + str(list(train_target.cpu().numpy())) + ",\n \"Train_fnames\": " + json.dumps(train_fnames) + ",\n \"Train_dropped_fnames\": " + json.dumps(train_dropped_fnames) + \
 ",\n \"Valid_Pred\": " + str(list(valid_pred.cpu().numpy())) + ",\n \"Valid_Target\": " + str(list(valid_target.cpu().numpy())) + ",\n \"Valid_fnames\": " + json.dumps(valid_fnames) + ",\n \"Valid_dropped_fnames\": " + json.dumps(valid_dropped_fnames) + \
-",\n \"Test_Pred\": " + str(list(test_pred.cpu().numpy())) + ",\n \"Test_Target\": " + str(list(test_target.cpu().numpy())) + ",\n \"Test_fnames\": " + json.dumps(test_fnames) + ",\n \"Test_dropped_fnames\": " + json.dumps(test_dropped_fnames) + ",\n \"Test_outs\": " + str(test_outs.tolist())+ \
+",\n \"Test_Pred\": " + str(list(test_pred.cpu().numpy())) + ",\n \"Test_Target\": " + str(list(test_target.cpu().numpy())) + ",\n \"Test_fnames\": " + json.dumps(test_fnames) + \
+",\n \"Test_dropped_fnames\": " + json.dumps(test_dropped_fnames) + ",\n \"Test_dropped_outs\": " + str(test_extras['all_outs'][1].tolist()) + ",\n \"Test_dropped_confs\": " + str(test_extras['all_confs'][1].tolist()) + \
 "}"
 
 #",\n \"Tr_Trgt_Time\": "+ str(other_stats["Tr_Targ_time"]) + ",\n \"Tr_Pred_Time\": "+ str(other_stats["Tr_Pred_time"]) + \

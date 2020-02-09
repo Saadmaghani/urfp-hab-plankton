@@ -251,13 +251,20 @@ class Trainer:
 
         return all_loss, all_fnames
 
-    def test(self, model, testloader, return_softmax=False):
+    def test(self, model, testloader, return_softmax=False, return_conf=False):
         all_preds = torch.LongTensor().to(self.device)
         all_targets = torch.LongTensor().to(self.device)
 
 
         if return_softmax:
-            all_outs = torch.FloatTensor().to(self.device)
+            if str(model).split('.')[0] == "GoogleNet_5": # (!dropped, dropped)
+                all_outs = (torch.FloatTensor().to(self.device), torch.FloatTensor().to(self.device))
+            else:
+                all_outs = torch.FloatTensor().to(self.device)
+
+        if return_conf and str(model).split('.')[0] == "GoogleNet_5": # (!dropped, dropped)
+            all_confs = (torch.FloatTensor().to(self.device), torch.FloatTensor().to(self.device))
+
         all_fnames = []
         if str(model).split('.')[0] == "GoogleNet_5":
             all_fnames = ([], [])
@@ -276,14 +283,18 @@ class Trainer:
 
                 # version 5.x GoogleNet has outputs = (outputs, confidence)
                 if str(model).split('.')[0] == "GoogleNet_5":
-                    outputs, confs = outputs 
+                    outputs_all, confs = outputs 
+
                     idxs = torch.unique(torch.nonzero(confs>model.threshold)[:,0])
                     not_idxs = torch.unique(torch.nonzero(confs <=model.threshold)[:,0])
 
-                    outputs = outputs[idxs]
+                    outputs = outputs_all[idxs]
                     labels = labels[idxs]
                     dropped_fnames = [fnames[i] for i in not_idxs.tolist()]
                     fnames = [fnames[i] for i in idxs.tolist()]
+                    all_confs[0] = torch.cat((all_confs[0], confs[idxs]), 0)
+                    all_confs[1] = torch.cat((all_confs[1], confs[not_idxs]), 0)
+                    
 
                 if len(outputs.data) == 0:
                     continue
@@ -293,8 +304,14 @@ class Trainer:
                 #print("~~~~~~~~~~~~~~~~")
                 all_preds = torch.cat((all_preds, predicted), 0)
                 all_targets = torch.cat((all_targets, labels), 0) 
+
                 if return_softmax:
-                    all_outs = torch.cat((all_outs, outputs.data), 0) 
+                    if str(model).split('.')[0] == "GoogleNet_5":
+                        all_outs[0] = torch.cat((all_outs[0], outputs.data), 0)
+                        all_outs[1] = torch.cat((all_outs[1], outputs_all[not_idxs].data), 0)
+                    else:
+                        all_outs = torch.cat((all_outs, outputs.data), 0) 
+
                 #if total >=10:
                 #   break
                 if str(model).split('.')[0] == "GoogleNet_5":
@@ -303,10 +320,13 @@ class Trainer:
                 else:
                     all_fnames.extend(fnames)
         
+        extras = {}
         if return_softmax:
-            return all_preds, all_targets, all_fnames, all_outs
-        else:
-            return all_preds, all_targets, all_fnames
+            extras["all_outs"] = all_outs
+        if return_conf:
+            extras["all_confs"] = all_confs
+
+        return all_preds, all_targets, all_fnames, extras
 
 # script copied from https://gist.github.com/stefanonardo/693d96ceb2f531fa05db530f3e21517d
 # author: Stefano Nardo, Github: stefanonardo
