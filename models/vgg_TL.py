@@ -139,7 +139,7 @@ class AlexNet(nn.Module):
 # version 5.8 = same as 5.3 except 94 classes
 # version 5.9 = same as 5.3 except conf = difference b/w correct 
 class GoogleNet(nn.Module):
-    version = 1.2
+    version = 5.3
 
     # used with version 5.0
     class IdentityLayer(nn.Module):

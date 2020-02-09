@@ -126,11 +126,19 @@ strategies (training):
 # version 13.62 = same as 13.6 except model_conf=0.975
 # version 13.63 = same as 13.6 except model_conf=0.98
 # version 13.64 = same as 13.6 except model_conf=0.99
+# version 13.641 = same as 13.6 except model_conf=0.991
+# version 13.642 = same as 13.6 except model_conf=0.992
+# version 13.643 = same as 13.6 except model_conf=0.993
+# version 13.644 = same as 13.6 except model_conf=0.994
+# version 13.645 = same as 13.6 except model_conf=0.995
+# version 13.646 = same as 13.6 except model_conf=0.996
+# version 13.647 = same as 13.6 except model_conf=0.997
+# version 13.648 = same as 13.6 except model_conf=0.998
 # version 13.65 = same as 13.6 except model_conf=0.999
 # version 13.66 = same as 13.6 except model_conf=0.9999
 # version 13.67 = same as 13.6 except model_conf=0.99999
 # version 13.68 = same as 13.6 except model_conf=0.999999
-# version 13.69 = same as 13.6 except model_conf=0.995
+# version 13.69 = same as 13.6 except model_conf=0.995 ***renamed to 13.645***
 # version 13.7 = same as 13.6 except model_conf will go step by step. model_conf = 0
 # version 13.71 = same as 13.7 except model_conf=0.1
 # version 13.72 = same as 13.7 except model_conf=0.2
@@ -141,20 +149,20 @@ strategies (training):
 # version 13.82 = ConfLoss v3.3. 
 # version 13.9 = ConfLoss v4.0
 class Hyperparameters:
-    version=5.32
+    version=13.648
     learning_rate = 0.003
     number_of_epochs = 200
     momentum = 0.9
     optimizer = optim.Adam
-    loss_function = FocalLoss 
+    loss_function = ConfidenceLoss 
     es = EarlyStopping(patience=20)
     batch_size = 256 
     scheduler = None
-    pp_strategy = "propReduce"
+    pp_strategy = "thresholding"
     data_splits = [0.6,0.2,0.2] #vae: [0.8, 0.1, 0.1]
-    maxN = 6000 
+    maxN = None 
     minimum = None
     train_AE = False
-    number_of_images_per_class = None
+    number_of_images_per_class = 1000
     transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) #transforms.Compose([Rescale((224, 224)),ToTensor(), Normalize(mean=[0.449], std=[0.226])]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
-    model_conf = 0.0
+    model_conf = 0.998
