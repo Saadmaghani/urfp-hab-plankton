@@ -388,3 +388,10 @@ accuracies of training/validation/test sets of each class (done)
 	3. 1.2/12.2 - 317231
 	4. 1.3/12.2 - 330381
 	5. 1.4/12.2 - 308129
+
+
+2020!! stopped taking urfp log. probably a bad idea but anywho.
+9/2/20:
+1.	meeting with zhiming. look at these journals:
+	  GCR(1/2/3/4) journal
+	  if number imoact factor
