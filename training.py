@@ -129,8 +129,8 @@ class Trainer:
                             best_acc = valid_acc
                             best_model_weights = copy.deepcopy(model.state_dict())
                     else:
-                        train_pred, train_target, t_f = self.test(model, trainLoader)
-                        valid_pred, valid_target, v_f = self.test(model, validLoader)
+                        train_pred, train_target, t_f, _ = self.test(model, trainLoader)
+                        valid_pred, valid_target, v_f, _ = self.test(model, validLoader)
                         train_acc = accuracy_score(train_target.cpu(), train_pred.cpu())
                         valid_acc = accuracy_score(valid_target.cpu(), valid_pred.cpu())      
 

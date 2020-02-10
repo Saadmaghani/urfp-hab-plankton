@@ -90,16 +90,16 @@ trainAcc = []
 validAcc = [] 
 epochs = 0 
 other_stats = {}
-trainAcc, validAcc, epochs, other_stats = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
+#trainAcc, validAcc, epochs, other_stats = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
 
 # Just Testing
-#model = GoogleNet()
-#path_to_statedict = "models/GoogleNet_5.3-13.52.pth"
+model = GoogleNet()
+path_to_statedict = "models/GoogleNet_5.3-13.31.pth"
 
-#if ".tar" in path_to_statedict:
-#    model = load_partial_model(model, path_to_statedict)
-#else:
-#    model = load_full_model(model, path_to_statedict)
+if ".tar" in path_to_statedict:
+    model = load_partial_model(model, path_to_statedict)
+else:
+    model = load_full_model(model, path_to_statedict)
 
 # further training of model
 #trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
@@ -112,7 +112,7 @@ trainAcc, validAcc, epochs, other_stats = trainer.train(model, trainLoader, vali
 #test_acc = torch.mean(test_sumsqs).tolist()
 
 
-#model.threshold = HP.model_conf
+model.threshold = HP.model_conf
 #testing confidenceloss version:
 test_pred, test_target, test_fnames, test_extras = trainer.test(model, testLoader, return_softmax=True, return_confs=True)
 test_fnames, test_dropped_fnames = test_fnames
