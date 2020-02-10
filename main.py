@@ -72,7 +72,7 @@ trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn
 #model = CNN_VAE()
 
 # training normal model
-#model = GoogleNet()
+model = GoogleNet()
 
 # training autoencoder + model
 """
@@ -90,16 +90,16 @@ trainAcc = []
 validAcc = [] 
 epochs = 0 
 other_stats = {}
-#trainAcc, validAcc, epochs, other_stats = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
+trainAcc, validAcc, epochs, other_stats = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
 
 # Just Testing
-model = GoogleNet()
-path_to_statedict = "models/GoogleNet_5.3-13.52.pth"
+#model = GoogleNet()
+#path_to_statedict = "models/GoogleNet_5.3-13.52.pth"
 
-if ".tar" in path_to_statedict:
-    model = load_partial_model(model, path_to_statedict)
-else:
-    model = load_full_model(model, path_to_statedict)
+#if ".tar" in path_to_statedict:
+#    model = load_partial_model(model, path_to_statedict)
+#else:
+#    model = load_full_model(model, path_to_statedict)
 
 # further training of model
 #trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
@@ -112,7 +112,7 @@ else:
 #test_acc = torch.mean(test_sumsqs).tolist()
 
 
-model.threshold = HP.model_conf
+#model.threshold = HP.model_conf
 #testing confidenceloss version:
 test_pred, test_target, test_fnames, test_extras = trainer.test(model, testLoader, return_softmax=True, return_confs=True)
 test_fnames, test_dropped_fnames = test_fnames
@@ -146,6 +146,8 @@ str_to_write = "{\"Time\": \""+ time +"\",\n \"Epochs\": "+str(epochs)+ ",\n \"T
 ",\n \"Train_Pred\": " + str(train_pred.tolist()) + ",\n \"Train_Target\": " + str(list(train_target.cpu().numpy())) + ",\n \"Train_fnames\": " + json.dumps(train_fnames) + ",\n \"Train_dropped_fnames\": " + json.dumps(train_dropped_fnames) + \
 ",\n \"Valid_Pred\": " + str(list(valid_pred.cpu().numpy())) + ",\n \"Valid_Target\": " + str(list(valid_target.cpu().numpy())) + ",\n \"Valid_fnames\": " + json.dumps(valid_fnames) + ",\n \"Valid_dropped_fnames\": " + json.dumps(valid_dropped_fnames) + \
 ",\n \"Test_Pred\": " + str(list(test_pred.cpu().numpy())) + ",\n \"Test_Target\": " + str(list(test_target.cpu().numpy())) + ",\n \"Test_fnames\": " + json.dumps(test_fnames) + \
+",\n \"loss\": "+ str(other_stats["loss"]) + ",\n \"class_loss\": "+ str(other_stats["class_loss"]) + \
+",\n \"avg_confidence\": " + str(other_stats["avg_confidence"]) + ",\n \"train_drop\": " + str(other_stats["train_drop"])+ ",\n \"valid_drop\": " + str(other_stats["valid_drop"]) + \
 ",\n \"Test_dropped_fnames\": " + json.dumps(test_dropped_fnames) + ",\n \"Test_dropped_outs\": " + str(test_extras['all_outs'][1].tolist()) + ",\n \"Test_dropped_confs\": " + str(test_extras['all_confs'][1].tolist()) + \
 "}"
 

@@ -100,7 +100,7 @@ class Metrics:
             ca_dict = classification_report(self.target, self.pred, target_names=class_names, output_dict=True)
             return ca_dict
     
-    def plot_CM(self, preprocessor = None, normalize = True, diff = False, y=1):
+    def plot_CM(self, preprocessor = None, normalize = True, diff = False, y=1, title=None, plot_along=None):
         if diff:
             wi = np.where(self.target != self.pred)[0]
         else:
@@ -109,15 +109,18 @@ class Metrics:
         cm = confusion_matrix(self.target[wi], self.pred[wi])
         if normalize:
             cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-            title = "Confusion Matrix - normalized"
+            title = "Confusion Matrix - normalized" if title is None else title
         else:
-            title = "Confusion Matrix - unnormalized"
+            title = "Confusion Matrix - unnormalized" if title is None else title
             
         fig = plt.figure()
-        ax = fig.add_subplot(111)
-        
-        cax = ax.matshow(cm, cmap = plt.cm.Blues)
+        ax = fig.add_subplot(111) 
+        if plot_along is not None:
+            ax2 = fig.add_subplot(112)
+            ax2.plot(plot_along)
 
+        cax = ax.matshow(cm, cmap = plt.cm.Blues)
+            
         labels = None
         if preprocessor is not None:
             labels = self.get_classnames(preprocessor)
@@ -195,8 +198,10 @@ class Metrics:
 class FileHandler:
     def __init__(self, list_of_files):
         self.d = {}
+        self.total = 0
         for fn in list_of_files:
             cl = re.search("\/.*\/\d+\/(.*)\/", fn).group(1)
+            self.total += 1
             if cl in self.d:
                 self.d[cl]['count'] += 1
                 self.d[cl]['files'].append(fn)
@@ -208,10 +213,7 @@ class FileHandler:
             print("class", key, ": count =",self.d[key]['count'])
 
     def get_total_count(self):
-        s = 0
-        for key in self.d:
-            s += self.d[key]['count']
-        return s
+        return self.total
 
     def sample(self, n, name=None):
         if name is None:
@@ -219,11 +221,11 @@ class FileHandler:
         fname = random.sample(self.d[name]['files'], n)
         show_plankton(fname) 
 
-    def plot_counts(self):
+    def plot_counts(self, size=None):
         x = [names for names in self.d.keys()]
         x.sort()
         y = [self.d[names]['count'] for names in x]
-        plt.figure(figsize=(15,6))
+        plt.figure(figsize= (15,6) if size is None else size)
         plt.xticks(rotation=90)
         plt.bar(x,y)
         plt.show()
