@@ -153,7 +153,7 @@ strategies (training):
 # version 13.81 = ConfLoss v3.2. 
 # version 13.82 = ConfLoss v3.3. 
 # version 13.9 = ConfLoss v4.0
-# version 13.101 = ConfLoss v1.0 tests. similar to 13.6 and 13.7. 13.101 will have [0.0, 0.1, 0.2, 0.4, 0.8, 0.9, 0.95, 0.99] saved as 13.101-13. 
+# version 13.101 = ConfLoss v1.0 tests. similar to 13.6 and 13.7. 13.101 will have [0.0, 0.1, 0.2, 0.4, 0.8, 0.9, 0.95, 0.99] saved as 13.101-8. 
 # version 13.111 = same as 13.101; 13.111 will have [0.9, 0.91, 0.92, 0.93, 0.94, 0.96, 0.97, 0.98]
 class Hyperparameters:
     version=13.111
