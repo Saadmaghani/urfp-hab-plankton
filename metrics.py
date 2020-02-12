@@ -138,8 +138,9 @@ class Metrics:
         for i in range(q,0,-1):
             b, m = polyfit(x[(i-1)*size+r : (i*size)+r], y[(i-1)*size+r : (i*size)+r], 1)
             plt.plot(x[(i-1)*size+r : (i*size)+r], b + m * x[(i-1)*size+r : (i*size)+r], 'C'+str(color), linewidth=3)
-        b, m = polyfit(x[0:r], y[0:r], 1)
-        plt.plot(x[0:r], b + m * x[0:r], 'C'+str(color), linewidth=3)
+        if r>1:
+            b, m = polyfit(x[0:r], y[0:r], 1)
+            plt.plot(x[0:r], b + m * x[0:r], 'C'+str(color), linewidth=3)
 
     def _plot_lobf_deg(x, y, degree, color):
         
@@ -158,12 +159,15 @@ class Metrics:
 
             if show_avgs is not None:
                 if isinstance(show_avgs, tuple):
-                    avg, show = show_avgs
-                    if show:
+                    avg, show_og, plot_type = show_avgs
+                    if show_og:
                         plt.plot(x, value, 'C'+str(cn), label=key)
                     else:
                         plt.plot(0,0, 'C'+str(cn), label=key)
-                    Metrics._plot_lobf_deg(x, value, avg, color=cn)
+                    if plot_type == "bestFit":
+                        Metrics._plot_lobf_deg(x, value, avg, color=cn)
+                    elif plot_type == "avg":
+                        Metrics._plot_avg_lines(x, value, avg, color=cn)
 
                 else:
                     avg = show_avgs
