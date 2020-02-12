@@ -153,9 +153,9 @@ strategies (training):
 # version 13.81 = ConfLoss v3.2. 
 # version 13.82 = ConfLoss v3.3. 
 # version 13.9 = ConfLoss v4.0
-# version 13.10 = ConfLoss v1.0 tests. similar to 13.6 and 13.7. 13.10 = [0] 
+# version 13.101 = ConfLoss v1.0 tests. similar to 13.6 and 13.7. 13.101 will have [0.0, 0.1, 0.2, 0.4, 0.8, 0.9, 0.95, 0.99] saved as 13.101-13. 
 class Hyperparameters:
-    version=13.31
+    version=13.101
     learning_rate = 0.003
     number_of_epochs = 200
     momentum = 0.9
@@ -171,4 +171,4 @@ class Hyperparameters:
     train_AE = False
     number_of_images_per_class = 1000
     transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) #transforms.Compose([Rescale((224, 224)),ToTensor(), Normalize(mean=[0.449], std=[0.226])]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
-    model_conf = None
+    model_conf = [0.0, 0.1, 0.2, 0.4, 0.8, 0.9, 0.95, 0.99] 

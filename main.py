@@ -113,6 +113,8 @@ else:
 
 
 model.threshold = HP.model_conf
+if isinstance(model.threshold, list):
+
 #testing confidenceloss version:
 test_pred, test_target, test_fnames, test_extras = trainer.test(model, testLoader, return_softmax=True, return_confs=True)
 test_fnames, test_dropped_fnames = test_fnames
