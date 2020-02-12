@@ -129,8 +129,8 @@ class Trainer:
                             best_acc = valid_acc
                             best_model_weights = copy.deepcopy(model.state_dict())
                     else:
-                        train_pred, train_target, t_f = self.test(model, trainLoader)
-                        valid_pred, valid_target, v_f = self.test(model, validLoader)
+                        train_pred, train_target, t_f, _ = self.test(model, trainLoader)
+                        valid_pred, valid_target, v_f, _ = self.test(model, validLoader)
                         train_acc = accuracy_score(train_target.cpu(), train_pred.cpu())
                         valid_acc = accuracy_score(valid_target.cpu(), valid_pred.cpu())      
 
@@ -296,6 +296,18 @@ class Trainer:
                         all_confs[0] = torch.cat((all_confs[0], confs[idxs]), 0)
                         all_confs[1] = torch.cat((all_confs[1], confs[not_idxs]), 0)
                     
+                if return_softmax:
+                    if str(model).split('.')[0] == "GoogleNet_5":
+                        all_outs[0] = torch.cat((all_outs[0], outputs_all[idxs].data), 0)
+                        all_outs[1] = torch.cat((all_outs[1], outputs_all[not_idxs].data), 0)
+                    else:
+                        all_outs = torch.cat((all_outs, outputs.data), 0) 
+
+                if str(model).split('.')[0] == "GoogleNet_5":
+                    all_fnames[0].extend(fnames)
+                    all_fnames[1].extend(dropped_fnames)
+                else:
+                    all_fnames.extend(fnames)
 
                 if len(outputs.data) == 0:
                     continue
@@ -306,20 +318,8 @@ class Trainer:
                 all_preds = torch.cat((all_preds, predicted), 0)
                 all_targets = torch.cat((all_targets, labels), 0) 
 
-                if return_softmax:
-                    if str(model).split('.')[0] == "GoogleNet_5":
-                        all_outs[0] = torch.cat((all_outs[0], outputs.data), 0)
-                        all_outs[1] = torch.cat((all_outs[1], outputs_all[not_idxs].data), 0)
-                    else:
-                        all_outs = torch.cat((all_outs, outputs.data), 0) 
-
                 #if total >=10:
                 #   break
-                if str(model).split('.')[0] == "GoogleNet_5":
-                    all_fnames[0].extend(fnames)
-                    all_fnames[1].extend(dropped_fnames)
-                else:
-                    all_fnames.extend(fnames)
         
         extras = {}
         if return_softmax:
@@ -439,9 +439,9 @@ from torch.autograd import Variable
 # version 3.3 = same as 3.0; lambda = 6
 # version 4.0 = BCELoss, lambda_1 = 1, lambda_2=1.5 (λ_2conf)^2*(bceLoss*λ_1)^2 + (1-(λ_2conf))^2
 class ConfidenceLoss(nn.Module):
-    version=3.0
+    version=1.8
 
-    def __init__(self, classifierLoss = nn.BCELoss, lambda_1=1):
+    def __init__(self, classifierLoss = nn.BCELoss, lambda_1=10):
         super(ConfidenceLoss, self).__init__()
         self.classifierLoss = classifierLoss()
         self.lambda_1 = lambda_1
