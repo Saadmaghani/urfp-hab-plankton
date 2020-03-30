@@ -393,5 +393,9 @@ accuracies of training/validation/test sets of each class (done)
 2020!! stopped taking urfp log. probably a bad idea but anywho.
 9/2/20:
 1.	meeting with zhiming. look at these journals:
-	  GCR(1/2/3/4) journal
+	  JCR(1/2/3/4) journal
 	  if number imoact factor
+
+
+31/3/20: 
+1.	hi lets resume the project? okay. 
