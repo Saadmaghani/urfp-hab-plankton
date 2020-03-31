@@ -399,3 +399,12 @@ accuracies of training/validation/test sets of each class (done)
 
 31/3/20: 
 1.	hi lets resume the project? okay. 
+2.	so first thing is to train the base model using good representation of the model. which is done - 5.3-13.31. 
+	- According to 14.118, a good confidence is 98% which gives us 94% test acc. compared to 1.2-4.2 - 91.3% test acc. this is better.
+	- so it is definitely better. 
+
+
+
+
+
+
