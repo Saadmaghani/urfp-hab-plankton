@@ -171,13 +171,18 @@ else:
     train_fnames, train_dropped_fnames = train_fnames
 
     if HP.version >= 15:
-        new_model = GoogleNet()
+        new_model = GoogleNet(v=1.2)
 
         conf_trainLoader = pp.confident_imgs(train_fnames, HP.batch_size, transformations = HP.transformations)
         conf_validLoader = pp.confident_imgs(valid_fnames, HP.batch_size, transformations = HP.transformations)
         conf_testLoader = pp.confident_imgs(test_fnames, HP.batch_size, transformations = HP.transformations)
 
-        trainAcc, validAcc, epochs, other_stats = trainer.train(new_model, conf_trainLoader, conf_validLoader, earlyStopping = HP.es)
+
+        conf_trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn = nn.BCELoss, optimizer = HP.optimizer, scheduler = HP.scheduler, lr = HP.learning_rate, momentum = HP.momentum)
+
+
+
+        trainAcc, validAcc, epochs, other_stats = conf_trainer.train(new_model, conf_trainLoader, conf_validLoader, earlyStopping = HP.es)
 
 
         # testing normal model

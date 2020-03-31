@@ -161,10 +161,12 @@ class GoogleNet(nn.Module):
             return x
 
 
-    def __init__(self, freeze=None, pretrain=True, autoencoder=None):
+    def __init__(self, freeze=None, pretrain=True, autoencoder=None, v=None):
         super(GoogleNet, self).__init__()
 
         self.model = models.googlenet(pretrained=pretrain)
+        if v is not None:
+            self.version = v
 
         # self.model.features[0] = nn.Conv2d(1, 64, 3, padding = 1)
         if freeze is not None:
