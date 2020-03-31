@@ -263,9 +263,15 @@ class Preprocessor:
 
 
     def confident_imgs(self, fnames, batch_size, transformations=None):
-        self.transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) if transformations is None else transformations
+        transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) if transformations is None else transformations
+        
         labels = [x.split('/')[3] for x in fnames]
-        label_onehot = [self.label_to_onehotInd(x) for x in labels] 
+
+        label_encoder = LabelEncoder()
+        integer_encoded = label_encoder.fit_transform(self.labels)
+        n = np.max(integer_encoded)
+        label_onehot = torch.nn.functional.one_hot(torch.from_numpy(integer_encoded), int(n)+1).tolist()
+
 
         fnames = [x.split('/')[-1] for x in fnames]
 
