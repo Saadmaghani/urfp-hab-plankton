@@ -23,6 +23,8 @@ strategies (preprocessing):
 2.1 - "propReduce_min" | proportional reduction with lower bound 
 3.0 - "augmentation" | data augmentation
 3.1 - "augmentation_max" | data augmentation with upper bound  
+4.0 - autoencoder
+5.0 - variational autoencoder
 
 strategies (training):
 0.0 - Transfer Learning
@@ -31,8 +33,7 @@ strategies (training):
 3.0 - EarlyStopping | Early stopping with Patience = 20
 4.0 - 16 random crops and averaging the output
 4.1 - 16 random crops, not averaging output, making into one layer and then feeding into FC
-5.0 - autoencoder
-
+5.0 - Confidence Loss 
 """
 
 # default:
@@ -153,11 +154,12 @@ strategies (training):
 # version 13.81 = ConfLoss v3.2. 
 # version 13.82 = ConfLoss v3.3. 
 # version 13.9 = ConfLoss v4.0
-# version 13.101 = ConfLoss v1.0 tests. similar to 13.6 and 13.7. 13.101 will have [0.0, 0.1, 0.2, 0.4, 0.8, 0.9, 0.95, 0.99] saved as 13.101-8. 
-# version 13.111 = same as 13.101; 13.111 will have [0.9, 0.91, 0.92, 0.93, 0.94, 0.96, 0.97, 0.98]
-# version 13.121 = same as 13.101; 13.121 will have [0.9, 0.91, 0.92, 0.93, 0.94, 0.96, 0.97, 0.98]
+# version 14.101 = ConfLoss v1.0 tests. similar to 13.6 and 13.7. 13.101 will have [0.0, 0.1, 0.2, 0.4, 0.8, 0.9, 0.95, 0.99] saved as 14.101-8. 
+# version 14.111 = same as 13.101; 13.111 will have [0.9, 0.91, 0.92, 0.93, 0.94, 0.96, 0.97, 0.98] saved as 14.111-8.
+# version 14.121 = same as 13.101; 13.121 will have [0.981,0.982,0.983,0.984,0.985,0.986,0.987,0.988,0.989] saved as 14.121-9.
+# version 15.01 = ConfLoss v1.0. so what we will do is we will first take model 5.3-13.31, use it to get the 98% threshold images, then train a new model on the threshold images as 15.01
 class Hyperparameters:
-    version=13.121
+    version=15.01
     learning_rate = 0.003
     number_of_epochs = 200
     momentum = 0.9
@@ -173,4 +175,4 @@ class Hyperparameters:
     train_AE = False
     number_of_images_per_class = 1000
     transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) #transforms.Compose([Rescale((224, 224)),ToTensor(), Normalize(mean=[0.449], std=[0.226])]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
-    model_conf = [0.981,0.982,0.983,0.984,0.985,0.986,0.987,0.988,0.989]
+    model_conf = 0.98

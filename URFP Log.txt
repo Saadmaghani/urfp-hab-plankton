@@ -393,5 +393,18 @@ accuracies of training/validation/test sets of each class (done)
 2020!! stopped taking urfp log. probably a bad idea but anywho.
 9/2/20:
 1.	meeting with zhiming. look at these journals:
-	  GCR(1/2/3/4) journal
+	  JCR(1/2/3/4) journal
 	  if number imoact factor
+
+
+31/3/20: 
+1.	hi lets resume the project? okay. 
+2.	so first thing is to train the base model using good representation of the model. which is done - 5.3-13.31. 
+	- According to 14.118, a good confidence is 98% which gives us 94% test acc. compared to 1.2-4.2 - 91.3% test acc. this is better.
+	- so it is definitely better. 
+
+
+
+
+
+

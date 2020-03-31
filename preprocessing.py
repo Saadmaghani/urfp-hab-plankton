@@ -191,7 +191,7 @@ class Normalize(object):
 class Preprocessor:
     DATA_FOLDER = "./data"
 
-    def __init__(self, years, transformations = None, include_classes = None, strategy = None, maxN = None, train_eg_per_class = None, minimum = None):
+    def __init__(self, years, transformations=None, include_classes=None, strategy=None, maxN=None, train_eg_per_class=None, minimum=None):
 
         self.seed = 3
         self.years = years
@@ -258,6 +258,20 @@ class Preprocessor:
         ind = self.labels.index(label)
         onehot = self.encoded_labels[ind]
         return onehot.index(max(onehot))
+
+
+
+
+    def confident_imgs(self, fnames, label_onehot, batch_size, transformations=None):
+        self.transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) if transformations is None else transformations
+        labels = [self.onehotInd_to_label(x) for x in label_onehot]
+
+        fnames = [x.split('/')[-1] for x in fnames]
+
+        dataset = PlanktonDataset(fnames, labels, label_onehot, Preprocessor.DATA_FOLDER, transform=transformations)
+
+        loader = DataLoader(dataset, batch_size=batch_size, shuffle=False, num_workers=4)
+        return loader
 
 
     def _augment_small_classes(self, minimum, maximum = None):
