@@ -173,9 +173,9 @@ else:
     if HP.version >= 15:
         new_model = GoogleNet()
 
-        conf_trainLoader = pp.confident_imgs(train_target, train_fnames, transformations = HP.transformations, HP.batch_size)
-        conf_validLoader = pp.confident_imgs(valid_target, valid_fnames, transformations = HP.transformations, HP.batch_size)
-        conf_testLoader = pp.confident_imgs(test_target, test_fnames, transformations = HP.transformations, HP.batch_size)
+        conf_trainLoader = pp.confident_imgs(train_fnames, HP.batch_size, transformations = HP.transformations)
+        conf_validLoader = pp.confident_imgs(valid_fnames, HP.batch_size, transformations = HP.transformations)
+        conf_testLoader = pp.confident_imgs(test_fnames, HP.batch_size, transformations = HP.transformations)
 
         trainAcc, validAcc, epochs, other_stats = trainer.train(new_model, conf_trainLoader, conf_validLoader, earlyStopping = HP.es)
 

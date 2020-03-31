@@ -262,9 +262,10 @@ class Preprocessor:
 
 
 
-    def confident_imgs(self, fnames, label_onehot, batch_size, transformations=None):
+    def confident_imgs(self, fnames, batch_size, transformations=None):
         self.transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) if transformations is None else transformations
-        labels = [self.onehotInd_to_label(x) for x in label_onehot]
+        labels = [x.split('/')[3] for x in fnames]
+        label_onehot = [self.label_to_onehotInd(x) for x in labels] 
 
         fnames = [x.split('/')[-1] for x in fnames]
 
