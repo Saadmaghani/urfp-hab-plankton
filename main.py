@@ -186,7 +186,7 @@ else:
 
 
         # testing normal model
-        test_pred, test_target, test_fnames = trainer.test(model, conf_testLoader)
+        test_pred, test_target, test_fnames, _ = trainer.test(model, conf_testLoader)
         #valid_pred, valid_target, valid_fnames = trainer.test(model, validLoader)
         #train_pred, train_target, train_fnames = trainer.test(model, trainLoader)
 

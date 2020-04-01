@@ -268,7 +268,7 @@ class Preprocessor:
         labels = [x.split('/')[3] for x in fnames]
 
         label_encoder = LabelEncoder()
-        integer_encoded = label_encoder.fit_transform(self.labels)
+        integer_encoded = label_encoder.fit_transform(labels)
         n = np.max(integer_encoded)
         label_onehot = torch.nn.functional.one_hot(torch.from_numpy(integer_encoded), int(n)+1).tolist()
 
