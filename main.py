@@ -131,8 +131,6 @@ print(time)
 
 f = open("./stats/stats-" + str(model) + "-" + str(HP.version) + ".json", "w+")
 
-# str(test_met.accuracy()) + \
-model
 str_to_write = "{\"Time\": \"" + time + "\",\n \"Epochs\": " + str(epochs) + ",\n \"TrainAcc\": " + str(trainAcc) + ",\n \"ValidAcc\": " + str(validAcc) + ",\n \"TestAcc\": " + str(test_acc) + \
                ",\n \"Test_Pred\": " + str(list(test_pred.cpu().numpy())) + ",\n \"Test_Target\": " + str(list(test_target.cpu().numpy())) + ",\n \"Test_fnames\": " + json.dumps(test_fnames) + \
                "}"
