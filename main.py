@@ -72,7 +72,7 @@ trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn
 #model = CNN_VAE()
 
 # training normal model
-model = GoogleNet()
+# model = GoogleNet()
 
 # training autoencoder + model
 """
@@ -165,28 +165,32 @@ else:
     #testing confidenceloss version:
     test_pred, test_target, test_fnames, test_extras = trainer.test(model, testLoader, return_softmax=True, return_confs=True)
     test_fnames, test_dropped_fnames = test_fnames
-    valid_pred, valid_target, valid_fnames, _ = trainer.test(model, validLoader)
-    valid_fnames, valid_dropped_fnames = valid_fnames
-    train_pred, train_target, train_fnames, _ = trainer.test(model, trainLoader)
-    train_fnames, train_dropped_fnames = train_fnames
+    # valid_pred, valid_target, valid_fnames, _ = trainer.test(model, validLoader)
+    # valid_fnames, valid_dropped_fnames = valid_fnames
+    # train_pred, train_target, train_fnames, _ = trainer.test(model, trainLoader)
+    # train_fnames, train_dropped_fnames = train_fnames
 
     if HP.version >= 15:
         new_model = GoogleNet(v=1.2)
 
-        conf_trainLoader = pp.confident_imgs(train_fnames, HP.batch_size, transformations = HP.transformations)
-        conf_validLoader = pp.confident_imgs(valid_fnames, HP.batch_size, transformations = HP.transformations)
+        # conf_trainLoader = pp.confident_imgs(train_fnames, HP.batch_size, transformations = HP.transformations)
+        # conf_validLoader = pp.confident_imgs(valid_fnames, HP.batch_size, transformations = HP.transformations)
         conf_testLoader = pp.confident_imgs(test_fnames, HP.batch_size, transformations = HP.transformations)
 
 
-        conf_trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn = nn.BCELoss, optimizer = HP.optimizer, scheduler = HP.scheduler, lr = HP.learning_rate, momentum = HP.momentum)
+        # conf_trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn = nn.BCELoss, optimizer = HP.optimizer, scheduler = HP.scheduler, lr = HP.learning_rate, momentum = HP.momentum)
+        # trainAcc, validAcc, epochs, other_stats = conf_trainer.train(new_model, conf_trainLoader, conf_validLoader, earlyStopping = HP.es)
 
+        path_to_statedict = "models/GoogleNet_1.2-15.01.pth"
 
-
-        trainAcc, validAcc, epochs, other_stats = conf_trainer.train(new_model, conf_trainLoader, conf_validLoader, earlyStopping = HP.es)
+        if ".tar" in path_to_statedict:
+            new_model = load_partial_model(new_model, path_to_statedict)
+        else:
+            new_model = load_full_model(new_model, path_to_statedict)
 
 
         # testing normal model
-        test_pred, test_target, test_fnames, _ = trainer.test(model, conf_testLoader)
+        test_pred, test_target, test_fnames, _ = trainer.test(new_model, conf_testLoader)
         #valid_pred, valid_target, valid_fnames = trainer.test(model, validLoader)
         #train_pred, train_target, train_fnames = trainer.test(model, trainLoader)
 
@@ -202,10 +206,10 @@ else:
         time = trainer.getTime()
         print(time)
 
-        f = open("./stats/stats-"+str(model)+"-"+str(HP.version)+".json","w+")
+        f = open("./stats/stats-"+str(new_model)+"-"+str(HP.version)+".json","w+")
 
         #str(test_met.accuracy()) + \
-
+        model
         str_to_write = "{\"Time\": \""+ time +"\",\n \"Epochs\": "+str(epochs)+ ",\n \"TrainAcc\": "+ str(trainAcc)+",\n \"ValidAcc\": "+str(validAcc)+",\n \"TestAcc\": "+ str(test_acc) + \
         ",\n \"Test_Pred\": " + str(list(test_pred.cpu().numpy())) + ",\n \"Test_Target\": " + str(list(test_target.cpu().numpy())) + ",\n \"Test_fnames\": " + json.dumps(test_fnames) + \
         "}"
