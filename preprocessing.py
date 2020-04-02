@@ -191,11 +191,28 @@ class Normalize(object):
 class Preprocessor:
     DATA_FOLDER = "./data"
 
-    def __init__(self, years, transformations=None, include_classes=None, strategy=None, maxN=None, train_eg_per_class=None, minimum=None):
+    def __init__(self, years=None, transformations=None, include_classes=None, strategy=None, maxN=None, train_eg_per_class=None, minimum=None, conf_fnames=None):
 
         self.seed = 3
-        self.years = years
+
         self.include_classes = include_classes
+        self.transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) if transformations is None else transformations
+        ImageFile.LOAD_TRUNCATED_IMAGES = True
+
+
+        if strategy is not None and strategy == "confident_images" and conf_fnames is not None:
+            # conf imgs is just a list of fnames
+            self.labels = [x.split('/')[3] for x in conf_fnames]
+            self.fnames = [x.split('/')[-1] for x in conf_fnames]
+
+            label_encoder = LabelEncoder()
+            integer_encoded = label_encoder.fit_transform(self.labels)
+            n = np.max(integer_encoded)
+            self.encoded_labels = torch.nn.functional.one_hot(torch.from_numpy(integer_encoded), int(n) + 1).tolist()
+            print(len(self.fnames))
+            return
+
+        self.years = years if years is not None else 2006
         self.fnames, self.labels = self._get_lbls_fnames()
         print(len(self.fnames)) 
 
@@ -216,9 +233,6 @@ class Preprocessor:
                 self.fnames, self.labels = self._augment_small_classes(minimum, train_eg_per_class)
 
         self.encoded_labels = self._oneHotEncoding().tolist()
-        self.transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) if transformations is None else transformations
-        ImageFile.LOAD_TRUNCATED_IMAGES = True
-
         print(len(self.fnames))
 
 
@@ -232,6 +246,7 @@ class Preprocessor:
 
         self.test_dataset = PlanktonDataset(partition['test'], labels['test'], onehot_labels['test'],
             Preprocessor.DATA_FOLDER, transform=self.transformations)
+
 
     # shuffle=False so that the data is trained/validated/tested in exactly the same manner in each run
     def get_loaders(self, lType, batch_size):
@@ -247,6 +262,14 @@ class Preprocessor:
         return loader
 
 
+    def create_cf_datasets(self):
+        self.cf_dataset = PlanktonDataset(self.fnames, self.labels, self.encoded_labels, Preprocessor.DATA_FOLDER, transform=self.transformations)
+
+
+    def get_cf_loaders(self, batch_size):
+        return DataLoader(self.cf_dataset, batch_size=batch_size, shuffle=False, num_workers=4)
+
+
     def onehotInd_to_label(self, onehot_ind):
         onehot = [0 for x in range(len(self.encoded_labels[0]))]
         onehot[onehot_ind] = 1
@@ -258,27 +281,6 @@ class Preprocessor:
         ind = self.labels.index(label)
         onehot = self.encoded_labels[ind]
         return onehot.index(max(onehot))
-
-
-
-
-    def confident_imgs(self, fnames, batch_size, transformations=None):
-        transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) if transformations is None else transformations
-        
-        labels = [x.split('/')[3] for x in fnames]
-
-        label_encoder = LabelEncoder()
-        integer_encoded = label_encoder.fit_transform(labels)
-        n = np.max(integer_encoded)
-        label_onehot = torch.nn.functional.one_hot(torch.from_numpy(integer_encoded), int(n)+1).tolist()
-
-
-        fnames = [x.split('/')[-1] for x in fnames]
-
-        dataset = PlanktonDataset(fnames, labels, label_onehot, Preprocessor.DATA_FOLDER, transform=transformations)
-
-        loader = DataLoader(dataset, batch_size=batch_size, shuffle=False, num_workers=4)
-        return loader
 
 
     def _augment_small_classes(self, minimum, maximum = None):
@@ -404,3 +406,5 @@ class Preprocessor:
 
         return fnames, labels
 
+
+class Conf_PP(Preprocessor):
