@@ -407,4 +407,3 @@ class Preprocessor:
         return fnames, labels
 
 
-class Conf_PP(Preprocessor):
