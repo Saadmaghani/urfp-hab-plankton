@@ -92,8 +92,8 @@ other_stats = {}
 #trainAcc, validAcc, epochs, other_stats = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
 
 # Just Testing
-model = GoogleNet()
-path_to_statedict = "models/GoogleNet_1.2-15.01.pth"
+model = GoogleNet(v=1.2)
+path_to_statedict = "models/GoogleNet_1.2-15.02.pth"
 
 if ".tar" in path_to_statedict:
     model = load_partial_model(model, path_to_statedict)
@@ -101,7 +101,7 @@ else:
     model = load_full_model(model, path_to_statedict)
 
 # further training of model
-trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping=HP.es)
+#trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping=HP.es)
 
 
 #testing autoencoder
@@ -113,8 +113,8 @@ trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earl
 
 # testing normal model
 test_pred, test_target, test_fnames, _ = trainer.test(model, testLoader)
-# valid_pred, valid_target, valid_fnames = trainer.test(model, validLoader)
-# train_pred, train_target, train_fnames = trainer.test(model, trainLoader)
+valid_pred, valid_target, valid_fnames, _ = trainer.test(model, validLoader)
+train_pred, train_target, train_fnames, _ = trainer.test(model, trainLoader)
 
 
 test_met = Metrics(test_target, test_pred)
@@ -133,8 +133,10 @@ f = open("./stats/stats-" + str(model) + "-" + str(HP.version) + ".json", "w+")
 # str(test_met.accuracy()) + \
 
 str_to_write = "{\"Time\": \"" + time + "\",\n \"Epochs\": " + str(epochs) + ",\n \"TrainAcc\": " + str(trainAcc) + ",\n \"ValidAcc\": " + str(validAcc) + ",\n \"TestAcc\": " + str(test_acc) + \
-               ",\n \"Test_Pred\": " + str(list(test_pred.cpu().numpy())) + ",\n \"Test_Target\": " + str(list(test_target.cpu().numpy())) + ",\n \"Test_fnames\": " + json.dumps(test_fnames) + \
-               "}"
+",\n \"Test_Pred\": " + str(list(test_pred.cpu().numpy())) + ",\n \"Test_Target\": " + str(list(test_target.cpu().numpy())) + ",\n \"Test_fnames\": " + json.dumps(test_fnames) + \
+",\n \"Train_Pred\": " + str(train_pred.tolist()) + ",\n \"Train_Target\": " + str(list(train_target.cpu().numpy())) + ",\n \"Train_fnames\": " + json.dumps(train_fnames) + \
+",\n \"Valid_Pred\": " + str(list(valid_pred.cpu().numpy())) + ",\n \"Valid_Target\": " + str(list(valid_target.cpu().numpy())) + ",\n \"Valid_fnames\": " + json.dumps(valid_fnames) + \
+ "}"
 
 # ",\n \"Train_Pred\": " + str(train_pred.tolist()) + ",\n \"Train_Target\": " + str(list(train_target.cpu().numpy())) + ",\n \"Train_fnames\": " + json.dumps(train_fnames) + ",\n \"Train_dropped_fnames\": " + json.dumps(train_dropped_fnames) + \
 # ",\n \"Valid_Pred\": " + str(list(valid_pred.cpu().numpy())) + ",\n \"Valid_Target\": " + str(list(valid_target.cpu().numpy())) + ",\n \"Valid_fnames\": " + json.dumps(valid_fnames) + ",\n \"Valid_dropped_fnames\": " + json.dumps(valid_dropped_fnames) + \
