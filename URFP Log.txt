@@ -416,4 +416,4 @@ accuracies of training/validation/test sets of each class (done)
 4.  now to train 1.2-15.02 which is training 1.2-15.01 on all data.
     i.  very very low accuracies -> maybe cuz... idk i have to check the outputs TODO
 5.  lets apply this method of training the base model with confident images for different thresholds. TODO
-6.  i also want to test the trained data against the whole data. so vs confident images, its 94%. not against the whole test set. thats incorrect. TODO
+6.  i also want to test the trained data against the whole data. so vs confident images, its 94%. not against the whole test set. thats incorrect.
