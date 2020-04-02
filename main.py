@@ -53,7 +53,7 @@ print(len(classes_all))
 
 #pp = Preprocessor(years, include_classes=classes, train_eg_per_class=HP.number_of_images_per_class)
 #pp = Preprocessor(years, include_classes=all_classes, train_eg_per_class=HP.number_of_images_per_class, thresholding=HP.thresholding)
-pp = Preprocessor(years, include_classes=classes_30_cf, strategy = HP.pp_strategy, train_eg_per_class=HP.number_of_images_per_class, maxN = HP.maxN, 
+pp = Preprocessor(years, include_classes=classes_30_cf, strategy = HP.pp_strategy, train_eg_per_class=HP.number_of_images_per_class, maxN=HP.maxN,
     minimum =  HP.minimum, transformations = HP.transformations)
 
 
@@ -63,8 +63,7 @@ trainLoader = pp.get_loaders('train', HP.batch_size)
 validLoader = pp.get_loaders('validation', HP.batch_size)
 testLoader = pp.get_loaders('test', HP.batch_size)
 
-trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn = HP.loss_function, optimizer = HP.optimizer, 
-    scheduler = HP.scheduler, lr = HP.learning_rate, momentum = HP.momentum, autoencoder=HP.train_AE)
+trainer = Trainer(HP_version=HP.version, epochs=HP.number_of_epochs, loss_fn=HP.loss_function, optimizer=HP.optimizer, scheduler=HP.scheduler, lr=HP.learning_rate, momentum=HP.momentum, autoencoder=HP.train_AE)
 
 
 # training autoencoder

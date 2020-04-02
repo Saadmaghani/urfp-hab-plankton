@@ -7,7 +7,7 @@ import math
 import sys
 
 class Trainer:
-    def __init__(self, HP_version, epochs, loss_fn, optimizer, scheduler = None, lr = 0.01, momentum=0.9, autoencoder=False):
+    def __init__(self, HP_version, epochs, loss_fn, optimizer, scheduler=None, lr=0.01, momentum=0.9, autoencoder=False):
         self.epochs = epochs
         self.hp_version = HP_version
         self.criterion = loss_fn()
