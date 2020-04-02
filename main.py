@@ -94,7 +94,7 @@ other_stats = {}
 
 # Just Testing
 model = GoogleNet()
-path_to_statedict = "models/GoogleNet_5.3-13.31.pth"
+path_to_statedict = "models/GoogleNet_1.2-15.01.pth"
 
 if ".tar" in path_to_statedict:
     model = load_partial_model(model, path_to_statedict)
@@ -102,7 +102,7 @@ else:
     model = load_full_model(model, path_to_statedict)
 
 # further training of model
-#trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
+trainAcc, validAcc, epochs = trainer.train(model, trainLoader, validLoader, earlyStopping=HP.es)
 
 
 #testing autoencoder
@@ -112,120 +112,113 @@ else:
 #test_acc = torch.mean(test_sumsqs).tolist()
 
 
-if isinstance(HP.model_conf, list):
-    for i, thresh in enumerate(HP.model_conf):
-
-        model.threshold = thresh
-        #testing confidenceloss version:
-        test_pred, test_target, test_fnames, test_extras = trainer.test(model, testLoader, return_softmax=True, return_confs=True)
-        test_fnames, test_dropped_fnames = test_fnames
-        valid_pred, valid_target, valid_fnames, _ = trainer.test(model, validLoader)
-        valid_fnames, valid_dropped_fnames = valid_fnames
-        train_pred, train_target, train_fnames, _ = trainer.test(model, trainLoader)
-        train_fnames, train_dropped_fnames = train_fnames
-
-        # testing normal model
-        #test_pred, test_target, test_fnames = trainer.test(model, testLoader)
-        #valid_pred, valid_target, valid_fnames = trainer.test(model, validLoader)
-        #train_pred, train_target, train_fnames = trainer.test(model, trainLoader)
+# testing normal model
+test_pred, test_target, test_fnames, _ = trainer.test(model, testLoader)
+# valid_pred, valid_target, valid_fnames = trainer.test(model, validLoader)
+# train_pred, train_target, train_fnames = trainer.test(model, trainLoader)
 
 
-        test_met = Metrics(test_target, test_pred)
-        #valid_met = Metrics(valid_target, valid_pred)
-        #train_met = Metrics(train_target, train_pred)
+test_met = Metrics(test_target, test_pred)
+# valid_met = Metrics(valid_target, valid_pred)
+# train_met = Metrics(train_target, train_pred)
 
-        test_acc = test_met.accuracy()
+test_acc = test_met.accuracy()
 
-        print(test_acc)
+print(test_acc)
 
-        time = trainer.getTime()
-        print(time)
-        config_version = str(HP.version)
-        config_version = config_version.replace("121", "12"+str(i+1))
-        f = open("./stats/stats-"+str(model)+"-"+str(config_version)+".json","w+")
+time = trainer.getTime()
+print(time)
 
-        #str(test_met.accuracy()) + \
+f = open("./stats/stats-" + str(model) + "-" + str(HP.version) + ".json", "w+")
 
-        str_to_write = "{\"Time\": \""+ time +"\",\n \"Epochs\": "+str(epochs)+ ",\n \"TrainAcc\": "+ str(trainAcc)+",\n \"ValidAcc\": "+str(validAcc)+",\n \"TestAcc\": "+ str(test_acc) + \
-        ",\n \"Train_Pred\": " + str(train_pred.tolist()) + ",\n \"Train_Target\": " + str(list(train_target.cpu().numpy())) + ",\n \"Train_fnames\": " + json.dumps(train_fnames) + ",\n \"Train_dropped_fnames\": " + json.dumps(train_dropped_fnames) + \
-        ",\n \"Valid_Pred\": " + str(list(valid_pred.cpu().numpy())) + ",\n \"Valid_Target\": " + str(list(valid_target.cpu().numpy())) + ",\n \"Valid_fnames\": " + json.dumps(valid_fnames) + ",\n \"Valid_dropped_fnames\": " + json.dumps(valid_dropped_fnames) + \
-        ",\n \"Test_Pred\": " + str(list(test_pred.cpu().numpy())) + ",\n \"Test_Target\": " + str(list(test_target.cpu().numpy())) + ",\n \"Test_fnames\": " + json.dumps(test_fnames) + \
-        ",\n \"Test_dropped_fnames\": " + json.dumps(test_dropped_fnames) + ",\n \"Test_dropped_outs\": " + str(test_extras['all_outs'][1].tolist()) + ",\n \"Test_dropped_confs\": " + str(test_extras['all_confs'][1].tolist()) + \
-        "}"
+# str(test_met.accuracy()) + \
+model
+str_to_write = "{\"Time\": \"" + time + "\",\n \"Epochs\": " + str(epochs) + ",\n \"TrainAcc\": " + str(trainAcc) + ",\n \"ValidAcc\": " + str(validAcc) + ",\n \"TestAcc\": " + str(test_acc) + \
+               ",\n \"Test_Pred\": " + str(list(test_pred.cpu().numpy())) + ",\n \"Test_Target\": " + str(list(test_target.cpu().numpy())) + ",\n \"Test_fnames\": " + json.dumps(test_fnames) + \
+               "}"
 
-        #",\n \"Tr_Trgt_Time\": "+ str(other_stats["Tr_Targ_time"]) + ",\n \"Tr_Pred_Time\": "+ str(other_stats["Tr_Pred_time"]) + \
-
-        #",\n \"loss\": "+ str(other_stats["loss"]) + ",\n \"class_loss\": "+ str(other_stats["class_loss"]) + \
-        #",\n \"avg_confidence\": " + str(other_stats["avg_confidence"]) + ",\n \"train_drop\": " + str(other_stats["train_drop"])+ ",\n \"valid_drop\": " + str(other_stats["valid_drop"]) + \
-
-        f.write(str_to_write)
-        f.close()
-else:
-    model.threshold = HP.model_conf
-    #testing confidenceloss version:
-    test_pred, test_target, test_fnames, test_extras = trainer.test(model, testLoader, return_softmax=True, return_confs=True)
-    test_fnames, test_dropped_fnames = test_fnames
-    # valid_pred, valid_target, valid_fnames, _ = trainer.test(model, validLoader)
-    # valid_fnames, valid_dropped_fnames = valid_fnames
-    # train_pred, train_target, train_fnames, _ = trainer.test(model, trainLoader)
-    # train_fnames, train_dropped_fnames = train_fnames
-
-    if HP.version >= 15:
-        new_model = GoogleNet(v=1.2)
-
-        # conf_trainLoader = pp.confident_imgs(train_fnames, HP.batch_size, transformations = HP.transformations)
-        # conf_validLoader = pp.confident_imgs(valid_fnames, HP.batch_size, transformations = HP.transformations)
-        conf_testLoader = pp.confident_imgs(test_fnames, HP.batch_size, transformations = HP.transformations)
+# ",\n \"Train_Pred\": " + str(train_pred.tolist()) + ",\n \"Train_Target\": " + str(list(train_target.cpu().numpy())) + ",\n \"Train_fnames\": " + json.dumps(train_fnames) + ",\n \"Train_dropped_fnames\": " + json.dumps(train_dropped_fnames) + \
+# ",\n \"Valid_Pred\": " + str(list(valid_pred.cpu().numpy())) + ",\n \"Valid_Target\": " + str(list(valid_target.cpu().numpy())) + ",\n \"Valid_fnames\": " + json.dumps(valid_fnames) + ",\n \"Valid_dropped_fnames\": " + json.dumps(valid_dropped_fnames) + \
+# ",\n \"Test_dropped_fnames\": " + json.dumps(test_dropped_fnames) + ",\n \"Test_dropped_outs\": " + str(test_extras['all_outs'][1].tolist()) + ",\n \"Test_dropped_confs\": " + str(test_extras['all_confs'][1].tolist()) + \
 
 
-        # conf_trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn = nn.BCELoss, optimizer = HP.optimizer, scheduler = HP.scheduler, lr = HP.learning_rate, momentum = HP.momentum)
-        # trainAcc, validAcc, epochs, other_stats = conf_trainer.train(new_model, conf_trainLoader, conf_validLoader, earlyStopping = HP.es)
+# ",\n \"Tr_Trgt_Time\": "+ str(other_stats["Tr_Targ_time"]) + ",\n \"Tr_Pred_Time\": "+ str(other_stats["Tr_Pred_time"]) + \
 
-        path_to_statedict = "models/GoogleNet_1.2-15.01.pth"
+# ",\n \"loss\": "+ str(other_stats["loss"]) + ",\n \"class_loss\": "+ str(other_stats["class_loss"]) + \
+# ",\n \"avg_confidence\": " + str(other_stats["avg_confidence"]) + ",\n \"train_drop\": " + str(other_stats["train_drop"])+ ",\n \"valid_drop\": " + str(other_stats["valid_drop"]) + \
 
-        if ".tar" in path_to_statedict:
-            new_model = load_partial_model(new_model, path_to_statedict)
-        else:
-            new_model = load_full_model(new_model, path_to_statedict)
+f.write(str_to_write)
+f.close()
 
 
-        # testing normal model
-        test_pred, test_target, test_fnames, _ = trainer.test(new_model, conf_testLoader)
-        #valid_pred, valid_target, valid_fnames = trainer.test(model, validLoader)
-        #train_pred, train_target, train_fnames = trainer.test(model, trainLoader)
+# if isinstance(HP.model_conf, list):
+#     for i, thresh in enumerate(HP.model_conf):
+#
+#         model.threshold = thresh
+#         #testing confidenceloss version:
+#         test_pred, test_target, test_fnames, test_extras = trainer.test(model, testLoader, return_softmax=True, return_confs=True)
+#         test_fnames, test_dropped_fnames = test_fnames
+#         valid_pred, valid_target, valid_fnames, _ = trainer.test(model, validLoader)
+#         valid_fnames, valid_dropped_fnames = valid_fnames
+#         train_pred, train_target, train_fnames, _ = trainer.test(model, trainLoader)
+#         train_fnames, train_dropped_fnames = train_fnames
+#
+#         # testing normal model
+#         #test_pred, test_target, test_fnames = trainer.test(model, testLoader)
+#         #valid_pred, valid_target, valid_fnames = trainer.test(model, validLoader)
+#         #train_pred, train_target, train_fnames = trainer.test(model, trainLoader)
+#
+#
+#         test_met = Metrics(test_target, test_pred)
+#         #valid_met = Metrics(valid_target, valid_pred)
+#         #train_met = Metrics(train_target, train_pred)
+#
+#         test_acc = test_met.accuracy()
+#
+#         print(test_acc)
+#
+#         time = trainer.getTime()
+#         print(time)
+#         config_version = str(HP.version)
+#         config_version = config_version.replace("121", "12"+str(i+1))
+#         f = open("./stats/stats-"+str(model)+"-"+str(config_version)+".json","w+")
+#
+#         #str(test_met.accuracy()) + \
+#
+#         str_to_write = "{\"Time\": \""+ time +"\",\n \"Epochs\": "+str(epochs)+ ",\n \"TrainAcc\": "+ str(trainAcc)+",\n \"ValidAcc\": "+str(validAcc)+",\n \"TestAcc\": "+ str(test_acc) + \
+#         ",\n \"Train_Pred\": " + str(train_pred.tolist()) + ",\n \"Train_Target\": " + str(list(train_target.cpu().numpy())) + ",\n \"Train_fnames\": " + json.dumps(train_fnames) + ",\n \"Train_dropped_fnames\": " + json.dumps(train_dropped_fnames) + \
+#         ",\n \"Valid_Pred\": " + str(list(valid_pred.cpu().numpy())) + ",\n \"Valid_Target\": " + str(list(valid_target.cpu().numpy())) + ",\n \"Valid_fnames\": " + json.dumps(valid_fnames) + ",\n \"Valid_dropped_fnames\": " + json.dumps(valid_dropped_fnames) + \
+#         ",\n \"Test_Pred\": " + str(list(test_pred.cpu().numpy())) + ",\n \"Test_Target\": " + str(list(test_target.cpu().numpy())) + ",\n \"Test_fnames\": " + json.dumps(test_fnames) + \
+#         ",\n \"Test_dropped_fnames\": " + json.dumps(test_dropped_fnames) + ",\n \"Test_dropped_outs\": " + str(test_extras['all_outs'][1].tolist()) + ",\n \"Test_dropped_confs\": " + str(test_extras['all_confs'][1].tolist()) + \
+#         "}"
+#
+#         #",\n \"Tr_Trgt_Time\": "+ str(other_stats["Tr_Targ_time"]) + ",\n \"Tr_Pred_Time\": "+ str(other_stats["Tr_Pred_time"]) + \
+#
+#         #",\n \"loss\": "+ str(other_stats["loss"]) + ",\n \"class_loss\": "+ str(other_stats["class_loss"]) + \
+#         #",\n \"avg_confidence\": " + str(other_stats["avg_confidence"]) + ",\n \"train_drop\": " + str(other_stats["train_drop"])+ ",\n \"valid_drop\": " + str(other_stats["valid_drop"]) + \
+#
+#         f.write(str_to_write)
+#         f.close()
+# else:
+#     model.threshold = HP.model_conf
+#     #testing confidenceloss version:
+#     test_pred, test_target, test_fnames, test_extras = trainer.test(model, testLoader, return_softmax=True, return_confs=True)
+#     test_fnames, test_dropped_fnames = test_fnames
+#     # valid_pred, valid_target, valid_fnames, _ = trainer.test(model, validLoader)
+#     # valid_fnames, valid_dropped_fnames = valid_fnames
+#     # train_pred, train_target, train_fnames, _ = trainer.test(model, trainLoader)
+#     # train_fnames, train_dropped_fnames = train_fnames
+#
+#     if HP.version >= 15:
+#         new_model = GoogleNet(v=1.2)
+#
+#         # conf_trainLoader = pp.confident_imgs(train_fnames, HP.batch_size, transformations = HP.transformations)
+#         # conf_validLoader = pp.confident_imgs(valid_fnames, HP.batch_size, transformations = HP.transformations)
+#         conf_testLoader = pp.confident_imgs(test_fnames, HP.batch_size, transformations=HP.transformations)
+#
+#         # conf_trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn = nn.BCELoss, optimizer = HP.optimizer, scheduler = HP.scheduler, lr = HP.learning_rate, momentum = HP.momentum)
+#         # trainAcc, validAcc, epochs, other_stats = conf_trainer.train(new_model, conf_trainLoader, conf_validLoader, earlyStopping = HP.es)
 
-
-        test_met = Metrics(test_target, test_pred)
-        #valid_met = Metrics(valid_target, valid_pred)
-        #train_met = Metrics(train_target, train_pred)
-
-        test_acc = test_met.accuracy()
-
-        print(test_acc)
-
-        time = trainer.getTime()
-        print(time)
-
-        f = open("./stats/stats-"+str(new_model)+"-"+str(HP.version)+".json","w+")
-
-        #str(test_met.accuracy()) + \
-        model
-        str_to_write = "{\"Time\": \""+ time +"\",\n \"Epochs\": "+str(epochs)+ ",\n \"TrainAcc\": "+ str(trainAcc)+",\n \"ValidAcc\": "+str(validAcc)+",\n \"TestAcc\": "+ str(test_acc) + \
-        ",\n \"Test_Pred\": " + str(list(test_pred.cpu().numpy())) + ",\n \"Test_Target\": " + str(list(test_target.cpu().numpy())) + ",\n \"Test_fnames\": " + json.dumps(test_fnames) + \
-        "}"
-        
-        #",\n \"Train_Pred\": " + str(train_pred.tolist()) + ",\n \"Train_Target\": " + str(list(train_target.cpu().numpy())) + ",\n \"Train_fnames\": " + json.dumps(train_fnames) + ",\n \"Train_dropped_fnames\": " + json.dumps(train_dropped_fnames) + \
-        #",\n \"Valid_Pred\": " + str(list(valid_pred.cpu().numpy())) + ",\n \"Valid_Target\": " + str(list(valid_target.cpu().numpy())) + ",\n \"Valid_fnames\": " + json.dumps(valid_fnames) + ",\n \"Valid_dropped_fnames\": " + json.dumps(valid_dropped_fnames) + \
-        #",\n \"Test_dropped_fnames\": " + json.dumps(test_dropped_fnames) + ",\n \"Test_dropped_outs\": " + str(test_extras['all_outs'][1].tolist()) + ",\n \"Test_dropped_confs\": " + str(test_extras['all_confs'][1].tolist()) + \
-        
-
-        #",\n \"Tr_Trgt_Time\": "+ str(other_stats["Tr_Targ_time"]) + ",\n \"Tr_Pred_Time\": "+ str(other_stats["Tr_Pred_time"]) + \
-
-        #",\n \"loss\": "+ str(other_stats["loss"]) + ",\n \"class_loss\": "+ str(other_stats["class_loss"]) + \
-        #",\n \"avg_confidence\": " + str(other_stats["avg_confidence"]) + ",\n \"train_drop\": " + str(other_stats["train_drop"])+ ",\n \"valid_drop\": " + str(other_stats["valid_drop"]) + \
-
-        f.write(str_to_write)
-        f.close()
 
 # new line: to release cuda memory.
 torch.cuda.empty_cache()

@@ -158,21 +158,24 @@ strategies (training):
 # version 14.111 = same as 13.101; 13.111 will have [0.9, 0.91, 0.92, 0.93, 0.94, 0.96, 0.97, 0.98] saved as 14.111-8.
 # version 14.121 = same as 13.101; 13.121 will have [0.981,0.982,0.983,0.984,0.985,0.986,0.987,0.988,0.989] saved as 14.121-9.
 # version 15.01 = ConfLoss v1.0. so what we will do is we will first take model 5.3-13.31, use it to get the 98% threshold images, then train a new model on the threshold images as 15.01
+# version 15.02 = Training of 1.2-15.01 with all images
+
+
 class Hyperparameters:
-    version=15.01
+    version=15.02
     learning_rate = 0.003
     number_of_epochs = 200
     momentum = 0.9
     optimizer = optim.Adam
-    loss_function = ConfidenceLoss 
+    loss_function = nn.BCELoss
     es = EarlyStopping(patience=20)
     batch_size = 256 
     scheduler = None
     pp_strategy = "thresholding"
-    data_splits = [0.6,0.2,0.2] #vae: [0.8, 0.1, 0.1]
+    data_splits = [0.6, 0.2, 0.2] #vae: [0.8, 0.1, 0.1]
     maxN = None 
     minimum = None
     train_AE = False
     number_of_images_per_class = 1000
     transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) #transforms.Compose([Rescale((224, 224)),ToTensor(), Normalize(mean=[0.449], std=[0.226])]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
-    model_conf = 0.98
+    model_conf = None
