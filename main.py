@@ -149,8 +149,11 @@ else:
 # use sys.argv to get i in 10i and to get the model.threshold
 
 if len(sys.argv) == 3:
+
     i = int(sys.argv[2])
     thresh = float(sys.argv[1])
+
+    print("tresh:", thresh, " | i:", i)
 
     config_version = str(HP.version)
     config_version = config_version.replace("111", "11" + str(i + 1))
