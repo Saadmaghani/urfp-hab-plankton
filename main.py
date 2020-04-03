@@ -156,7 +156,7 @@ if len(sys.argv) == 3:
     print("tresh:", thresh, " | i:", i)
 
     config_version = str(HP.version)
-    config_version = config_version.replace("111", "11" + str(i + 1))
+    config_version = config_version.replace("101", "10" + str(i + 1))
 
     model.threshold = thresh
     #testing confidenceloss version:
