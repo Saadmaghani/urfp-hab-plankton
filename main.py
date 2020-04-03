@@ -211,6 +211,10 @@ if isinstance(HP.model_conf, list):
 
         f.write(str_to_write)
         f.close()
+
+        del test_pred, test_target, test_extras, valid_pred, valid_target, _, train_pred, train_target
+        del trainAcc, validAcc, other_stats
+        del cf_test_pred, cf_test_target
 # else:
 #     model.threshold = HP.model_conf
 #     #testing confidenceloss version:
