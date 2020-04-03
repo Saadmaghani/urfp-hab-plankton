@@ -154,7 +154,7 @@ if isinstance(HP.model_conf, list):
     for i, thresh in enumerate(HP.model_conf):
 
         config_version = str(HP.version)
-        config_version = config_version.replace("101", "10" + str(i + 1))
+        config_version = config_version.replace("111", "11" + str(i + 1))
 
         model.threshold = thresh
         #testing confidenceloss version:

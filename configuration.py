@@ -160,9 +160,10 @@ strategies (training):
 # version 15.01 = ConfLoss v1.0. so what we will do is we will first take model 5.3-13.31, use it to get the 98% threshold images, then train a new model on the threshold images as 15.01
 # version 15.02 = Training of 1.2-15.01 with all images
 # version 15.101 = similar to 15.01. Take model 5.3-13.31, use it to get [0.0, 0.1, 0.2, 0.4, 0.8, 0.9, 0.95, 0.99] conf thresh images, train new base GN model. test on conf tests and og tests. save as 15.10x x∈{1-8}
+# version 15.111 = same as 15.101. model_conf [0.9, 0.91, 0.92, 0.93, 0.94, 0.96, 0.97]. save as 15.11x
 
 class Hyperparameters:
-    version=15.101
+    version=15.111
     learning_rate = 0.003
     number_of_epochs = 200
     momentum = 0.9
@@ -178,4 +179,4 @@ class Hyperparameters:
     train_AE = False
     number_of_images_per_class = 100
     transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) #transforms.Compose([Rescale((224, 224)),ToTensor(), Normalize(mean=[0.449], std=[0.226])]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
-    model_conf = [0.0, 0.1, 0.2, 0.4, 0.8, 0.9, 0.95, 0.99]
+    model_conf = [0.9, 0.91, 0.92, 0.93, 0.94, 0.96, 0.97]
