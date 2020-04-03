@@ -92,7 +92,7 @@ other_stats = {}
 #trainAcc, validAcc, epochs, other_stats = trainer.train(model, trainLoader, validLoader, earlyStopping = HP.es)
 
 # Just Testing
-model = GoogleNet()
+model = GoogleNet(v=5.3)
 path_to_statedict = "models/GoogleNet_5.3-13.31.pth"
 
 if ".tar" in path_to_statedict:
@@ -113,8 +113,8 @@ else:
 #
 # # testing normal model
 # test_pred, test_target, test_fnames, _ = trainer.test(model, testLoader)
-# # valid_pred, valid_target, valid_fnames = trainer.test(model, validLoader)
-# # train_pred, train_target, train_fnames = trainer.test(model, trainLoader)
+# # valid_pred, valid_target, valid_fnames, _ = trainer.test(model, validLoader)
+# # train_pred, train_target, train_fnames, _ = trainer.test(model, trainLoader)
 #
 #
 # test_met = Metrics(test_target, test_pred)
@@ -186,8 +186,8 @@ if isinstance(HP.model_conf, list):
 
 
         # testing normal model
-        test_pred, test_target, test_fnames = trainer.test(new_model, testLoader)
-        cf_test_pred, cf_test_target, cf_test_fnames = cf_trainer.test(new_model, cf_test_loader)
+        test_pred, test_target, test_fnames, _ = trainer.test(new_model, testLoader)
+        cf_test_pred, cf_test_target, cf_test_fnames, _ = cf_trainer.test(new_model, cf_test_loader)
 
         test_met = Metrics(test_target, test_pred)
         cf_test_met = Metrics(cf_test_target, cf_test_pred)
