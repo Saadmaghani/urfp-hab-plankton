@@ -5,6 +5,6 @@ end=0
 for cf in ${confs[@]}; do
     echo $end
     echo $cf
-    `python main.py $cf $end`
+    python main.py $cf $end
     let "end=$end+1"
 done
