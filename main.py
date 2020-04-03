@@ -3,13 +3,10 @@ from preprocessing import Preprocessor
 from training import Trainer, load_partial_model, load_full_model
 from metrics import Metrics
 import torch.nn as nn
-import torch.optim as optim
-#from models.triple_arch import N_Parallel_Models
 from models.vgg_TL import GoogleNet
-#from models.autoencoders import Simple_AE, CNN_VAE
 from configuration import Hyperparameters as HP
 import json
-import math
+import sys
 
 years = [str(y) for y in range(2006, 2015)]
 
@@ -149,92 +146,70 @@ else:
 # f.write(str_to_write)
 # f.close()
 
+# use sys.argv to get i in 10i and to get the model.threshold
 
-if isinstance(HP.model_conf, list):
-    for i, thresh in enumerate(HP.model_conf):
+if len(sys.argv) == 3:
+    i = int(sys.argv[2])
+    thresh = float(sys.argv[1])
 
-        config_version = str(HP.version)
-        config_version = config_version.replace("111", "11" + str(i + 1))
+    config_version = str(HP.version)
+    config_version = config_version.replace("111", "11" + str(i + 1))
 
-        model.threshold = thresh
-        #testing confidenceloss version:
-        test_pred, test_target, test_fnames, test_extras = trainer.test(model, testLoader, return_softmax=True, return_confs=True)
-        test_fnames, test_dropped_fnames = test_fnames
-        valid_pred, valid_target, valid_fnames, _ = trainer.test(model, validLoader)
-        valid_fnames, valid_dropped_fnames = valid_fnames
-        train_pred, train_target, train_fnames, _ = trainer.test(model, trainLoader)
-        train_fnames, train_dropped_fnames = train_fnames
+    model.threshold = thresh
+    #testing confidenceloss version:
+    test_pred, test_target, test_fnames, test_extras = trainer.test(model, testLoader, return_softmax=True, return_confs=True)
+    test_fnames, test_dropped_fnames = test_fnames
+    valid_pred, valid_target, valid_fnames, _ = trainer.test(model, validLoader)
+    valid_fnames, valid_dropped_fnames = valid_fnames
+    train_pred, train_target, train_fnames, _ = trainer.test(model, trainLoader)
+    train_fnames, train_dropped_fnames = train_fnames
 
-        cf_train_pp = Preprocessor(strategy="confident_images", conf_fnames=train_fnames, transformations=HP.transformations)
-        cf_valid_pp = Preprocessor(strategy="confident_images", conf_fnames=valid_fnames, transformations=HP.transformations)
-        cf_test_pp = Preprocessor(strategy="confident_images", conf_fnames=test_fnames, transformations=HP.transformations)
+    cf_train_pp = Preprocessor(strategy="confident_images", conf_fnames=train_fnames, transformations=HP.transformations)
+    cf_valid_pp = Preprocessor(strategy="confident_images", conf_fnames=valid_fnames, transformations=HP.transformations)
+    cf_test_pp = Preprocessor(strategy="confident_images", conf_fnames=test_fnames, transformations=HP.transformations)
 
-        cf_train_pp.create_cf_datasets()
-        cf_train_loader = cf_train_pp.get_cf_loaders(HP.batch_size)
+    cf_train_pp.create_cf_datasets()
+    cf_train_loader = cf_train_pp.get_cf_loaders(HP.batch_size)
 
-        cf_valid_pp.create_cf_datasets()
-        cf_valid_loader = cf_valid_pp.get_cf_loaders(HP.batch_size)
+    cf_valid_pp.create_cf_datasets()
+    cf_valid_loader = cf_valid_pp.get_cf_loaders(HP.batch_size)
 
-        cf_test_pp.create_cf_datasets()
-        cf_test_loader = cf_test_pp.get_cf_loaders(HP.batch_size)
-
-
-        new_model = GoogleNet(v=1.2)
-
-        cf_trainer = Trainer(HP_version=config_version, epochs=HP.number_of_epochs, loss_fn=nn.BCELoss, optimizer=HP.optimizer, scheduler=HP.scheduler, lr=HP.learning_rate, momentum=HP.momentum)
-        trainAcc, validAcc, epochs, other_stats = cf_trainer.train(new_model, cf_train_loader, cf_valid_loader, earlyStopping=HP.es, save=False)
+    cf_test_pp.create_cf_datasets()
+    cf_test_loader = cf_test_pp.get_cf_loaders(HP.batch_size)
 
 
-        # testing normal model
-        test_pred, test_target, test_fnames, _ = trainer.test(new_model, testLoader)
-        cf_test_pred, cf_test_target, cf_test_fnames, _ = cf_trainer.test(new_model, cf_test_loader)
+    new_model = GoogleNet(v=1.2)
 
-        test_met = Metrics(test_target, test_pred)
-        cf_test_met = Metrics(cf_test_target, cf_test_pred)
-
-        test_acc = test_met.accuracy()
-        cf_test_acc = cf_test_met.accuracy()
-
-        print(test_acc)
-        print(cf_test_acc)
-
-        time = trainer.getTime()
-        print(time)
-
-        f = open("./stats/stats-"+str(new_model)+"-"+str(config_version)+".json", "w+")
-
-        str_to_write = "{\"Time\": \""+ time +"\",\n \"Epochs\": "+str(epochs)+ ",\n \"TrainAcc\": "+ str(trainAcc)+",\n \"ValidAcc\": "+str(validAcc)+",\n \"TestAcc\": " + str(test_acc) + ",\n \"CF_TestAcc\": " + str(cf_test_acc) + \
-        ",\n \"Test_Pred\": " + str(list(test_pred.cpu().numpy())) + ",\n \"Test_Target\": " + str(list(test_target.cpu().numpy())) + ",\n \"Test_fnames\": " + json.dumps(test_fnames) + \
-        ",\n \"CF_Test_Pred\": " + str(list(cf_test_pred.cpu().numpy())) + ",\n \"CF_Test_Target\": " + str(list(cf_test_target.cpu().numpy())) + ",\n \"CF_Test_fnames\": " + json.dumps(cf_test_fnames) + \
-        "}"
+    cf_trainer = Trainer(HP_version=config_version, epochs=HP.number_of_epochs, loss_fn=nn.BCELoss, optimizer=HP.optimizer, scheduler=HP.scheduler, lr=HP.learning_rate, momentum=HP.momentum)
+    trainAcc, validAcc, epochs, other_stats = cf_trainer.train(new_model, cf_train_loader, cf_valid_loader, earlyStopping=HP.es, save=False)
 
 
-        f.write(str_to_write)
-        f.close()
+    # testing normal model
+    test_pred, test_target, test_fnames, _ = trainer.test(new_model, testLoader)
+    cf_test_pred, cf_test_target, cf_test_fnames, _ = cf_trainer.test(new_model, cf_test_loader)
 
-        del test_pred, test_target, test_extras, valid_pred, valid_target, _, train_pred, train_target
-        del trainAcc, validAcc, other_stats
-        del cf_test_pred, cf_test_target
-# else:
-#     model.threshold = HP.model_conf
-#     #testing confidenceloss version:
-#     test_pred, test_target, test_fnames, test_extras = trainer.test(model, testLoader, return_softmax=True, return_confs=True)
-#     test_fnames, test_dropped_fnames = test_fnames
-#     # valid_pred, valid_target, valid_fnames, _ = trainer.test(model, validLoader)
-#     # valid_fnames, valid_dropped_fnames = valid_fnames
-#     # train_pred, train_target, train_fnames, _ = trainer.test(model, trainLoader)
-#     # train_fnames, train_dropped_fnames = train_fnames
-#
-#     if HP.version >= 15:
-#         new_model = GoogleNet(v=1.2)
-#
-#         # conf_trainLoader = pp.confident_imgs(train_fnames, HP.batch_size, transformations = HP.transformations)
-#         # conf_validLoader = pp.confident_imgs(valid_fnames, HP.batch_size, transformations = HP.transformations)
-#         conf_testLoader = pp.confident_imgs(test_fnames, HP.batch_size, transformations=HP.transformations)
-#
-#         # conf_trainer = Trainer(HP_version = HP.version, epochs = HP.number_of_epochs, loss_fn = nn.BCELoss, optimizer = HP.optimizer, scheduler = HP.scheduler, lr = HP.learning_rate, momentum = HP.momentum)
-#         # trainAcc, validAcc, epochs, other_stats = conf_trainer.train(new_model, conf_trainLoader, conf_validLoader, earlyStopping = HP.es)
+    test_met = Metrics(test_target, test_pred)
+    cf_test_met = Metrics(cf_test_target, cf_test_pred)
 
+    test_acc = test_met.accuracy()
+    cf_test_acc = cf_test_met.accuracy()
+
+    print(test_acc)
+    print(cf_test_acc)
+
+    time = trainer.getTime()
+    print(time)
+
+    f = open("./stats/stats-"+str(new_model)+"-"+str(config_version)+".json", "w+")
+
+    str_to_write = "{\"Time\": \""+ time +"\",\n \"Epochs\": "+str(epochs)+ ",\n \"TrainAcc\": "+ str(trainAcc)+",\n \"ValidAcc\": "+str(validAcc)+",\n \"TestAcc\": " + str(test_acc) + ",\n \"CF_TestAcc\": " + str(cf_test_acc) + \
+    ",\n \"Test_Pred\": " + str(list(test_pred.cpu().numpy())) + ",\n \"Test_Target\": " + str(list(test_target.cpu().numpy())) + ",\n \"Test_fnames\": " + json.dumps(test_fnames) + \
+    ",\n \"CF_Test_Pred\": " + str(list(cf_test_pred.cpu().numpy())) + ",\n \"CF_Test_Target\": " + str(list(cf_test_target.cpu().numpy())) + ",\n \"CF_Test_fnames\": " + json.dumps(cf_test_fnames) + \
+    "}"
+
+
+    f.write(str_to_write)
+    f.close()
 
 # new line: to release cuda memory.
 torch.cuda.empty_cache()
