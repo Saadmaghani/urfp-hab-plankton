@@ -415,5 +415,11 @@ accuracies of training/validation/test sets of each class (done)
 3.  okay so firstly, i made preprocessor_tester.ipynb. to check whether the labels were being onehot encoded in the same manner. they are.
 4.  now to train 1.2-15.02 which is training 1.2-15.01 on all data.
     i.  very very low accuracies -> maybe cuz... idk i have to check the outputs TODO
-5.  lets apply this method of training the base model with confident images for different thresholds. TODO
+5.  lets apply this method of training the base model with confident images for different thresholds.
 6.  i also want to test the trained data against the whole data. so vs confident images, its 94%. not against the whole test set. thats incorrect.
+
+
+4/4/20:
+1.  want to see how well 1.2-4.2 does on 0.98 cf test set TODO - 1
+2.  NEED TO FIND THE DATASET TODO - 2
+3.  experiment with your technique TODO

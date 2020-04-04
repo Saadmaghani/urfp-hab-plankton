@@ -162,9 +162,10 @@ strategies (training):
 # version 15.101 = similar to 15.01. Take model 5.3-13.31, use it to get [0.0, 0.1, 0.2, 0.4, 0.8, 0.9, 0.95, 0.99] conf thresh images, train new base GN model. test on conf tests and og tests. save as 15.10x x∈{1-8}
 # version 15.111 = same as 15.101. model_conf [0.9, 0.91, 0.92, 0.93, 0.94, 0.96, 0.97]. save as 15.11x
 # version 15.121 = same as 15.101. model_conf [0.981,0.982,0.983,0.984,0.985,0.986,0.987,0.988,0.989]. save as 15.12x
+# version 15.2 = test for GN 1.2-4.2 to see how well it does against test set of 0.98 CF
 
 class Hyperparameters:
-    version=15.121
+    version=15.2
     learning_rate = 0.003
     number_of_epochs = 200
     momentum = 0.9
@@ -180,4 +181,4 @@ class Hyperparameters:
     train_AE = False
     number_of_images_per_class = 100
     transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) #transforms.Compose([Rescale((224, 224)),ToTensor(), Normalize(mean=[0.449], std=[0.226])]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
-    model_conf = [0.981,0.982,0.983,0.984,0.985,0.986,0.987,0.988,0.989]
+    model_conf = 0.98
