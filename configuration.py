@@ -179,6 +179,6 @@ class Hyperparameters:
     maxN = None 
     minimum = None
     train_AE = False
-    number_of_images_per_class = 100
+    number_of_images_per_class = 1000
     transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) #transforms.Compose([Rescale((224, 224)),ToTensor(), Normalize(mean=[0.449], std=[0.226])]) # GN fancytransforms.Compose([RandomCrop(16), Rescale((64, 128), multiple=True), ToTensor(multiple=True)])
     model_conf = 0.98
