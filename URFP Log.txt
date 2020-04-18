@@ -420,6 +420,21 @@ accuracies of training/validation/test sets of each class (done)
 
 
 4/4/20:
-1.  want to see how well 1.2-4.2 does on 0.98 cf test set TODO - 1
+1.  want to see how well 1.2-4.2 does on 0.98 cf test set => 0.9373
 2.  NEED TO FIND THE DATASET TODO - 2
 3.  experiment with your technique TODO
+
+18/4/20:
+1.	okay im going to search databases.
+2.	Google "harmful algal blooms plankton counts data"
+	1. 	https://data.gov.ie/dataset/harmful-algal-blooms-habs-inshore-phytoplankton-monitoring - rejected - too few samples
+3.	Emails - Santa Cruz "Research on Harmful Algal Bloom" checking their links out - Dec 10 email
+4.	im going to try to find algal blooms in that area. maybe i can figure something out.
+
+
+
+
+
+
+
+
