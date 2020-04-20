@@ -432,8 +432,22 @@ accuracies of training/validation/test sets of each class (done)
 4.	im going to try to find algal blooms in that area. maybe i can figure something out.
 
 
-
-
+19/4/20:
+1.	so by cross checking the autoclassified plankton images with the annotated plankton images ive realized that they are:
+	1.	only about 17% are correctly classified.
+	2.	missclassified 
+	2.	classified as mix and others of which data i have deleted
+	3.	they dont exist in my dataset
+2.	in conclusion they are unreliable....
+3.	so now what? continue searching database
+	1.	https://data.nodc.noaa.gov/cgi-bin/iso?id=gov.noaa.nodc:0120767 **** << this is promising. 
+		1.	Data:
+			-	Karena brevis cell counts
+			- 	timestamp
+			-	output of not observed, low, medium, high HAB
+			-	various locations - name, lat/long given
+		2.	Issues:	
+			- firstly, Alhamdulilah. I found something. 
 
 
 
