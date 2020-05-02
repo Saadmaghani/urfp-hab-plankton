@@ -448,7 +448,47 @@ accuracies of training/validation/test sets of each class (done)
 			-	various locations - name, lat/long given
 		2.	Issues:	
 			- firstly, Alhamdulilah. I found something. 
+			- so this location is not ideal - east side of florida, very far from Marthas vineyard in MA.
+			- its only about karena brevis of which I barely have pictures
+	2.	https://obis.org/dataset/9d699bfd-d73a-4b55-b113-6c0a8551f481 
+		1.	Data:
+			- 	random phytoplankton
+			-	timestamp
+			-	quantity
+			-	various locations - lat/long given
+		2.	Issues:
+			- 	location: australia
+			- 	
 
 
+21/4/20:
+1.	Temp and humidity exists in IFCB.
 
+22/4/20:
+1.	Inna lilahe Wa Inna Alaihi Rajiun. May Allah grant dada the highest of ranks and may we all be with him again
+2.	hi :p
+3.	Avg. sq meters of HAB according to data by AFCD: 3100920.25. thus 1760.943m x 1760.943m. 
+
+
+27/4/20:
+1. 	okay so im done with time-series theory. now lets apply it
+2.	first thing is that time-series is time-dependent. missing data must be delt with.
+	1.	there is a lot of missing data when it comes to my time-series
+3.	what i have done is that ive taken locations, and then resampled it for particular time series periods taking the largest consecutive data available
+4
+
+28/4/20:
+1. 	so i am like "locations" with respect to lat/long and sizes right? so now i have to prove that the avg. size is that big.
+	1.	so i took all the 92 locations (which have > 1000 samples individually, ie. not summed like im still retaining the individual samples with different lat/long)
+		and then did a pearsons correlation test. Results:
+		1.	1 > x > 0.9:
+			4 points have greater than 0.9 results. these are defined as old-tampa-bay-x in google maps. they have >0.9 as in 2017 late july there was a giant HAB in that area (old-tampa-bay)
+				but other than that, these points do not have that much data. therefore, we conclude that only in that HAB event did 
+		2. 	0.9 > x > 0.8:
+			4 points. 2 points which were close to each other but were just less than 0.9 in the above old-tampa-bay
+				2 new points 
+
+29/4/20:
+1.	okay okay im taking the longest consecutive series and just doing time series forecasting on it
+2.	model.TS.LSTM made. now to configure training.py
 
