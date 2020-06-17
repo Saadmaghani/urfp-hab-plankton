@@ -256,7 +256,8 @@ class Preprocessor:
 
             elif strategy == "augmentation_max" and minimum is not None and train_eg_per_class is not None: # augment small classes, upper limit
                 self.fnames, self.labels = self._augment_small_classes(minimum, train_eg_per_class)
-
+            elif strategy == "all":
+                print("strategy: all selected. All data is being used.")
         self.encoded_labels = self._oneHotEncoding().tolist()
         print(len(self.fnames))
 
