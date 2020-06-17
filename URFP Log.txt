@@ -492,3 +492,30 @@ accuracies of training/validation/test sets of each class (done)
 1.	okay okay im taking the longest consecutive series and just doing time series forecasting on it
 2.	model.TS.LSTM made. now to configure training.py
 
+
+14/6/20:
+1.	HKUST Meeting. Realized there was a much larger scale work being carried out. Overview of meeting:
+	1.	IFCB deployed. lots of pics. needs annotation.
+	2.	Manual annotation takes forever. needs automatic classifier.
+	3.	automatic classifier based on https://github.com/hsosik/ifcb-analysis/wiki. steps:
+		1.	blob (black and white masks) extraction
+		2.	feature extraction
+		3.	classified of feature extraction using random forest
+	4.	they do feature selection on the extracted features (~256) using F1 score, random forest, and removing bottom 5% "helpful" features
+2.	so based on above stuff, theres feature extraction, feature selection and classification using random forest
+3.	what i am told to do is to use deep learning with hkust images to get accuracy. 
+	1.	so simply googlenet with the images
+4.	for my own publication:
+	1.	i can use blob extraction, feature extraction and feature selection to improve accuracy and get better results
+5.	for hkust work i can additionally think of:
+	1.	use transfer learning from imagenet -> whoi-plankton -> hkust to improve accuracy
+		1.	see what plankton are same from whoi-P and hkust dataset
+	2.	problem of having a large model working on a tiny chip:
+		1.	reduce model depth to make it smaller but still better than a random forest
+		2.	feedback mechanism? ensemble learning with random forest and googlenet?? so you would use googlenet to train the random forest 
+			but use the random forest in the chip? idk 
+
+
+
+
+
