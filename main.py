@@ -45,7 +45,11 @@ classes_30_ms = ["Asterionellopsis", "bad", "Chaetoceros", "Ciliate_mix", "Coret
 
 classes_vae = ['detritus']
 
-print(len(classes_all))
+classes_hkust = ["Cerataulina_pelagica", "Chaetoceros_spp", "Cryptophyceae", "Dactyliosolen_fragilissimus", "Dictyocha_fibula", "Heterosigma_akashiwo", 
+    "Leptocylindrius_spp", "Mesodinium_rubrum", "Prorocentrum_gracile", "Prorocentrum_triestinum", "Pseudochattonella_verruculosa", "Pseudonitszchia_spp", 
+    "Scrippsiella_spp", "Vicicitus_globosus"]
+    
+print(len(classes_hkust))
 
 
 #pp = Preprocessor(years, include_classes=classes, train_eg_per_class=HP.number_of_images_per_class)

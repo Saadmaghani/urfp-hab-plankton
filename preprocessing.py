@@ -24,43 +24,61 @@ class PlanktonDataset(Dataset):
         return len(self.file_ids)
 
     def __getitem__(self, index):
+
         file_name = self.file_ids[index]
-        splits = file_name.split("_")
-        year = splits[1]
-
-
         label = self.file_labels[index] 
         encoded_label = self.encoded_labels[index]
-        
-        aumgents = None
-        if len(splits) == 6:
-            augments = splits[5] 
-            file_name = "_".join(splits[:5])
-        
-        img_name = os.path.join(self.root_dir, year, label, file_name)
-        img = io.imread(img_name)
 
-        if aumgents is not None:
-            if augments == 0:
-                img = np.fliplr(img)
-            elif augments == 1:
-                img = np.flipud(img)
-            elif augments == 2:
-                img = np.flipud(np.fliplr(img))
-            elif augments == 3:
-                img = np.rot90(img, 3)
-            elif augments == 4:
-                img = np.rot90(img)
+        if "HKUST" not in self.root_dir:
 
-        sample = {'image': img, 'label': label}
+            splits = file_name.split("_")
+            year = splits[1]
+            
+            aumgents = None
+            if len(splits) == 6:
+                augments = splits[5] 
+                file_name = "_".join(splits[:5])
+            
+            img_name = os.path.join(self.root_dir, year, label, file_name)
+            img = io.imread(img_name)
 
-        if self.transform:
-            sample = self.transform(sample)
+            if aumgents is not None:
+                if augments == 0:
+                    img = np.fliplr(img)
+                elif augments == 1:
+                    img = np.flipud(img)
+                elif augments == 2:
+                    img = np.flipud(np.fliplr(img))
+                elif augments == 3:
+                    img = np.rot90(img, 3)
+                elif augments == 4:
+                    img = np.rot90(img)
 
-        sample['encoded_label'] = encoded_label
-        sample['fname'] = img_name
-        
-        return sample
+            sample = {'image': img, 'label': label}
+
+            if self.transform:
+                sample = self.transform(sample)
+
+            sample['encoded_label'] = encoded_label
+            sample['fname'] = img_name
+            
+            return sample
+
+        else:       
+            
+            img_name = os.path.join(self.root_dir, label, file_name)
+            img = io.imread(img_name)
+
+            sample = {'image': img, 'label': label}
+
+            if self.transform:
+                sample = self.transform(sample)
+
+            sample['encoded_label'] = encoded_label
+            sample['fname'] = img_name
+            
+            return sample
+
 
 # image transformations
 class Rescale(object):
@@ -114,7 +132,6 @@ class Rescale(object):
                 images.append(img)
 
             return {'image':images, 'label':sample['label']}
-
 
 
 # data augmentation techniques
@@ -191,14 +208,15 @@ class Normalize(object):
 class Preprocessor:
     DATA_FOLDER = "./data"
 
-    def __init__(self, years=None, transformations=None, include_classes=None, strategy=None, maxN=None, train_eg_per_class=None, minimum=None, conf_fnames=None):
+    def __init__(self, years=None, transformations=None, include_classes=None, strategy=None, maxN=None, train_eg_per_class=None, minimum=None, conf_fnames=None, database="WHOI"):
 
         self.seed = 3
 
         self.include_classes = include_classes
+        self.database = database
+
         self.transformations = transforms.Compose([Rescale((64, 128)), ToTensor()]) if transformations is None else transformations
         ImageFile.LOAD_TRUNCATED_IMAGES = True
-
 
         if strategy is not None and strategy == "confident_images" and conf_fnames is not None:
             # conf imgs is just a list of fnames
@@ -212,8 +230,15 @@ class Preprocessor:
             print(len(self.fnames))
             return
 
-        self.years = years if years is not None else 2006
-        self.fnames, self.labels = self._get_lbls_fnames()
+        if self.database == "WHOI":
+            self.years = years if years is not None else 2006
+            self.fnames, self.labels = self._get_lbls_fnames()
+        elif self.database == "HKUST":
+            # no need for self.years
+            Preprocessor.DATA_FOLDER = "./data/HKUST"
+            self.years = None
+            self.fnames, self.labels = self._get_lbls_fnames()
+
         print(len(self.fnames)) 
 
         if strategy is not None:
@@ -391,19 +416,30 @@ class Preprocessor:
     def _get_lbls_fnames(self):
         fnames = []
         labels = []
-        for year in self.years:
-            year_path = Preprocessor.DATA_FOLDER+"/"+year
-            if os.path.isdir(year_path):
-                for class_name in os.listdir(year_path):
-                    if self.include_classes is not None and class_name not in self.include_classes:
-                        continue
-                    c_path = year_path + "/"+class_name
 
-                    if os.path.isdir(c_path):
-                        image_files = [x for x in os.listdir(c_path) if ".png" in x]
-                        fnames.extend(image_files)
-                        labels.extend([class_name]*len(image_files))
+        if self.database == "WHOI":
+            for year in self.years:
+                year_path = Preprocessor.DATA_FOLDER+"/"+year
+                if os.path.isdir(year_path):
+                    for class_name in os.listdir(year_path):
+                        if self.include_classes is not None and class_name not in self.include_classes:
+                            continue
+                        c_path = year_path + "/"+class_name
 
+                        if os.path.isdir(c_path):
+                            image_files = [x for x in os.listdir(c_path) if ".png" in x]
+                            fnames.extend(image_files)
+                            labels.extend([class_name]*len(image_files))
+        elif self.database == "HKUST":
+            for class_name in os.listdir(Preprocessor.DATA_FOLDER):
+                if self.include_classes is not None and class_name not in self.include_classes:
+                    continue
+                c_path = Preprocessor.DATA_FOLDER + "/"+class_name
+
+                if os.path.isdir(c_path):
+                    image_files = [x for x in os.listdir(c_path) if ".png" in x]
+                    fnames.extend(image_files)
+                    labels.extend([class_name]*len(image_files))
         return fnames, labels
 
 
