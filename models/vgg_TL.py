@@ -30,8 +30,9 @@ import torch
 # version 5.72 = Dropout layer b4 conf layer p=0.7
 # version 5.8 = same as 5.3 except 94 classes
 # version 5.9 = same as 5.3 except conf = difference b/w correct
+# version 6.0 = same as 1.2 except for HKUST - 14 classes
 class GoogleNet(nn.Module):
-    version = 1.2
+    version = 6.0
 
     # used with version 5.0
     class IdentityLayer(nn.Module):
@@ -75,6 +76,8 @@ class GoogleNet(nn.Module):
                 self.confidence = nn.Linear(30, 1)
             else:
                 self.confidence = nn.Linear(1024, 1)
+        elif self.version >= 6.0:
+            self.model.fc = nn.Linear(1024, 14)
         else:
             self.model.fc = nn.Linear(1024, 30)
 
