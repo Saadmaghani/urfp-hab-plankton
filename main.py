@@ -45,9 +45,13 @@ classes_30_ms = ["Asterionellopsis", "bad", "Chaetoceros", "Ciliate_mix", "Coret
 
 classes_vae = ['detritus']
 
-classes_hkust = ["Cerataulina_pelagica", "Chaetoceros_spp", "Cryptophyceae", "Dactyliosolen_fragilissimus", "Dictyocha_fibula", "Heterosigma_akashiwo", 
-    "Leptocylindrius_spp", "Mesodinium_rubrum", "Prorocentrum_gracile", "Prorocentrum_triestinum", "Pseudochattonella_verruculosa", "Pseudonitszchia_spp", 
-    "Scrippsiella_spp", "Vicicitus_globosus"]
+classes_hkust = ["Akashiwo", "Asterionellopsis glacialis", "Cerataulina", "Ceratoperidinium", "Chaetoceros", "Ciliophora", 
+"Corethron criophilum", "Cryptophyceae", "Cyanobacteria", "Dactyliosolen", "Dactyliosolen phuketensis or Guinardia striata", 
+"Detonula_spp", "Dictyocha fibula", "Dictyocha Octonaria", "Dinophysis", "Disc_shape_Diatom", "Eucampia_spp", "Gonyaulax", 
+"Guinardia", "Heterosigma akashiwo", "Lauderia annualata", "Leptocylindrus", "Mesodinium", "Nanoflagellate", "Neodelphineis", 
+"OtherDiatom_Chain", "OtherDino_L10um", "OtherPennate_Single", "Prorocentrum", "Prorocentrum gracile", "Prorocentrum triestinum", 
+"Psedonitzschia", "Pseudochattonella", "Rhizosolenia imbricata", "Scrippsiella", "Skeletonema", "Thalassionema", "Triposfurca", 
+"Triposfusus", "Triposmuelleri", "Tripos_spp", "Vicicitu"]
     
 print(len(classes_hkust))
 

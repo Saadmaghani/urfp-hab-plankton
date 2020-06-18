@@ -235,7 +235,7 @@ class Preprocessor:
             self.fnames, self.labels = self._get_lbls_fnames()
         elif self.database == "HKUST":
             # no need for self.years
-            Preprocessor.DATA_FOLDER = "./data/HKUST"
+            Preprocessor.DATA_FOLDER = "./data/IMAGE"
             self.years = None
             self.fnames, self.labels = self._get_lbls_fnames()
 
